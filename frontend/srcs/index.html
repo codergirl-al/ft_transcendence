@@ -10,6 +10,15 @@
 	<title>ft transcendence</title>
   </head>
   <body>
+	<div id="header"></div>
+	<script>
+		fetch('../components/header.html')
+			.then(response => response.text())
+			.then(data => {
+				document.getElementById('header').innerHTML = data;
+			})
+			.catch(error => console.error('Error loading header:', error));
+	</script>
 	<h1>transcendence muchachos</h1>
 	<script src="../../pong/pong.js"></script>
 	<div id="root"></div>
