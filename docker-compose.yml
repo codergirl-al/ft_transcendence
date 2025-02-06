@@ -1,0 +1,9 @@
+services:
+  backend:
+    build: .
+    container_name: transcendence_backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/data
+    command: bash
