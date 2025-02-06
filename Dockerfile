@@ -1,17 +1,21 @@
 FROM ubuntu:latest
 
+# Install required packages
 RUN apt update -y && apt install -y \
-	php php-cgi sqlite3 libsqlite3-dev pdo_sqlite \
+	php php-cli php-sqlite3 sqlite3 \
 	&& rm -rf /var/lib/apt/lists/*
 
-WORKDIR /data
+# Set working directory
+WORKDIR /var/www/html
 
-COPY ./data .
-VOLUME /data
+# Copy project files
+COPY ./php-page .
 
+# Expose port
 EXPOSE 3000
 
-CMD ["php", "-S", "0.0.0.0:3000", "-t", "/data"]
+# Start PHP built-in server
+CMD ["php", "-S", "0.0.0.0:3000", "-t", "public"]
 
 # docker build -t transcend .
-# docker run -v "$(pwd)/data:/data" -it transcend
+# docker run -p 3000:3000 -v "$(pwd)/php-page:/var/www/html" -it transcend
