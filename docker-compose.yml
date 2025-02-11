@@ -1,9 +1,22 @@
+# php
+# services:
+#   backend:
+#     build: .
+#     container_name: transcendence_backend
+#     ports:
+#       - "3000:3000"
+#     volumes:
+#       - .:/data
+#     command: bash
+
+
+# fastify
 services:
   backend:
     build: .
-    container_name: transcendence_backend
+    container_name: transcend
     ports:
       - "3000:3000"
     volumes:
-      - .:/data
-    command: bash
+      - ./src:/app/src
+    command: npm run dev
