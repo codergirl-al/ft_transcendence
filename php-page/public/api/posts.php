@@ -4,7 +4,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 header("Access-Control-Allow-Headers: Content-Type");
 
-$db = new SQLite3("../data/database.sqlite");
+$db = new SQLite3("../../db/database.sqlite");
 
 // Handle incoming requests
 $method = $_SERVER['REQUEST_METHOD'];
