@@ -1,17 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-	<meta charset="UTF-8" />
-	<meta
-	  name="viewport"
-	  content="width=device-width, initial-scale=1.0"
-	/>
-	<style rel="stylesheet" href="./index.css"></style>
-	<title>ft transcendence</title>
-  </head>
-  <body>
-	<h1>transcendence muchachos</h1>
-	<script src="./pong.js"></script>
-	<div id="root"></div>
-  </body>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Pong Game</title>
+	<style>
+		body { font-family: Arial, sans-serif; text-align: center; }
+		.page { display: none; padding: 20px; }
+		.active { display: block; }
+		button { margin: 10px; padding: 10px; }
+	</style>
+</head>
+<body>
+	<div id="login" class="page active">
+		<h2>Login Page</h2>
+		<button onclick="navigate('dashboard')">Login</button>
+	</div>
+	
+	<div id="dashboard" class="page">
+		<h2>Dashboard</h2>
+		<button onclick="navigate('settings')">Settings</button>
+		<button onclick="navigate('profile')">Profile</button>
+		<h3>Game Modes</h3>
+		<button onclick="navigate('game_settings')">Local - Single</button>
+		<button onclick="navigate('game_settings')">Local - Tournament</button>
+		<button onclick="navigate('game_settings')">Online - Single</button>
+		<button onclick="navigate('game_settings')">Online - Tournament</button>
+	</div>
+	
+	<div id="profile" class="page">
+		<h2>Profile Settings</h2>
+		<button onclick="navigate('dashboard')">Back</button>
+	</div>
+	
+	<div id="settings" class="page">
+		<h2>Settings</h2>
+		<button onclick="navigate('dashboard')">Back</button>
+	</div>
+	
+	<div id="game_settings" class="page">
+		<h2>Game Settings</h2>
+		<button onclick="navigate('dashboard')">Back</button>
+		<button onclick="navigate('game')">Start Game</button>
+	</div>
+	
+	<div id="game" class="page">
+		<h2>Game Page</h2>
+		<p>Click the button to flip a coin and simulate game scores.</p>
+		<button onclick="flipCoin()">Flip Coin</button>
+		<p id="gameResult"></p>
+		<button onclick="navigate('dashboard')">End Game</button>
+	</div>
+	
+	<script src="game.js"></script>
+</body>
 </html>
