@@ -30,13 +30,19 @@ a:hover {
 }
 
 /* Set a consistent style for headings */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	margin-bottom: 1rem;
 	font-weight: 600;
 }
 
 /* Style lists */
-ul, ol {
+ul,
+ol {
 	margin: 1rem 0;
 	padding-left: 2rem;
 }
@@ -67,7 +73,9 @@ button:hover {
 }
 
 /* Add some spacing to form elements */
-input, textarea, select {
+input,
+textarea,
+select {
 	margin-bottom: 1rem;
 	padding: 0.5rem;
 	border: 1px solid #ccc;

@@ -1,13 +1,13 @@
 # ----------------------------------------FASTIFY----------------------
 
 FROM node:20-alpine
+RUN npm install -g npm@latest
 
 WORKDIR /app
 RUN mkdir src
 COPY package*.json ./
 RUN npm install
 
-# Expose port
 EXPOSE 3000
 ENV ADDRESS=0.0.0.0 PORT=3000
 
