@@ -3,7 +3,7 @@ import Database from "better-sqlite3";
 import env from "./env.js";
 
 async function dbConnector(fastify, options) {
-	const dbFile = env.dbFile || "./users.db";
+	const dbFile = env.dbFile || "../users.db";
 	const db = new Database(dbFile, { verbose: console.log });
 
 	db.exec(`

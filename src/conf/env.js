@@ -20,7 +20,7 @@ const schema = {
     },
     DB_FILE: {
       type: "string",
-      default: "./users.db",
+      default: "../users.db",
     },
   },
 };
@@ -28,7 +28,7 @@ const schema = {
 const config = envSchema({
   schema: schema,
   dotenv: {
-    path: path.join(import.meta.dirname, "./.env"),
+    path: path.join(import.meta.dirname, ".env"),
   },
 });
 

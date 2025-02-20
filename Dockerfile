@@ -4,7 +4,8 @@ FROM node:20-alpine
 RUN npm install -g npm@latest
 
 WORKDIR /app
-RUN mkdir src
+RUN mkdir -p src
+
 COPY package*.json ./
 RUN npm install
 

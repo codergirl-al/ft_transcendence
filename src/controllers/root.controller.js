@@ -1,5 +1,5 @@
 
 export async function getRoot(request, reply) {
-	return "Hello!";
+	return reply.view("root.ejs", { title: "example" });
 }
 
