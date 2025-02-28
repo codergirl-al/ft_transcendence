@@ -1,6 +1,5 @@
 import Fastify from "fastify";
 import env from "./conf/env.js";
-// import logger from "./conf/logger.js";
 import routes from "./routes/routes.js";
 import path from "node:path";
 import fastifyView from "@fastify/view";
@@ -8,14 +7,12 @@ import ejs from "ejs";
 import fastifyStatic from "@fastify/static";
 import dbConnector from "./conf/db.js";
 import fastifyFormbody from "@fastify/formbody";
+import fastifyOauth2 from '@fastify/oauth2';
 import fastifyCookie from "@fastify/cookie";
-import fastifySession from "@fastify/session";
 
 const __dirname = import.meta.dirname;
 
-const fastify = Fastify({
-	//   logger: logger,
-});
+const fastify = Fastify({ logger: true });
 
 await fastify.register(fastifyView, {
 	engine: {
@@ -32,14 +29,23 @@ await fastify.register(fastifyStatic, {
 });
 
 await fastify.register(fastifyCookie);
-await fastify.register(fastifySession, {
-	secret: 'a very secret key that is long enough', // Change this to a secure key
-	cookie: { secure: false }, // Set to true if using HTTPS
-	saveUninitialized: false
+await fastify.register(fastifyOauth2, {
+	name: 'googleOAuth2',
+	scope: ['profile', 'email'],
+	credentials: {
+		client: {
+			id: process.env.GOOGLE_CLIENT_ID,
+			secret: process.env.GOOGLE_CLIENT_SECRET,
+		},
+		auth: fastifyOauth2.GOOGLE_CONFIGURATION,
+	},
+	startRedirectPath: '/google-login',
+	callbackUri: `${process.env.BASE_URL}/google-login/callback`,
 });
+
+await fastify.register(routes);
 await fastify.register(fastifyFormbody);
 await fastify.register(dbConnector);
-await fastify.register(routes);
 
 fastify.listen({ port: env.port, host: "0.0.0.0" }, (err, address) => {
 	if (err) {

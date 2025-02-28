@@ -2,6 +2,8 @@
 services:
   backend:
     build: .
+    env_file:
+      - ./src/conf/.env
     container_name: transcend
     ports:
       - "3000:3000"

@@ -1,15 +1,31 @@
 // show the current users profile
-export async function showProfile(request, reply) {
-	const sesh = request.session.user;
-	const { db } = request.server;
-	var params = { title: "Profile", user: false, username: "none", email: "none" };
 
-	if (sesh) {
-		const user = db.prepare("SELECT * FROM users WHERE username = ?").get(sesh.username);
-		if (user)
-			params = { title: "Profile", user: true, username: user.username, email: user.email };
+let fastify;
+
+export function setFastifyInstance(fastifyInstance) {
+	fastify = fastifyInstance;
+}
+
+export async function showProfile(request, reply) {
+	const token = request.cookies.token;
+	if (!token) {
+		return reply.redirect('/login');
 	}
-	return reply.view("showProfile.ejs", params);
+	const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+		headers: { Authorization: `Bearer ${token}` },
+	});
+	const userInfo = await response.json();
+	reply.send({ user: userInfo });
+
+	// const { db } = request.server;
+	// var params = { title: "Profile", user: false, username: "none", email: "none" };
+
+	// if (sesh) {
+	// 	const user = db.prepare("SELECT * FROM users WHERE username = ?").get(sesh.username);
+	// 	if (user)
+	// 		params = { title: "Profile", user: true, username: user.username, email: user.email };
+	// }
+	// return reply.view("showProfile.ejs", params);
 }
 
 // page to create a new profile
@@ -52,3 +68,18 @@ export async function addNewProfile(request, reply) {
 	return reply.redirect("/login");//success
 }
 
+export async function callback(request, reply) {
+	const { token } = await fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
+
+	try {
+		reply.setCookie('token', token.access_token, {
+			path: '/',
+			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production',
+		});
+		reply.redirect('/profile');
+	} catch (err) {
+		request.log.error(err);
+		reply.code(500).send({ error: 'Login failed' });
+	}
+}

@@ -1,9 +1,12 @@
 import { getRoot } from "../controllers/root.controller.js";
-import { createProfile, addNewProfile, showProfile, loginPage, userLogin } from "../controllers/login.controller.js";
+import { createProfile, addNewProfile, showProfile, setFastifyInstance, userLogin, loginPage, callback } from "../controllers/login.controller.js";
 
 export default async function routes(fastify, options) {
+	setFastifyInstance(fastify);
+
 	fastify.get("/", getRoot);//home
-	fastify.get("/login", loginPage);//login page
+	fastify.get("/google-login/callback", callback);
+	fastify.get("/login", loginPage);
 	fastify.register(
 		async function (loginRoutes) {
 			loginRoutes.get("/", showProfile);//show data of user

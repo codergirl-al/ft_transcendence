@@ -15,7 +15,7 @@
 		"@fastify/formbody": "^7.0.0",
 		"@fastify/static": "^7.0.0",
 		"@fastify/view": "^7.0.0",
-		"@fastify/session": "^7.0.0",
+		"@fastify/oauth2": "^7.0.0",
 		"@fastify/cookie": "^6.0.0",
 		"better-sqlite3": "^11.8.1",
 		"ejs": "^3.1.9",
