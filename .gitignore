@@ -1,2 +1,3 @@
 .env
 src/users.db
+node_modules
