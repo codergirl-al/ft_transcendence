@@ -1,15 +1,18 @@
 import winston from "winston";
 import path from "path";
 
-const logDir = path.join(__dirname, "logs");
+// Set the log directory to the root of the project
+const logDir = path.resolve(__dirname, "../../logs");
+
 
 const logFormat = winston.format.printf(({ level, message, timestamp }) => {
     return `${timestamp} [${level.toUpperCase()}]: ${message}`;
 });
 
 const createLogger = (logFile: string) => {
+
     return winston.createLogger({
-        level: "info", // Default leve
+        level: "info", // Default level
         format: winston.format.combine(
             winston.format.timestamp(),
             winston.format.json(),
@@ -18,7 +21,6 @@ const createLogger = (logFile: string) => {
         transports: [
             new winston.transports.Console({
               format: winston.format.combine(
-                winston.format.colorize(),
                 winston.format.timestamp(),
                 logFormat
               ),
