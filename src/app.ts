@@ -10,22 +10,23 @@ import fastifyFormbody from "@fastify/formbody";
 import fastifyOauth2 from '@fastify/oauth2';
 import fastifyCookie from "@fastify/cookie";
 // utils
-import path from "node:path";
+// import path from "node:path";
 import ejs from "ejs";
 
 const fastify: FastifyInstance = Fastify({ logger: true });
 
+fastify.register(fastifyFormbody);
+
 fastify.register(fastifyView, {
-	engine: {
-		ejs,
-	},
-	root: path.join(__dirname, "views"),
+	engine: { ejs },
+	root: "/app/src/views",
+	// root: path.join(__dirname, "views"),
 	viewExt: "ejs",
 	layout: "layout.ejs",
 });
 
 fastify.register(fastifyStatic, {
-	root: path.join(__dirname, "public"),
+	root: "/app/src/public",
 	prefix: "/public/",
 });
 
@@ -45,14 +46,14 @@ fastify.register(fastifyOauth2, {
 });
 
 fastify.register(routes);
-fastify.register(fastifyFormbody);
 fastify.register(dbConnector);
 
 const port = Number(process.env.PORT) || 3000;
-fastify.listen({ port: port, host: "0.0.0.0" }, (err, address) => {
+const address = process.env.ADDRESS;
+fastify.listen({ port: port, host: address }, (err, addr) => {
 	if (err) {
 		fastify.log.error(err);
 		process.exit(1);
 	}
-	serverLogger.info(`transcendence is running in ${process.env.NODE_ENV} mode at ${address}`);
+	serverLogger.info(`transcendence is running in ${process.env.NODE_ENV} mode at ${addr}`);
 });

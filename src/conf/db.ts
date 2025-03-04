@@ -1,6 +1,6 @@
 import fp from "fastify-plugin";
 import Database from "better-sqlite3";
-import env from "./env.js";
+// import env from "./env.js";
 import { FastifyInstance } from "fastify";
 
 async function dbConnector(fastify: FastifyInstance) {

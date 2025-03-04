@@ -39,34 +39,34 @@ export async function loginPage(request: FastifyRequest, reply: FastifyReply) {
 }
 
 // query db for username
-export async function userLogin(request: FastifyRequest, reply: FastifyReply) {
-	const { username, password } = request.body;
-	const { db } = request.server;
-	const user = db.prepare("SELECT * FROM users WHERE username = ?").get(username);
+// export async function userLogin(request: FastifyRequest, reply: FastifyReply) {
+// 	const { username, password } = request.body;
+// 	const { db } = request.server;
+// 	const user = db.prepare("SELECT * FROM users WHERE username = ?").get(username);
 
-	if (!user)
-		return reply.view("login.ejs", { title: "Login", status: "user not found" });
-	if (user.password != password)
-		return reply.view("login.ejs", { title: "Login", status: "wrong password" });
+// 	if (!user)
+// 		return reply.view("login.ejs", { title: "Login", status: "user not found" });
+// 	if (user.password != password)
+// 		return reply.view("login.ejs", { title: "Login", status: "wrong password" });
 
-	request.session.user = { id: user.id, username: user.username };
-	return reply.redirect("/profile/");
-}
+// 	request.session.user = { id: user.id, username: user.username };
+// 	return reply.redirect("/profile/");
+// }
 
 // add new user to db
-export async function addNewProfile(request: FastifyRequest, reply: FastifyReply) {
-	const { username, email, password } = request.body;
-	const { db } = request.server;
-	const exists = db.prepare("SELECT * FROM users WHERE username = ?").get(username);
+// export async function addNewProfile(request: FastifyRequest, reply: FastifyReply) {
+// 	const { username, email, password } = request.body;
+// 	const { db } = request.server;
+// 	const exists = db.prepare("SELECT * FROM users WHERE username = ?").get(username);
 
-	if (exists)
-		return reply.view("createProfile.ejs", { title: "New Profile", status: "user exists" });
-	const insertStatement = db.prepare(
-		"INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
-	);
-	insertStatement.run(username, email, password);
-	return reply.redirect("/login");//success
-}
+// 	if (exists)
+// 		return reply.view("createProfile.ejs", { title: "New Profile", status: "user exists" });
+// 	const insertStatement = db.prepare(
+// 		"INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
+// 	);
+// 	insertStatement.run(username, email, password);
+// 	return reply.redirect("/login");//success
+// }
 
 export async function callback(request: FastifyRequest, reply: FastifyReply) {
 	const { token } = await fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
