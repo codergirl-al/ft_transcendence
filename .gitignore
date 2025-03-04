@@ -1,5 +1,5 @@
 .env
-src/users.db
+src/transcend.db
 node_modules
 dist
 logs

@@ -10,27 +10,31 @@ import fastifyFormbody from "@fastify/formbody";
 import fastifyOauth2 from '@fastify/oauth2';
 import fastifyCookie from "@fastify/cookie";
 // utils
-// import path from "node:path";
+import path from "node:path";
 import ejs from "ejs";
 
+// ----------------------------------------------------------------------
+// get fastify
 const fastify: FastifyInstance = Fastify({ logger: true });
 
+// PLUGINS---------------------------------------------------------------
+// request body
 fastify.register(fastifyFormbody);
-
+// ejs
 fastify.register(fastifyView, {
 	engine: { ejs },
-	root: "/app/src/views",
-	// root: path.join(__dirname, "views"),
+	root: path.join(__dirname, "../src/views"),
 	viewExt: "ejs",
 	layout: "layout.ejs",
 });
-
+// static files
 fastify.register(fastifyStatic, {
-	root: "/app/src/public",
+	root: path.join(__dirname, "../src/public"),
 	prefix: "/public/",
 });
-
+// cookies for login
 fastify.register(fastifyCookie);
+// google authentication
 fastify.register(fastifyOauth2, {
 	name: 'googleOAuth2',
 	scope: ['profile', 'email'],
@@ -44,10 +48,12 @@ fastify.register(fastifyOauth2, {
 	startRedirectPath: '/google-login',
 	callbackUri: `${process.env.BASE_URL}/google-login/callback`,
 });
-
-fastify.register(routes);
+// create database
 fastify.register(dbConnector);
+// configure routes (./routes/routes.ts)
+fastify.register(routes);
 
+// SERVER----------------------------------------------------------------
 const port = Number(process.env.PORT) || 3000;
 const address = process.env.ADDRESS;
 fastify.listen({ port: port, host: address }, (err, addr) => {

@@ -1,11 +1,11 @@
 <h1>Create New Profile</h1>
+<div>
+	<p>Hello <%= email %> !</p>
+	<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR81iX4Mo49Z3oCPSx-GtgiMAkdDop2uVmVvw&s" alt="Avatar">
+</div>
 <form class="create-profile-form" action="/profile/create" method="post">
-	<label for="username">Username:</label>
+	<label for="username">Choose a username:</label>
 	<input type="text" id="username" name="username" required />
-	<label for="email">Email address:</label>
-	<input type="text" id="email" name="email" required />
-	<label for="password">Password:</label>
-	<input type="password" id="password" name="password" required></textarea>
 	<p>...<%= status %></p>
 	<button type="submit">Create</button>
 </form>
