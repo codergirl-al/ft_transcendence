@@ -2,7 +2,8 @@ import winston from "winston";
 import path from "path";
 
 // Set the log directory to the root of the project
-const logDir = path.resolve(__dirname, "../../logs");
+const logDir1 = path.resolve(__dirname, "../../compose/filebeat_ingest_data");
+const logDir2 = path.resolve(__dirname, "../../compose/logstash_ingest_data");
 
 
 const logFormat = winston.format.printf(({ level, message, timestamp }) => {
@@ -26,11 +27,19 @@ const createLogger = (logFile: string) => {
               ),
             }),
             new winston.transports.File({
-              filename: path.join(logDir, logFile),
+              filename: path.join(logDir1, logFile),
               level: "info",
             }),
             new winston.transports.File({
-              filename: path.join(logDir, "error.log"),
+              filename: path.join(logDir1, "error.log"),
+              level: "error",
+            }),
+            new winston.transports.File({
+              filename: path.join(logDir2, logFile),
+              level: "info",
+            }),
+            new winston.transports.File({
+              filename: path.join(logDir2, "error.log"),
               level: "error",
             }),
           ],
