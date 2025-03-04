@@ -1,6 +1,6 @@
-DC_FILE := docker-compose.yml
+DC_FILE := compose/docker-compose.yml
 
-up: ensure-dirs
+up:
 	@echo "Building and starting all containers..."
 	@docker compose -f $(DC_FILE) up --build -d
 

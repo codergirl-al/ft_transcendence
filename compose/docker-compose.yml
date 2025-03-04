@@ -1,0 +1,51 @@
+version: "3.8"
+
+volumes:
+  certs:
+    driver: local
+  esdata01:
+    driver: local
+  kibanadata:
+    driver: local
+  metricbeatdata01:
+    driver: local
+  filebeatdata01:
+    driver: local
+  logstashdata01:
+    driver: local
+
+networks:
+  default:
+    name: elastic
+    external: false
+
+services:
+  setup:
+    extends:
+      file: docker-compose.setup.yml
+      service: setup
+
+  es01:
+    extends:
+      file: docker-compose.elasticsearch.yml
+      service: es01
+
+  kibana:
+    extends:
+      file: docker-compose.kibana.yml
+      service: kibana
+
+  metricbeat01:
+    extends:
+      file: docker-compose.metricbeat.yml
+      service: metricbeat01
+
+  filebeat01:
+    extends:
+      file: docker-compose.filebeat.yml
+      service: filebeat01
+
+  logstash01:
+    extends:
+      file: docker-compose.logstash.yml
+      service: logstash01
