@@ -1,11 +1,14 @@
 import fp from "fastify-plugin";
 import Database from "better-sqlite3";
 import env from "./env.js";
+import { FastifyInstance } from "fastify";
 
-async function dbConnector(fastify, options) {
-	const dbFile = env.dbFile || "../users.db";
-	const db = new Database(dbFile, { verbose: console.log });
+async function dbConnector(fastify: FastifyInstance) {
+	const dbFile: string = process.env.DB_FILE || "../users.db";
+	if (!dbFile)
+		throw new Error("Database file path is not defined.");
 
+	const db = new Database(dbFile);
 	db.exec(`
 		CREATE TABLE IF NOT EXISTS users (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -16,7 +19,7 @@ async function dbConnector(fastify, options) {
 	`);
 
 	fastify.decorate("db", db);
-	fastify.addHook("onClose", (fastify, done) => {
+	fastify.addHook("onClose", (fastify: FastifyInstance, done: Function) => {
 		db.close();
 		done();
 	});

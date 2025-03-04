@@ -1,12 +1,12 @@
-// show the current users profile
+import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 
-let fastify;
+let fastify: FastifyInstance;
 
-export function setFastifyInstance(fastifyInstance) {
+export function setFastifyInstance(fastifyInstance: FastifyInstance) {
 	fastify = fastifyInstance;
 }
 
-export async function showProfile(request, reply) {
+export async function showProfile(request: FastifyRequest, reply: FastifyReply) {
 	const token = request.cookies.token;
 	if (!token) {
 		return reply.redirect('/login');
@@ -29,17 +29,17 @@ export async function showProfile(request, reply) {
 }
 
 // page to create a new profile
-export async function createProfile(request, reply) {
+export async function createProfile(request: FastifyRequest, reply: FastifyReply) {
 	return reply.view("createProfile.ejs", { title: "New Profile", status: "enter data" });
 }
 
 // page to log in
-export async function loginPage(request, reply) {
+export async function loginPage(request: FastifyRequest, reply: FastifyReply) {
 	return reply.view("login.ejs", { title: "Login", status: "enter data" });
 }
 
 // query db for username
-export async function userLogin(request, reply) {
+export async function userLogin(request: FastifyRequest, reply: FastifyReply) {
 	const { username, password } = request.body;
 	const { db } = request.server;
 	const user = db.prepare("SELECT * FROM users WHERE username = ?").get(username);
@@ -54,7 +54,7 @@ export async function userLogin(request, reply) {
 }
 
 // add new user to db
-export async function addNewProfile(request, reply) {
+export async function addNewProfile(request: FastifyRequest, reply: FastifyReply) {
 	const { username, email, password } = request.body;
 	const { db } = request.server;
 	const exists = db.prepare("SELECT * FROM users WHERE username = ?").get(username);
@@ -68,7 +68,7 @@ export async function addNewProfile(request, reply) {
 	return reply.redirect("/login");//success
 }
 
-export async function callback(request, reply) {
+export async function callback(request: FastifyRequest, reply: FastifyReply) {
 	const { token } = await fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
 
 	try {

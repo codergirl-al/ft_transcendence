@@ -1,7 +1,8 @@
+import { FastifyInstance } from "fastify";
 import { getRoot } from "../controllers/root.controller.js";
 import { createProfile, addNewProfile, showProfile, setFastifyInstance, userLogin, loginPage, callback } from "../controllers/login.controller.js";
 
-export default async function routes(fastify, options) {
+export default async function routes(fastify: FastifyInstance) {
 	setFastifyInstance(fastify);
 
 	fastify.get("/", getRoot);//home
