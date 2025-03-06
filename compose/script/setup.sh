@@ -1,19 +1,18 @@
 #!/bin/bash
 
-# Variables
-ELASTICSEARCH_URL="https://localhost:9200"  # Elasticsearch URL
-CERT_DIR="./certs/certs/ca"            # Directory containing certificates
-
-# Load environment variables from the .env file
-if [ -f .env ]; then
-    source .env
+# Source the .env file to load environment variables
+if [[ -f ./.env ]]; then
+  source ./.env
 else
-    echo ".env file not found!"
-    exit 1
+  echo "Error: .env file not found."
+  exit 1
 fi
 
-USERNAME="elastic"
-PASSWORD=$ELASTIC_PASSWORD
+# Variables
+ELASTICSEARCH_URL="https://es01:9200"  # Elasticsearch URL
+CERT_DIR="/usr/share/elasticsearch/config/certs/ca"  # Updated certificate directory
+USERNAME="elastic"                     # Elasticsearch username
+PASSWORD=$ELASTIC_PASSWORD           # Elasticsearch password
 
 # Check if required files exist
 if [[ ! -f "$CERT_DIR/ca.crt" ]]; then

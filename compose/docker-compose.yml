@@ -11,12 +11,6 @@ volumes:
     driver: local
   logstashdata01:
     driver: local
-  certs_local:
-    driver: local
-    driver_opts:
-      type: none
-      device: /home/rpambhar/projects/2-ft_transcendence/compose/certs
-      o: bind
 
 networks:
   default:
@@ -53,3 +47,8 @@ services:
     extends:
       file: docker-compose.logstash.yml
       service: logstash01
+
+  setup-elasticsearch:
+    extends:
+      file: docker-compose.elasticsearch.yml
+      service: setup-elasticsearch

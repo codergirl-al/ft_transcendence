@@ -42,3 +42,17 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
+
+  setup-elasticsearch:
+    image: curlimages/curl:latest
+    user: "root"
+    container_name: setup-elasticsearch
+    depends_on:
+      es01:
+        condition: service_healthy
+    volumes:
+      - ./script/setup.sh:/setup.sh
+      - ./.env:/.env  
+      - certs:/usr/share/elasticsearch/config/certs
+    entrypoint: ["/bin/sh", "setup.sh"]
+    
