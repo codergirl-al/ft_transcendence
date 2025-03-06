@@ -11,6 +11,12 @@ volumes:
     driver: local
   logstashdata01:
     driver: local
+  certs_local:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/rpambhar/projects/2-ft_transcendence/compose/certs
+      o: bind
 
 networks:
   default:

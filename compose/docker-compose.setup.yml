@@ -3,6 +3,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
+      - certs_local:/usr/share/elasticsearch/config/certs_local
     user: "0"
     command: >
       bash -c '
@@ -47,6 +48,7 @@ services:
         echo "Setting kibana_system password";
         until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://es01:9200/_security/user/kibana_system/_password -d "{\"password\":\"${KIBANA_PASSWORD}\"}" | grep -q "^{}"; do sleep 10; done;
         echo "All done!";
+        cp -r /usr/share/elasticsearch/config/certs /usr/share/elasticsearch/config/certs_local
       '
     healthcheck:
       test: ["CMD-SHELL", "[ -f config/certs/es01/es01.crt ]"]
