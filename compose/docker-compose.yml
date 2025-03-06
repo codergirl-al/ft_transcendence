@@ -33,15 +33,15 @@ services:
       file: docker-compose.kibana.yml
       service: kibana
 
-  metricbeat01:
-    extends:
-      file: docker-compose.metricbeat.yml
-      service: metricbeat01
+  # metricbeat01:
+  #   extends:
+  #     file: docker-compose.metricbeat.yml
+  #     service: metricbeat01
 
-  filebeat01:
-    extends:
-      file: docker-compose.filebeat.yml
-      service: filebeat01
+  # filebeat01:
+  #   extends:
+  #     file: docker-compose.filebeat.yml
+  #     service: filebeat01
 
   logstash01:
     extends:

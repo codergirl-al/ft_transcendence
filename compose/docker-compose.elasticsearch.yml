@@ -51,8 +51,9 @@ services:
       es01:
         condition: service_healthy
     volumes:
-      - ./script/setup.sh:/setup.sh
-      - ./.env:/.env  
+      - ./script/setup.sh:/home/curl_user/setup.sh
+      - ./.env:/home/curl_user/.env  
       - certs:/usr/share/elasticsearch/config/certs
     entrypoint: ["/bin/sh", "setup.sh"]
+    # entrypoint: ["/bin/sh", "-c", "while true; do sleep 3600; done"]
     
