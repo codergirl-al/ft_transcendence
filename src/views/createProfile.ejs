@@ -3,7 +3,7 @@
 	<p>Hello <%= email %> !</p>
 	<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR81iX4Mo49Z3oCPSx-GtgiMAkdDop2uVmVvw&s" alt="Avatar">
 </div>
-<form class="create-profile-form" action="/profile/create" method="post">
+<form class="create-profile-form" action="/api/user/create" method="post">
 	<label for="username">Choose a username:</label>
 	<input type="text" id="username" name="username" required />
 	<p>...<%= status %></p>

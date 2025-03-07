@@ -2,8 +2,7 @@
 <div>
 	<button onclick="location.href='/google-login';">log in with google</button>
 </div>
-
-<form class="login-form" action="/profile" method="post">
+<form class="login-form" action="/api/user" method="post">
 	<label for="username">Username:</label>
 	<input type="text" id="username" name="username" required />
 	<label for="password">Password:</label>
@@ -13,5 +12,5 @@
 	<button type="submit">log in</button>
 </form>
 <div>
-	<button onclick="location.href='/profile/create';">create Profile</button>
+	<button onclick="location.href='/api/user/create';">create Profile</button>
 </div>

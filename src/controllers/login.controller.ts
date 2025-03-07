@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import {dbLogger} from "../conf/logger.js";
+import { dbLogger } from "../conf/logger.js";
 
 let fastify: FastifyInstance;
 interface LoginRequestBody {
@@ -32,11 +32,9 @@ export async function showProfile(request: FastifyRequest, reply: FastifyReply) 
 	// see if gmail in db
 	const { db } = request.server;
 	const user = db.prepare('SELECT * FROM users WHERE email = ?').get(userInfo.email);
-	console.log(userInfo.picture);
-	console.log(user.image_url);
 	if (!user) {
 		// create user
-		return reply.view("createProfile.ejs", {title: "New Profile", email: userInfo.email, status: "choose a username"})
+		return reply.view("createProfile.ejs", { title: "New Profile", email: userInfo.email, status: "choose a username" })
 	} else {
 		// show info
 		return reply.view("showProfile.ejs", { title: "Profile", user: true, picture: user.image_url, username: user.username, email: user.email });
@@ -53,7 +51,8 @@ export async function showProfile(request: FastifyRequest, reply: FastifyReply) 
 
 // page to create a new profile
 export async function createProfile(request: FastifyRequest, reply: FastifyReply) {
-	return reply.view("createProfile.ejs", { title: "New Profile", status: "enter data" });
+	const userInfo = await getUserInfo(request);
+	return reply.view("createProfile.ejs", { title: "New Profile", email: userInfo.email, status: "enter data" });
 }
 
 // page to log in
@@ -90,7 +89,7 @@ export async function addNewProfile(request: FastifyRequest, reply: FastifyReply
 		"INSERT INTO users (username, email, image_url, games) VALUES (?, ?, ?, ?)"
 	);
 	insertStatement.run(username, userInfo.email, userInfo.picture, 0);
-	return reply.redirect("/profile");//success
+	return reply.redirect("/api/user");//success
 }
 
 export async function callback(request: FastifyRequest, reply: FastifyReply) {
@@ -105,7 +104,7 @@ export async function callback(request: FastifyRequest, reply: FastifyReply) {
 		request.log.error(err);
 		reply.code(500).send({ error: 'Login failed' });
 	}
-	reply.redirect('/profile');
+	reply.redirect('/api/user');
 }
 
 export async function logout(request: FastifyRequest, reply: FastifyReply) {
