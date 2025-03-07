@@ -4,11 +4,11 @@ RUN npm install -g npm@latest
 
 WORKDIR /app
 COPY src /app/src
-RUN mkdir -p src
+COPY node_modules /app/node_modules
 
 COPY package*.json ./
 COPY tsconfig.json ./
-RUN npm install
+# RUN npm install
 
 RUN npx tsc
 

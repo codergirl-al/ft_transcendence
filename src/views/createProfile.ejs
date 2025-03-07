@@ -1,11 +1,13 @@
 <h1>Create New Profile</h1>
 <div>
 	<p>Hello <%= email %> !</p>
-	<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR81iX4Mo49Z3oCPSx-GtgiMAkdDop2uVmVvw&s" alt="Avatar">
+	<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR81iX4Mo49Z3oCPSx-GtgiMAkdDop2uVmVvw&s"
+		alt="Avatar">
 </div>
-<form class="create-profile-form" action="/api/user/create" method="post">
+<form class="create-profile-form" action="/api/user" method="post">
 	<label for="username">Choose a username:</label>
 	<input type="text" id="username" name="username" required />
-	<p>...<%= status %></p>
+	<p>...<%= status %>
+	</p>
 	<button type="submit">Create</button>
 </form>

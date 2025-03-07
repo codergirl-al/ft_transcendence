@@ -1,0 +1,10 @@
+<h1>edit Profile</h1>
+<img src="<%= user.image_url %>" alt="Avatar">
+<form class="create-profile-form" action="/api/user/<%= user.id %>" method="put">
+	<label for="username">edit username:</label>
+	<input type="text" id="username" name="<%= user.username %>" required />
+	<label for="avatar">change avatar:</label>
+	<input type="text" id="avatar" name="avatar link" required />
+	<p>...<%= status %></p>
+	<button type="submit">Save</button>
+</form>

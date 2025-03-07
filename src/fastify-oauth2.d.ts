@@ -6,5 +6,4 @@ declare module "fastify" {
 		googleOAuth2: OAuth2Namespace;
 		db: Database;
 	}
-
 }

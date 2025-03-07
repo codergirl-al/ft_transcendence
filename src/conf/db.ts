@@ -13,12 +13,12 @@ async function dbConnector(fastify: FastifyInstance) {
 		CREATE TABLE IF NOT EXISTS users (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		username TEXT UNIQUE NOT NULL,
-		email TEXT NOT NULL,
+		email TEXT UNIQUE NOT NULL,
 		image_url TEXT NOT NULL DEFAULT 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR81iX4Mo49Z3oCPSx-GtgiMAkdDop2uVmVvw&s',
 		games INTEGER DEFAULT 0
 		);
 	`);
-	
+
 	// db.exec(`
 	// 	CREATE TABLE IF NOT EXISTS games (
 	// 	id INTEGER PRIMARY KEY AUTOINCREMENT,

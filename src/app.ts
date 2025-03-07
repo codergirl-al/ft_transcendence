@@ -1,4 +1,4 @@
-import Fastify, { FastifyInstance } from "fastify";
+import Fastify, { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 // project files
 import routes from "./routes/routes.js";
 import dbConnector from "./conf/db.js";
@@ -30,7 +30,7 @@ fastify.register(fastifyView, {
 // static files
 fastify.register(fastifyStatic, {
 	root: path.join(__dirname, "../src/public"),
-	prefix: "/public/",
+	prefix: "/",
 });
 // cookies for login
 fastify.register(fastifyCookie);
@@ -50,6 +50,15 @@ fastify.register(fastifyOauth2, {
 });
 // create database
 fastify.register(dbConnector);
+// only allow authenticated api access
+fastify.addHook("onRequest", async (request: FastifyRequest, reply: FastifyReply) => {
+	if (request.url.startsWith("/api")) {
+		const token = request.cookies.auth_token;
+		if (!token) {
+			reply.code(401).send({ error: "Unauthorized" });
+		}
+	}
+});
 // configure routes (./routes/routes.ts)
 fastify.register(routes);
 

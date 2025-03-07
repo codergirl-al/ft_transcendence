@@ -1,16 +1,19 @@
-import { FastifyInstance } from "fastify";
+import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { apiRoutes } from "./apiRoutes.js";
-import { getRoot } from "../controllers/root.controller.js";
+import { getRoot, spa } from "../controllers/root.controller.js";
 import { setFastifyInstance, loginPage, callback } from "../controllers/login.controller.js";
 // import { createProfile, addNewProfile, showProfile, setFastifyInstance, userLogin, loginPage, callback } from "../controllers/login.controller.js";
 
 export default async function routes(fastify: FastifyInstance) {
 	setFastifyInstance(fastify);
 
-	fastify.get("/", getRoot);//home
-	fastify.get("/google-login/callback", callback);
 	fastify.get("/login", loginPage);
+	fastify.get("/google-login/callback", callback);
 	fastify.register(apiRoutes, { prefix: "/api" });
+
+	fastify.setNotFoundHandler((request: FastifyRequest, reply: FastifyReply) => {
+		reply.sendFile('index.html');
+	});
 }
 
 // export default async function routes(fastify: FastifyInstance) {
