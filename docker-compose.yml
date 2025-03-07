@@ -10,6 +10,7 @@ services:
     volumes:
       - ./src:/app/src
       - ./logs:/app/logs
+      # - ./src/public:/app/src/public
     command: npm run dev
 
 # php

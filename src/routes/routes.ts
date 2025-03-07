@@ -6,7 +6,7 @@ import { createProfile, addNewProfile, showProfile, setFastifyInstance, loginPag
 export default async function routes(fastify: FastifyInstance) {
 	setFastifyInstance(fastify);
 
-	fastify.get("/", getRoot);//home
+	// fastify.get("/", getRoot);//home
 	fastify.get("/google-login/callback", callback);
 	fastify.get("/login", loginPage);
 	fastify.register(

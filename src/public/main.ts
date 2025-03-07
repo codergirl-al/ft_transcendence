@@ -1,9 +1,10 @@
-import { homePage, settingsPage, gamePage } from "./pages";
+import { homePage, settingsPage, gamePage } from "./page";
+import "./tailwind.css";
 
 const routes: { [key: string]: () => string } = {
   "/": homePage,
-  "/settings": settingsPage,
   "/game": gamePage,
+  "/settings": settingsPage,
 };
 
 export const navigateTo = (path: string) => {
@@ -33,13 +34,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Show/hide settings popover
 const setupSettingsPopover = () => {
-  const settingsPanel = document.getElementById("settingsPanel")!;
-  const closeSettings = document.getElementById("closeSettings")!;
+  const settingsPanel = document.getElementById("settingsPanel");
+  const closeSettings = document.getElementById("closeSettings");
 
-  // Open settings popover
+  if (!settingsPanel || !closeSettings) return; // Ensure elements exist
+
   settingsPanel.classList.remove("translate-x-full");
 
-  // Close settings on click
   closeSettings.addEventListener("click", () => {
     settingsPanel.classList.add("translate-x-full");
   });
