@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
-import { apiRoutes } from "./apiRoutes.js";
-import { getRoot, spa } from "../controllers/root.controller.js";
-import { setFastifyInstance, loginPage, callback } from "../controllers/login.controller.js";
+import { apiRoutes } from "./apiRoutes";
+import { getRoot, spa } from "../controllers/root.controller";
+import { setFastifyInstance, loginPage, callback } from "../controllers/login.controller";
 // import { createProfile, addNewProfile, showProfile, setFastifyInstance, userLogin, loginPage, callback } from "../controllers/login.controller.js";
 
 export default async function routes(fastify: FastifyInstance) {

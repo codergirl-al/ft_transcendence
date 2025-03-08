@@ -1,14 +1,14 @@
 import { FastifyInstance } from "fastify";
-import { createProfile, addNewProfile, showProfile, loggedinProfile, editForm, changeUser, deleteUser, logout } from "../controllers/login.controller.js";
+import { createProfile, addNewProfile, showProfile, loggedinProfile, editForm, changeUser, deleteUser, logout } from "../controllers/login.controller";
 
 async function userRoutes(userRoutes: FastifyInstance) {
-	userRoutes.get("/", loggedinProfile);//add user to db
-	userRoutes.get("/:id", showProfile);//show data of a user
-	userRoutes.get("/new", createProfile);//form to create a user
+	userRoutes.get("/", loggedinProfile);//show logged in user
 	userRoutes.post("/", addNewProfile);//add user to db
+	userRoutes.get("/:id", showProfile);//show data of a user
+	userRoutes.post("/:id", changeUser);//edit user in db
+	userRoutes.get("/:id/delete", deleteUser);//delete user and cookie
 	userRoutes.get("/:id/edit", editForm);//form to edit user
-	userRoutes.put("/:id", changeUser);//edit user in db
-	userRoutes.delete("/:id", deleteUser);//delete user and cookie
+	userRoutes.get("/new", createProfile);//form to create a user
 	userRoutes.get("/logout", logout);//delete user token cookie
 }
 

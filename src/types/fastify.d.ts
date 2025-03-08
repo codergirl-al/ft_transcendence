@@ -1,5 +1,6 @@
-import { FastifyInstance, FastifyRequest } from "fastify";
+import { FastifyInstance } from "fastify";
 import { OAuth2Namespace } from "@fastify/oauth2";
+import { Database } from "better-sqlite3";
 
 declare module "fastify" {
 	interface FastifyInstance {

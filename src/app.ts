@@ -1,17 +1,26 @@
+// import "./types/fastify.d";
 import Fastify, { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 // project files
-import routes from "./routes/routes.js";
-import dbConnector from "./conf/db.js";
-import { serverLogger } from "./conf/logger.js";
+import routes from "./routes/routes";
+import dbConnector from "./conf/db";
+import { serverLogger } from "./conf/logger";
 // fastify plugins
 import fastifyView from "@fastify/view";
+import { Database } from "better-sqlite3";
 import fastifyStatic from "@fastify/static";
 import fastifyFormbody from "@fastify/formbody";
-import fastifyOauth2 from '@fastify/oauth2';
+import { fastifyOauth2, OAuth2Namespace } from '@fastify/oauth2';
 import fastifyCookie from "@fastify/cookie";
 // utils
 import path from "node:path";
 import ejs from "ejs";
+
+declare module "fastify" {
+	interface FastifyInstance {
+		googleOAuth2: OAuth2Namespace;
+		db: Database;
+	}
+}
 
 // ----------------------------------------------------------------------
 // get fastify

@@ -1,10 +1,10 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { dbLogger } from "../conf/logger.js";
+// import { dbLogger } from "../conf/logger";
 
 let fastify: FastifyInstance;
 interface LoginRequestBody {
 	username: string;
-	image_url: string;
+	avatar: string;
 }
 interface RequestParams {
 	id: string;
@@ -15,7 +15,7 @@ export function setFastifyInstance(fastifyInstance: FastifyInstance) {
 }
 
 async function getUserInfo(request: FastifyRequest) {
-	const token = request.cookies.token;
+	const token = request.cookies.auth_token;
 	// check if user logged in
 	if (!token) {
 		return null;
@@ -25,6 +25,8 @@ async function getUserInfo(request: FastifyRequest) {
 		headers: { Authorization: `Bearer ${token}` },
 	});
 	const userInfo = await response.json();
+	if (userInfo.error)
+		return null;
 	return userInfo;
 }
 
@@ -69,16 +71,19 @@ export async function addNewProfile(request: FastifyRequest, reply: FastifyReply
 	const { username } = request.body as LoginRequestBody;
 	const { db } = request.server;
 	const userInfo = await getUserInfo(request);
+	if (!userInfo)
+		reply.redirect("/login");
+
 	const user = db.prepare('SELECT id FROM users WHERE username = ?').get(username);
 
 	if (user)
 		return reply.view("createProfile.ejs", { title: "New Profile", email: userInfo.email, status: "username is taken" });
-// error!!!
+	console.log(userInfo);
 	const insertStatement = db.prepare(
 		"INSERT INTO users (username, email, image_url, games) VALUES (?, ?, ?, ?)"
 	);
 	insertStatement.run(username, userInfo.email, userInfo.picture, 0);
-	return reply.redirect(`/api/user/${user.id}`);
+	return reply.redirect("/api/user/");
 }// O
 
 // 	userRoutes.get("/:id/edit", editForm);//form to edit user
@@ -92,7 +97,7 @@ export async function editForm(request: FastifyRequest, reply: FastifyReply) {
 	}
 
 	const userInfo = await getUserInfo(request);
-	const allowed = db.prepare('SELECT id FROM users WHERE email = ?').get(userInfo.email);
+	const allowed = db.prepare('SELECT id FROM users WHERE email = ?').get(userInfo.email) as { id: string };
 	if (id != allowed.id) {
 		return reply.code(401).send({ message: "you are not authorized to edit this user >:(" });
 	}
@@ -101,11 +106,11 @@ export async function editForm(request: FastifyRequest, reply: FastifyReply) {
 
 // 	userRoutes.put("/:id", changeUser);//edit user in db
 export async function changeUser(request: FastifyRequest, reply: FastifyReply) {
-	const { username, image_url } = request.body as LoginRequestBody;
+	const { username, avatar } = request.body as LoginRequestBody;
 	const { db } = request.server;
 	const { id } = request.params as RequestParams;
 
-	const user = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
+	const user = db.prepare('SELECT * FROM users WHERE id = ?').get(id) as { email: string };
 	if (!user) {
 		return reply.code(404).send({ message: "User not found" });
 	}
@@ -120,16 +125,16 @@ export async function changeUser(request: FastifyRequest, reply: FastifyReply) {
 		return reply.redirect(`/api/user/${id}/edit`);
 
 	const updateStatement = db.prepare('UPDATE users SET username = ?, image_url = ? WHERE id = ?');
-	updateStatement.run(username, image_url, id);
+	updateStatement.run(username, avatar, id);
 	return reply.redirect(`/api/user/${id}`);
 }// O
 
-// 	userRoutes.delete("/:id", deleteUser);//add user to db
+// 	userRoutes.delete("/:id/delete", deleteUser);//add user to db
 export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
 	const { id } = request.params as RequestParams;
 	const { db } = request.server;
 	const userInfo = await getUserInfo(request);
-	const user = db.prepare("SELECT email FROM users WHERE id = ?").get(id);
+	const user = db.prepare("SELECT email FROM users WHERE id = ?").get(id) as { email: string };
 
 	if (userInfo.email != user.email)
 		return reply.code(401).send({ message: "Unauthorized" });
