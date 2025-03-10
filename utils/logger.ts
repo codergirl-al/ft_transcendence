@@ -2,7 +2,7 @@ import winston from "winston";
 import path from "path";
 
 // Set the log directory to the root of the project
-const logDir = path.resolve(__dirname, "../../compose/logs");
+const logDir = path.resolve(__dirname, "../../logs");
 
 
 const logFormat = winston.format.printf(({ level, message, timestamp, service, ...metadata }) => {

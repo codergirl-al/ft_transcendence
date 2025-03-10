@@ -51,7 +51,7 @@ services:
       es01:
         condition: service_healthy
     volumes:
-      - ./script/setup.sh:/home/curl_user/setup.sh
+      - ./elk_configuration/elasticsearch-setup.sh:/home/curl_user/setup.sh
       - ./.env:/home/curl_user/.env  
       - certs:/usr/share/elasticsearch/config/certs
     entrypoint: ["/bin/sh", "setup.sh"]
