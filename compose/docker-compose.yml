@@ -17,38 +17,10 @@ networks:
     name: elastic
     external: false
 
-services:
-  setup:
-    extends:
-      file: docker-compose.setup.yml
-      service: setup
-
-  es01:
-    extends:
-      file: docker-compose.elasticsearch.yml
-      service: es01
-
-  kibana:
-    extends:
-      file: docker-compose.kibana.yml
-      service: kibana
-
-  # metricbeat01:
-  #   extends:
-  #     file: docker-compose.metricbeat.yml
-  #     service: metricbeat01
-
-  # filebeat01:
-  #   extends:
-  #     file: docker-compose.filebeat.yml
-  #     service: filebeat01
-
-  logstash01:
-    extends:
-      file: docker-compose.logstash.yml
-      service: logstash01
-
-  setup-elasticsearch:
-    extends:
-      file: docker-compose.elasticsearch.yml
-      service: setup-elasticsearch
+include:
+  - docker-compose.setup.yml
+  - docker-compose.elasticsearch.yml
+  - docker-compose.kibana.yml
+  - docker-compose.logstash.yml
+  # - docker-compose.metricbeat.yml
+  # - docker-compose.filebeat.yml
