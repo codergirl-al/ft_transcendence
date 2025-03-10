@@ -18,9 +18,10 @@ networks:
     external: false
 
 include:
-  - docker-compose.setup.yml
-  - docker-compose.elasticsearch.yml
-  - docker-compose.kibana.yml
-  - docker-compose.logstash.yml
+  # - docker-compose.setup.yml
+  # - docker-compose.elasticsearch.yml
+  # - docker-compose.kibana.yml
+  # - docker-compose.logstash.yml
+  - docker-compose.nginx-modsecurity.yml
   # - docker-compose.metricbeat.yml
   # - docker-compose.filebeat.yml
