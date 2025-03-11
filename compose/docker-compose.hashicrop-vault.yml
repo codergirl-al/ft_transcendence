@@ -4,6 +4,7 @@ services:
     container_name: vault
     volumes:
       - vault-data:/vault/file
+      - "./.env:/.env"
     ports:
       - "8200:8200"
     cap_add:
