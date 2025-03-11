@@ -1,6 +1,5 @@
 services:
   nginx:
-    # build: ./nginx
     image: owasp/modsecurity:nginx
     ports:
       - "80:80"
@@ -9,3 +8,5 @@ services:
       - ./modsecurity/crs:/etc/modsecurity/crs
     # depends_on:     # uncomment once fastiy is up and running
     #   - fastify
+    depends_on:
+      - vault

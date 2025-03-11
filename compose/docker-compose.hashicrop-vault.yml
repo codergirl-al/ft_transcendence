@@ -1,0 +1,10 @@
+services:
+  vault:
+    build: ./vault
+    container_name: vault
+    volumes:
+      - vault-data:/vault/file
+    ports:
+      - "8200:8200"
+    cap_add:
+      - IPC_LOCK

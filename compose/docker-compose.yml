@@ -11,6 +11,8 @@ volumes:
     driver: local
   logstashdata01:
     driver: local
+  vault-data:
+    driver: local
 
 networks:
   default:
@@ -23,5 +25,6 @@ include:
   # - docker-compose.kibana.yml
   # - docker-compose.logstash.yml
   - docker-compose.nginx-modsecurity.yml
+  - docker-compose.hashicrop-vault.yml
   # - docker-compose.metricbeat.yml
   # - docker-compose.filebeat.yml
