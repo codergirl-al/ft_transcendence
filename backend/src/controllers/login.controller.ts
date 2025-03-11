@@ -146,8 +146,10 @@ export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
 	const { name } = request.params as RequestParams;
 	const { db } = request.server;
 	const userInfo = await getUserInfo(request);
-	const user = db.prepare("SELECT email FROM users WHERE username = ?").get(name) as UserData;
+	const user = db.prepare("SELECT email FROM users WHERE username = ?").get(name) as UserData | undefined;
 
+	if (!user)
+		return reply.code(400).send({ message: "user does not exist" });
 	if (userInfo.email != user.email)
 		return reply.code(401).send({ message: "Unauthorized" });
 

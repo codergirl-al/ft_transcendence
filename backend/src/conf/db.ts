@@ -34,8 +34,8 @@ async function dbConnector(fastify: FastifyInstance) {
 	db.exec(`
 		CREATE TABLE IF NOT EXISTS games (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id1 INTEGER NOT NULL,
-		user_id2 INTEGER NOT NULL,
+		user_id1 INTEGER,
+		user_id2 INTEGER,
 		score1 INTEGER NOT NULL DEFAULT 0,
 		score2 INTEGER NOT NULL DEFAULT 0,
 		winner_id INTEGER,
