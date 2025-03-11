@@ -1,15 +1,15 @@
 <h1>edit Profile</h1>
 <img src="<%= user.image_url %>" alt="Avatar">
-<form class="edit-profile-form" action="/api/user/<%= user.id %>" method="post">
+<form class="edit-profile-form" action="/api/user/<%= user.username %>" method="post">
 	<label for="username">edit username:</label>
 	<input type="text" id="username" name="username" required />
 	<label for="avatar">change avatar:</label>
-	<input type="text" id="avatar" name="avatar" required />
+	<input type="text" id="avatar" name="avatar" />
 	<p>...<%= status %>
 	</p>
 	<button type="submit">Save</button>
 </form>
-<form class="delete-form" action="/api/user/<%= user.id %>/delete" method="get">
+<form class="delete-form" action="/api/user/<%= user.username %>/delete" method="get">
 	<p>DANGER ZONE</p>
 	<button type="submit">Delete Profile</button>
 </form>

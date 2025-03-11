@@ -6,15 +6,22 @@ interface LoginRequestBody {
 	username: string;
 	avatar: string;
 }
-interface RequestParams {
+export interface RequestParams {
+	name: string;
 	id: string;
+}
+export interface UserData {
+	id: Number;
+	username: string;
+	image_url: string;
+	email: string;
 }
 
 export function setFastifyInstance(fastifyInstance: FastifyInstance) {
 	fastify = fastifyInstance;
 }
 
-async function getUserInfo(request: FastifyRequest) {
+export async function getUserInfo(request: FastifyRequest) {
 	const token = request.cookies.auth_token;
 	// check if user logged in
 	if (!token) {
@@ -32,33 +39,33 @@ async function getUserInfo(request: FastifyRequest) {
 
 // ---------------------------------------------------------------------------------------------------
 
-// 	userRoutes.get("/", loggedinProfile);//show data of a user
-export async function loggedinProfile(request: FastifyRequest, reply: FastifyReply) {
+// 	userRoutes.get("/", loggedinUser);//show data of a user
+export async function loggedinUser(request: FastifyRequest, reply: FastifyReply) {
 	const userInfo = await getUserInfo(request);
 	const { db } = request.server;
-	const user = db.prepare('SELECT username, email, games FROM users WHERE email = ?').get(userInfo.email);
+	const user = db.prepare('SELECT username FROM users WHERE email = ?').get(userInfo.email) as UserData;
 	if (!user) {
 		return reply.redirect("/api/user/new");
 	}
-	return reply.code(200).send(user);
+	return reply.redirect(`/api/user/${user.username}`);
 }// O
 
-// 	userRoutes.get("/:id", showProfile);//show data of a user
-export async function showProfile(request: FastifyRequest, reply: FastifyReply) {
-	const { id } = request.params as RequestParams;
+// 	userRoutes.get("/:name", showUser);//show data of a user
+export async function showUser(request: FastifyRequest, reply: FastifyReply) {
+	const { name } = request.params as RequestParams;
 	const { db } = request.server;
-	const user = db.prepare('SELECT username, email, games FROM users WHERE id = ?').get(id);
+	const user = db.prepare('SELECT username, email, image_url FROM users WHERE username = ?').get(name) as UserData;
 	if (!user) {
 		return reply.code(404).send({ message: "user not found" });
 	}
 	return reply.code(200).send(user);
 }// O
 
-// 	userRoutes.get("/new", createProfile);//form to create a user
-export async function createProfile(request: FastifyRequest, reply: FastifyReply) {
+// 	userRoutes.get("/new", newUserForm);//form to create a user
+export async function newUserForm(request: FastifyRequest, reply: FastifyReply) {
 	const userInfo = await getUserInfo(request);
 	const { db } = request.server;
-	const user = db.prepare('SELECT username FROM users WHERE email = ?').get(userInfo.email);
+	const user = db.prepare('SELECT username FROM users WHERE email = ?').get(userInfo.email) as UserData;
 
 	if (user) {
 		return reply.code(400).send({ message: "a user with this email already exists" });
@@ -66,51 +73,51 @@ export async function createProfile(request: FastifyRequest, reply: FastifyReply
 	return reply.view("createProfile.ejs", { title: "New Profile", email: userInfo.email, status: "enter data" });
 }// O
 
-// 	userRoutes.post("/", addNewProfile);//add user to db
-export async function addNewProfile(request: FastifyRequest, reply: FastifyReply) {
+// 	userRoutes.post("/", newUser);//add user to db
+export async function newUser(request: FastifyRequest, reply: FastifyReply) {
 	const { username } = request.body as LoginRequestBody;
 	const { db } = request.server;
 	const userInfo = await getUserInfo(request);
 	if (!userInfo)
 		reply.redirect("/login");
 
-	const user = db.prepare('SELECT id FROM users WHERE username = ?').get(username);
+	const user = db.prepare('SELECT username FROM users WHERE username = ?').get(username) as UserData;
 
 	if (user)
 		return reply.view("createProfile.ejs", { title: "New Profile", email: userInfo.email, status: "username is taken" });
 	console.log(userInfo);
 	const insertStatement = db.prepare(
-		"INSERT INTO users (username, email, image_url, games) VALUES (?, ?, ?, ?)"
+		"INSERT INTO users (username, email, image_url) VALUES (?, ?, ?)"
 	);
-	insertStatement.run(username, userInfo.email, userInfo.picture, 0);
+	insertStatement.run(username, userInfo.email, userInfo.picture);
 	return reply.redirect("/api/user/");
 }// O
 
-// 	userRoutes.get("/:id/edit", editForm);//form to edit user
-export async function editForm(request: FastifyRequest, reply: FastifyReply) {
+// 	userRoutes.get("/:name/edit", editUserForm);//form to edit user
+export async function editUserForm(request: FastifyRequest, reply: FastifyReply) {
 	const { db } = request.server;
-	const { id } = request.params as RequestParams;
+	const { name } = request.params as RequestParams;
 
-	const user = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
+	const user = db.prepare('SELECT * FROM users WHERE username = ?').get(name) as UserData;
 	if (!user) {
-		return reply.code(404).send({ message: "the user with this id was not found" });
+		return reply.code(404).send({ message: "the user with this name was not found" });
 	}
 
 	const userInfo = await getUserInfo(request);
-	const allowed = db.prepare('SELECT id FROM users WHERE email = ?').get(userInfo.email) as { id: string };
-	if (id != allowed.id) {
+	const allowed = db.prepare('SELECT username FROM users WHERE email = ?').get(userInfo.email) as UserData;
+	if (name != allowed.username) {
 		return reply.code(401).send({ message: "you are not authorized to edit this user >:(" });
 	}
 	return reply.view("editProfile.ejs", { title: "Edit Profile", user: user, status: "click submit to save changes" });
 }// O
 
-// 	userRoutes.put("/:id", changeUser);//edit user in db
-export async function changeUser(request: FastifyRequest, reply: FastifyReply) {
+// 	userRoutes.post("/:name", editUser);//edit user in db
+export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 	const { username, avatar } = request.body as LoginRequestBody;
 	const { db } = request.server;
-	const { id } = request.params as RequestParams;
+	const { name } = request.params as RequestParams;
 
-	const user = db.prepare('SELECT * FROM users WHERE id = ?').get(id) as { email: string };
+	const user = db.prepare('SELECT * FROM users WHERE username = ?').get(name) as UserData;
 	if (!user) {
 		return reply.code(404).send({ message: "User not found" });
 	}
@@ -120,27 +127,32 @@ export async function changeUser(request: FastifyRequest, reply: FastifyReply) {
 		return reply.code(401).send({ message: "Unauthorized" });
 	}
 
-	const taken = db.prepare('SELECT id FROM users WHERE username = ?').get(username);
+	const taken = db.prepare('SELECT username FROM users WHERE username = ?').get(username) as UserData;
 	if (taken)
-		return reply.redirect(`/api/user/${id}/edit`);
+		return reply.redirect(`/api/user/${name}/edit`);
 
-	const updateStatement = db.prepare('UPDATE users SET username = ?, image_url = ? WHERE id = ?');
-	updateStatement.run(username, avatar, id);
-	return reply.redirect(`/api/user/${id}`);
+	if (avatar) {
+		const updateStatement = db.prepare('UPDATE users SET username = ?, image_url = ? WHERE username = ?');
+		updateStatement.run(username, avatar, name);
+	} else {
+		const updateStatement = db.prepare('UPDATE users SET username = ? WHERE username = ?');
+		updateStatement.run(username, name);
+	}
+	return reply.redirect(`/api/user/${username}`);
 }// O
 
-// 	userRoutes.delete("/:id/delete", deleteUser);//add user to db
+// 	userRoutes.delete("/:name/delete", deleteUser);//add user to db
 export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
-	const { id } = request.params as RequestParams;
+	const { name } = request.params as RequestParams;
 	const { db } = request.server;
 	const userInfo = await getUserInfo(request);
-	const user = db.prepare("SELECT email FROM users WHERE id = ?").get(id) as { email: string };
+	const user = db.prepare("SELECT email FROM users WHERE username = ?").get(name) as UserData;
 
 	if (userInfo.email != user.email)
 		return reply.code(401).send({ message: "Unauthorized" });
 
-	const deleteStatement = db.prepare("DELETE FROM users WHERE id = ?");
-	deleteStatement.run(id);
+	const deleteStatement = db.prepare("DELETE FROM users WHERE username = ?");
+	deleteStatement.run(name);
 
 	reply.clearCookie('auth_token');
 	return reply.redirect("/login");

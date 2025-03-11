@@ -4,6 +4,7 @@ import Fastify, { FastifyInstance, FastifyRequest, FastifyReply } from "fastify"
 import routes from "./routes/routes";
 import dbConnector from "./conf/db";
 import { serverLogger } from "./conf/logger";
+import { getUserInfo } from "./controllers/login.controller";
 // fastify plugins
 import fastifyView from "@fastify/view";
 import { Database } from "better-sqlite3";
@@ -62,8 +63,9 @@ fastify.register(dbConnector);
 // only allow authenticated api access
 fastify.addHook("onRequest", async (request: FastifyRequest, reply: FastifyReply) => {
 	if (request.url.startsWith("/api")) {
-		const token = request.cookies.auth_token;
-		if (!token) {
+		const userInfo = await getUserInfo(request);
+		// const token = request.cookies.auth_token;
+		if (!userInfo) {
 			reply.code(401).send({ error: "Unauthorized" });
 		}
 	}
