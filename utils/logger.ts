@@ -5,11 +5,21 @@ import path from "path";
 const logDir = path.resolve(__dirname, "../../logs");
 
 
-const logFormat = winston.format.printf(({ level, message, timestamp }) => {
-    return `${timestamp} [${level.toUpperCase()}]: ${message}`;
+const logFormat = winston.format.printf(({ level, message, timestamp, service, ...metadata }) => {
+    return JSON.stringify({
+      timestamp,
+      level:level.toUpperCase(),
+      service,
+      message,
+      ...metadata
+    })
 });
 
-const createLogger = (logFile: string) => {
+const consoleLogFormat = winston.format.printf(({ level, message, timestamp }) => {
+  return `${timestamp} [${level.toUpperCase()}]: ${message}`;
+});
+
+const createLogger = (logFile: string, service: string) => {
 
     return winston.createLogger({
         level: "info", // Default level
@@ -18,11 +28,12 @@ const createLogger = (logFile: string) => {
             winston.format.json(),
             logFormat
         ),
+        defaultMeta: { service },
         transports: [
             new winston.transports.Console({
               format: winston.format.combine(
                 winston.format.timestamp(),
-                logFormat
+                consoleLogFormat
               ),
             }),
             new winston.transports.File({
@@ -32,12 +43,12 @@ const createLogger = (logFile: string) => {
             new winston.transports.File({
               filename: path.join(logDir, "error.log"),
               level: "error",
-            }),
+            })
           ],
     })
 }
 
-export const serverLogger = createLogger("server.log");
-export const authLogger = createLogger("auth.log");
-export const dbLogger = createLogger("database.log");
-export const appLogger = createLogger("application.log");
+export const serverLogger = createLogger("server.log", "server");
+export const authLogger = createLogger("auth.log", "auth");
+export const dbLogger = createLogger("database.log", "database");
+export const appLogger = createLogger("application.log", "application");

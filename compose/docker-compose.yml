@@ -1,0 +1,27 @@
+volumes:
+  certs:
+    driver: local
+  esdata01:
+    driver: local
+  kibanadata:
+    driver: local
+  metricbeatdata01:
+    driver: local
+  filebeatdata01:
+    driver: local
+  logstashdata01:
+    driver: local
+
+networks:
+  default:
+    name: elastic
+    external: false
+
+include:
+  - docker-compose.setup.yml
+  - docker-compose.elasticsearch.yml
+  - docker-compose.kibana.yml
+  - docker-compose.logstash.yml
+  - docker-compose.fastify.yml
+  # - docker-compose.metricbeat.yml
+  # - docker-compose.filebeat.yml

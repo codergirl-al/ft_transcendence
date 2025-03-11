@@ -1,5 +1,6 @@
 .env
-src/transcend.db
+backend/src/transcend.db
 node_modules
 dist
 logs
+certs

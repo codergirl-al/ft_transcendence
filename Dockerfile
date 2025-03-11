@@ -11,6 +11,10 @@ COPY tsconfig.json ./
 COPY nodemon.json ./
 RUN npm install
 
+
+cd /app
+npm install
+npm run dev
 # RUN npx tsc
 
 CMD ["npm", "run", "dev"]
