@@ -1,0 +1,15 @@
+<h3>Game <%= game.id %>: <%= game.username1 %> VS. <%= game.username2 %></h3>
+<form class="game-form" action="/api/game/<%= game.id %>" method="post">
+	<label for="score1">score player 1</label>
+	<input type="number" min="0" max="20" id="score1" name="score1" required/>
+	<label for="score2">score player 2</label>
+	<input type="number" min="0" max="20" id="score2" name="score2" required/>
+
+	<label for="winner">Choose a winner:</label>
+	<select name="winner" id="winner">
+		<option value="<%= game.user_id1 %>"><%= game.username1 %></option>
+		<option value="<%= game.user_id2 %>"><%= game.username2 %></option>
+		<option value="null">Noone</option>
+	</select>
+	<button type="submit">Start!</button>
+</form>
