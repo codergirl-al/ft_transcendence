@@ -1,4 +1,4 @@
-import { homePage, settingsPage, gamePage } from "./page";
+// import { homePage, settingsPage, gamePage } from "../public/page";
 export const indexPage = () => `
 <!DOCTYPE html>
 <html lang="en">

@@ -8,11 +8,11 @@ RUN mkdir -p src
 
 COPY package*.json ./
 COPY tsconfig.json ./
+COPY tailwind.config.cjs ./
+COPY postcss.config.cjs ./
+
 RUN npm install
 
-# Build TailwindCSS
-RUN npx tailwindcss -i ./src/public/tailwind.css -o ./src/public/output.css --minify
 RUN npx tsc
 
 CMD ["npm", "run", "dev"]
-

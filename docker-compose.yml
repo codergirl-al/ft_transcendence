@@ -1,17 +1,17 @@
 # fastify
-services:
-  backend:
-    build: .
-    env_file:
-      - ./src/conf/.env
-    container_name: transcend
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./src:/app/src
-      - ./logs:/app/logs
-      # - ./src/public:/app/src/public
-    command: npm run dev
+# services:
+#   backend:
+#     build: .
+#     env_file:
+#       - ./src/conf/.env
+#     container_name: transcend
+#     ports:
+#       - "3000:3000"
+#     volumes:
+#       - ./src:/app/src
+#       - ./logs:/app/logs
+#       # - ./src/public:/app/src/public
+#     command: npm run dev
 
 # php
 # services:
@@ -23,3 +23,18 @@ services:
 #     volumes:
 #       - ./php-page:/data
 #     command: php -S 0.0.0.0:3000 -t public
+
+## frontend 
+version: "3.8"
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: transcend_frontend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src:/app/src
+      - ./logs:/app/logs
+      # - ./src/public:/app/src/public
