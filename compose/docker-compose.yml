@@ -26,5 +26,6 @@ include:
   # - docker-compose.logstash.yml
   - docker-compose.nginx-modsecurity.yml
   - docker-compose.hashicrop-vault.yml
+  - docker-compose.fastify.yml
   # - docker-compose.metricbeat.yml
   # - docker-compose.filebeat.yml
