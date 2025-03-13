@@ -168,7 +168,7 @@ export async function callback(request: FastifyRequest, reply: FastifyReply) {
 		reply.setCookie('auth_token', token.access_token, {
 			path: '/',
 			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production',
+			secure: process.env.FASTIFY_NODE_ENV === 'production',
 		});
 	} catch (err) {
 		request.log.error(err);

@@ -4,7 +4,7 @@ import { FastifyInstance } from "fastify";
 import { dbLogger } from "./logger";
 
 async function dbConnector(fastify: FastifyInstance) {
-	const dbFile: string = process.env.DB_FILE || "../transcend.db";
+	const dbFile: string = process.env.FASTIFY_DB_FILE || "../transcend.db";
 	if (!dbFile)
 		throw new Error("Database file path is not defined.");
 	const db = new Database(dbFile);

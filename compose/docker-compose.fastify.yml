@@ -2,7 +2,7 @@ services:
   backend:
     image: node:20-alpine
     env_file:
-      - ./fastify_config/.env
+      - .env
     container_name: fastify-backend
     ports:
       - "3000:3000"

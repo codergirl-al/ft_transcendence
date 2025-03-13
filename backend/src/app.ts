@@ -56,7 +56,7 @@ fastify.register(fastifyOauth2, {
 		auth: fastifyOauth2.GOOGLE_CONFIGURATION,
 	},
 	startRedirectPath: '/google-login',
-	callbackUri: `${process.env.BASE_URL}/google-login/callback`,
+	callbackUri: `${process.env.CALLBACK_URL}`,
 });
 // create database
 fastify.register(dbConnector);
@@ -74,12 +74,12 @@ fastify.addHook("onRequest", async (request: FastifyRequest, reply: FastifyReply
 fastify.register(routes);
 
 // SERVER----------------------------------------------------------------
-const port = Number(process.env.PORT) || 3000;
-const address = process.env.ADDRESS;
+const port = Number(process.env.FASTIFY_PORT) || 3000;
+const address = process.env.FASTIFY_ADDRESS;
 fastify.listen({ port: port, host: address }, (err, addr) => {
 	if (err) {
 		fastify.log.error(err);
 		process.exit(1);
 	}
-	serverLogger.info(`transcendence is running in ${process.env.NODE_ENV} mode at ${addr}`);
+	serverLogger.info(`transcendence is running in ${process.env.FASTIFY_NODE_ENV} mode at ${addr}`);
 });
