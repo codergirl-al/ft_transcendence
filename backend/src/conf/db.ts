@@ -2,6 +2,7 @@ import fp from "fastify-plugin";
 import Database from "better-sqlite3";
 import { FastifyInstance } from "fastify";
 import { dbLogger } from "./logger";
+import { UserData } from "../controllers/login.controller";
 
 async function dbConnector(fastify: FastifyInstance) {
 	const dbFile: string = process.env.FASTIFY_DB_FILE || "../transcend.db";
@@ -12,13 +13,12 @@ async function dbConnector(fastify: FastifyInstance) {
 	// user data
 	db.exec(`
 		CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		id INTEGER PRIMARY KEY,
 		username TEXT UNIQUE NOT NULL,
 		email TEXT UNIQUE NOT NULL,
 		image_url TEXT NOT NULL DEFAULT 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR81iX4Mo49Z3oCPSx-GtgiMAkdDop2uVmVvw&s'
 		);
 	`);
-
 	// user stats for dashboard
 	db.exec(`
 		CREATE TABLE IF NOT EXISTS user_stats (
@@ -67,9 +67,15 @@ async function dbConnector(fastify: FastifyInstance) {
 		);
 	`)
 
-	const notfound = db.prepare("SELECT username FROM users WHERE id = ?").get(1) as { username: string };
-	if (!notfound || notfound.username != "usernotfound") {
-		db.exec("INSERT INTO users (username, email) VALUES ('usernotfound', 'noemail@nothing.com');");
+	const notfound = db.prepare("SELECT * FROM users WHERE id = ?").get(1) as UserData | undefined;
+	if (!notfound) {
+		db.exec("INSERT INTO users (id, username, email) VALUES (1, 'usernotfound', 'noemail@nothing.com');");
+		dbLogger.info(`Created blank user 'usernotfound' ID 1`);
+	} else if (notfound.username != "usernotfound") {
+		db.exec(`DELETE FROM users WHERE username = ${notfound.username}`);
+		db.exec("INSERT INTO users (id, username, email) VALUES (1, 'usernotfound', 'noemail@nothing.com');");
+		db.exec(`INSERT INTO users (username, email, image_url) VALUES (${notfound.username}, ${notfound.email}, ${notfound.image_url});`);
+		dbLogger.info(`Created blank user 'usernotfound' ID 1, moved user ${notfound.username}`);
 	}
 
 	fastify.decorate("db", db);
@@ -77,7 +83,7 @@ async function dbConnector(fastify: FastifyInstance) {
 		db.close();
 		done();
 	});
-	dbLogger.info("database and tables created.");
+	dbLogger.info("Database and tables created.");
 }
 
 export default fp(dbConnector);

@@ -25,7 +25,7 @@ declare module "fastify" {
 
 // ----------------------------------------------------------------------
 // get fastify
-const fastify: FastifyInstance = Fastify({ logger: true });
+const fastify: FastifyInstance = Fastify();
 
 // PLUGINS---------------------------------------------------------------
 // request body
@@ -62,6 +62,7 @@ fastify.register(fastifyOauth2, {
 fastify.register(dbConnector);
 // only allow authenticated api access
 fastify.addHook("onRequest", async (request: FastifyRequest, reply: FastifyReply) => {
+	serverLogger.info(`REQ ${request.method} ${request.hostname}${request.url}   client ${request.socket.remoteAddress}:${request.socket.remotePort}`);
 	if (request.url.startsWith("/api")) {
 		const userInfo = await getUserInfo(request);
 		// const token = request.cookies.auth_token;
@@ -70,6 +71,14 @@ fastify.addHook("onRequest", async (request: FastifyRequest, reply: FastifyReply
 		}
 	}
 });
+
+fastify.addHook("onResponse", async (request: FastifyRequest, reply: FastifyReply) => {
+	serverLogger.info(`RES ${reply.statusCode}`);
+});
+
+// "res":{"statusCode":304}
+// "req":{"method":"GET","url":"/index.css","hostname":"localhost:3000","remoteAddress":"172.18.0.1","remotePort":62214}
+
 // configure routes (./routes/routes.ts)
 fastify.register(routes);
 
