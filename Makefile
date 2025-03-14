@@ -1,4 +1,4 @@
-DC_FILE := compose/docker-compose.yml
+DC_FILE := docker-compose.yml
 
 up:
 	@echo "Building and starting all containers..."
