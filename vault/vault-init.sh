@@ -26,6 +26,7 @@ if [ "$VAULT_STATUS" = "501" ]; then
   echo "UNSEAL_KEY: $UNSEAL_KEY"
   echo "ROOT_TOKEN: $ROOT_TOKEN"
   echo "$ROOT_TOKEN" > /home/curl_user/root-token.txt
+  echo "$UNSEAL_KEY" > /home/curl_user/unseal-key.txt
 
   # Enable the KV secrets engine at the 'secret/' path
   echo "Enabling KV secrets engine at 'secret/' path..."
@@ -56,4 +57,8 @@ if [ "$VAULT_STATUS" = "501" ]; then
 else
   # Vault is already initialized
   echo "Vault is already initialized. Skipping initialization and KV secrets addition."
+  UNSEAL_KEY=$(cat /home/curl_user/unseal-key.txt)
+  echo "Unsealing Vault..."
+  curl -s -X PUT -d "{\"key\": \"$UNSEAL_KEY\"}" http://vault:8200/v1/sys/unseal
+
 fi
