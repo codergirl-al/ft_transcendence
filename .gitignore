@@ -1,4 +1,4 @@
-.env
+.env*
 backend/src/transcend.db
 node_modules
 dist
@@ -6,3 +6,4 @@ logs
 certs
 vault/root-token.txt
 vault/unseal-key.txt
+token/

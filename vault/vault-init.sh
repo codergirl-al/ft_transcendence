@@ -32,33 +32,55 @@ if [ "$VAULT_STATUS" = "501" ]; then
   echo "Enabling KV secrets engine at 'secret/' path..."
   curl -s -X POST -H "X-Vault-Token: $ROOT_TOKEN" -d '{"type": "kv-v2"}' http://vault:8200/v1/sys/mounts/secret
 
-  # Add KV secrets from .env file (only during initialization)
-  echo "Adding KV secrets from .env file..."
-  if [ -f "/home/curl_user/.env" ]; then
-    # Read the .env file line by line
-    while IFS= read -r line; do
-      # Skip empty lines and comments
-      if [ -z "$line" ] || [ "${line#\#}" != "$line" ]; then
-        continue
-      fi
+  # Process all .env.* files
+  for env_file in /home/curl_user/.env.*; do
+    if [ -f "$env_file" ]; then
+      # Extract the path from the filename (e.g., .env.backend -> backend)
+      path=$(basename "$env_file" | cut -d '.' -f 3)
 
-      # Extract key and value
-      key=$(echo "$line" | cut -d '=' -f 1)
-      value=$(echo "$line" | cut -d '=' -f 2-)
+      echo "Adding KV secrets from $env_file to path 'secret/data/$path'..."
+      while IFS= read -r line; do
+        # Skip empty lines and comments
+        if [ -z "$line" ] || [ "${line#\#}" != "$line" ]; then
+          continue
+        fi
 
-      # Write the secret to Vault
-      echo "Adding secret: $key"
-      curl -s -X POST -H "X-Vault-Token: $ROOT_TOKEN" -d "{\"data\": {\"$key\": \"$value\"}}" http://vault:8200/v1/secret/data/$key
-    done < "/home/curl_user/.env"
-    echo "All secrets from .env file have been added to Vault."
-  else
-    echo "No .env file found. Skipping KV secrets addition."
-  fi
+        # Extract key and value
+        key=$(echo "$line" | cut -d '=' -f 1)
+        value=$(echo "$line" | cut -d '=' -f 2-)
+
+        # Write the secret to Vault
+        echo "Adding secret to $path: $key"
+        curl -s -X POST -H "X-Vault-Token: $ROOT_TOKEN" -d "{\"data\": {\"$key\": \"$value\"}}" http://vault:8200/v1/secret/data/$path/$key
+      done < "$env_file"
+      echo "All secrets from $env_file have been added to Vault."
+    else
+      echo "No .env.* files found. Skipping KV secrets addition."
+    fi
+  done
+
+  # Create policies for each path
+  echo "Creating policies for each path..."
+  for env_file in /home/curl_user/.env.*; do
+    if [ -f "$env_file" ]; then
+      path=$(basename "$env_file" | cut -d '.' -f 3)
+      policy_name="${path}-policy"
+
+      echo "Creating policy for path 'secret/data/$path'..."
+      curl -s -X POST -H "X-Vault-Token: $ROOT_TOKEN" -d "{\"policy\": \"path \\\"secret/data/$path/*\\\" { capabilities = [\\\"read\\\"] }\"}" http://vault:8200/v1/sys/policies/acl/$policy_name
+
+      # Create a token for the path
+      echo "Creating token for path 'secret/data/$path'..."
+      token=$(curl -s -X POST -H "X-Vault-Token: $ROOT_TOKEN" -d "{\"policies\": [\"$policy_name\"]}" http://vault:8200/v1/auth/token/create | jq -r '.auth.client_token')
+      echo "Token for $path: $token"
+      echo "$token" > "/home/curl_user/token/${path}-token.txt"
+    fi
+  done
+
 else
   # Vault is already initialized
   echo "Vault is already initialized. Skipping initialization and KV secrets addition."
   UNSEAL_KEY=$(cat /home/curl_user/unseal-key.txt)
   echo "Unsealing Vault..."
   curl -s -X PUT -d "{\"key\": \"$UNSEAL_KEY\"}" http://vault:8200/v1/sys/unseal
-
 fi
