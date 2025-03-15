@@ -1,7 +1,7 @@
 # Use the official Vault image as the base
 FROM hashicorp/vault:latest
 
-RUN apk add --no-cache jq
+RUN apk add --no-cache curl
 
 
 # Set the Vault configuration as an environment variable

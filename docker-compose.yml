@@ -156,7 +156,25 @@ services:
       - "8200:8200"
     cap_add:
       - IPC_LOCK
+    healthcheck:
+      test: >
+        sh -c "if [ $(curl -s -o /dev/null -w '%{http_code}' http://localhost:8200/v1/sys/health || echo '000') -eq 501 ]; then echo 'OK' > /proc/1/fd/1; exit 0; else echo 'KO' > /proc/1/fd/1; exit 1; fi"
+      interval: 5s
+      timeout: 3s
+      retries: 30
 
+  vault-setup:
+    image: curlimages/curl:latest
+    user: "0"
+    container_name: vault-setup
+    volumes:
+      - ./vault/vault-init.sh:/home/curl_user/vault-init-unseal.sh
+      - ./vault/root-token.txt:/home/curl_user/root-token.txt
+    command: >
+      sh -c " apk add jq; /home/curl_user/vault-init-unseal.sh;"
+    depends_on:
+      vault:
+        condition: service_healthy
   # For running backend
   backend:
     image: node:20-alpine
