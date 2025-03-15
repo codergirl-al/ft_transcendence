@@ -166,6 +166,9 @@ services:
           elif [ $(curl -s -o /dev/null -w '%{http_code}' http://localhost:8200/v1/sys/health || echo '000') = 503 ]; then
             echo 'OK: Vault is sealed' > /proc/1/fd/1;
             exit 0;
+          elif [ $(curl -s -o /dev/null -w '%{http_code}' http://localhost:8200/v1/sys/health || echo '000') = 200 ]; then
+            echo 'OK: Vault is sealed' > /proc/1/fd/1;
+            exit 0;
           else
             echo 'KO: Vault is unhealthy' > /proc/1/fd/1;
             exit 1;
@@ -174,7 +177,6 @@ services:
       interval: 5s
       timeout: 3s
       retries: 30
-
 
   # For setting up vault
   vault-setup:
@@ -196,13 +198,11 @@ services:
   
   # For running backend
   backend:
-    image: node:20-alpine
-    env_file:
-      - ./.env
+    build: ./backend/
     ports:
       - "3000:3000"
     volumes:
       - ./logs:/logs
       - ./backend:/app
+      - ./token/backend-token.txt:/backend-token.txt
     working_dir: /app
-    command: sh -c "npm run old"
