@@ -1,6 +1,9 @@
 DC_FILE := docker-compose.yml
 
 up:
+	@echo "Creating required files..."
+	@touch vault/root-token.txt
+	@touch vault/unseal-token.txt
 	@echo "Building and starting all containers..."
 	@docker compose -f $(DC_FILE) up --build -d
 
