@@ -191,7 +191,12 @@ services:
       - .env.elk:/home/curl_user/.env.elk
       - .env.backend:/home/curl_user/.env.backend
     command: >
-      sh -c " apk add jq; /home/curl_user/vault-init-unseal.sh; while true; do sleep 1000; done;"
+      sh -c "apk add jq; /home/curl_user/vault-init-unseal.sh; touch /home/curl_user/ready; sleep 100"
+    healthcheck:
+      test: ["CMD", "sh", "-c", "test -f /home/curl_user/ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
     depends_on:
       vault:
         condition: service_healthy
@@ -206,3 +211,6 @@ services:
       - ./backend:/app
       - ./token/backend-token.txt:/backend-token.txt
     working_dir: /app
+    depends_on:
+      vault-setup:
+        condition: service_healthy

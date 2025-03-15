@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo Vault Token: $VAULT_TOKEN
+export VAULT_TOKEN=$(cat /backend-token.txt)
 
 # Fetch secrets from Vault
 export ADDRESS=$(curl -s -H "X-Vault-Token: $VAULT_TOKEN" http://vault:8200/v1/secret/data/backend/ADDRESS | jq -r '.data.data.ADDRESS')
