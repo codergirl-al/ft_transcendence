@@ -163,6 +163,7 @@ services:
       timeout: 3s
       retries: 30
 
+  # For setting up vault
   vault-setup:
     image: curlimages/curl:latest
     user: "0"
@@ -170,11 +171,14 @@ services:
     volumes:
       - ./vault/vault-init.sh:/home/curl_user/vault-init-unseal.sh
       - ./vault/root-token.txt:/home/curl_user/root-token.txt
+      - .env:/home/curl_user/.env
     command: >
-      sh -c " apk add jq; /home/curl_user/vault-init-unseal.sh;"
+      sh -c " apk add jq;
+      while true; do sleep 100; done;"
     depends_on:
       vault:
         condition: service_healthy
+  
   # For running backend
   backend:
     image: node:20-alpine

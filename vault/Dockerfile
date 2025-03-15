@@ -9,8 +9,6 @@ ENV VAULT_LOCAL_CONFIG='{ "storage": { "file": { "path": "/vault/file" } }, "lis
 
 ENV VAULT_ADDR='http://0.0.0.0:8200'
 
-COPY vault-init-unseal.sh .
-
 # Expose the Vault port
 EXPOSE 8200
 
