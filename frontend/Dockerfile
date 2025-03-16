@@ -7,7 +7,6 @@ WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.json ./
 COPY tailwind.config.cjs ./
-COPY postcss.config.cjs ./
 
 RUN npm install
 
@@ -21,6 +20,8 @@ RUN npm run build
 
 # Install a static server to serve your frontend
 RUN npm install -g serve
+
+RUN npx tsc
 
 EXPOSE 8080
 

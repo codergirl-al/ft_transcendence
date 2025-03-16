@@ -5,8 +5,14 @@
 .fixed {
   position: fixed;
 }
+.relative {
+  position: relative;
+}
 .static {
   position: static;
+}
+.z-10 {
+  z-index: 10;
 }
 .container {
   width: 100%;
@@ -16,6 +22,9 @@
 }
 .hidden {
   display: none;
+}
+.inline-block {
+  display: inline-block;
 }
 .h-full {
   height: 100%;
@@ -55,6 +64,12 @@
 .text-center {
   text-align: center;
 }
+.text-left {
+  text-align: left;
+}
+.text-wrap {
+  text-wrap: wrap;
+}
 .underline {
   text-decoration-line: underline;
 }
@@ -66,6 +81,19 @@
 .duration-300 {
   --tw-duration: 300ms;
   transition-duration: 300ms;
+}
+.hover\:underline {
+  &:hover {
+    @media (hover: hover) {
+      text-decoration-line: underline;
+    }
+  }
+}
+.focus\:outline-none {
+  &:focus {
+    --tw-outline-style: none;
+    outline-style: none;
+  }
 }
 @property --tw-translate-x {
   syntax: "*";
