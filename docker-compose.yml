@@ -23,20 +23,22 @@ networks:
 services:
   # For setting up elasticsearch
   setup:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    build: ./elk/setup
     environment:
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - KIBANA_PASSWORD=${KIBANA_PASSWORD}
+      - ELASTIC_PASSWORD=trans01
+      - KIBANA_PASSWORD=trans01
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
-      - ./elk/elasticsearch/elasticsearch-setup.sh:/usr/share/elasticsearch/setup-elasticsearch.sh
-    user: "0"
-    command: sh setup-elasticsearch.sh
+      - ./token/elk-token.txt:/elk-token.txt
     healthcheck:
       test: ["CMD-SHELL", "[ -f config/certs/elasticsearch/elasticsearch.crt ]"]
       interval: 1s
       timeout: 5s
       retries: 120
+    depends_on:
+      vault-setup:
+        condition: service_healthy
+
 
   # For running elasticsearch
   elasticsearch:
@@ -214,3 +216,4 @@ services:
     depends_on:
       vault-setup:
         condition: service_healthy
+  
