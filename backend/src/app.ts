@@ -39,7 +39,7 @@ fastify.register(fastifyView, {
 });
 // static files
 fastify.register(fastifyStatic, {
-	root: path.join(__dirname, "../src/public"),
+	root: path.join(__dirname, "../dist/public"),
 	prefix: "/",
 });
 // cookies for login

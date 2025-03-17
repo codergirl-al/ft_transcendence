@@ -11,7 +11,7 @@
 		"build": "npm run build:css && npm run build:ts",
 		"dev:css": "tailwindcss -i ./src/public/css/tailwind.css -o ./src/public/css/output.css --watch",
 		"dev:ts": "tsc -w",
-		"dev": "concurrently \"npm run dev:css\" \"npm run dev:ts\" \"nodemon dist/server/app.js\""
+		"dev": "concurrently \"tsc --watch\" \"nodemon\""
 	},
 	"keywords": [],
 	"author": "",
@@ -29,6 +29,7 @@
 		"fastify": "^4.28.1",
 		"winston": "^3.17.0",
 		"nodemon": "^3.1.9",
+		"ts-node": "^10.9.2",
 		"ajv": "^7.0.0",
 		"concurrently": "^7.6.0"
 	},
@@ -36,8 +37,6 @@
 		"@types/better-sqlite3": "^7.6.12",
 		"@types/ejs": "^3.1.5",
 		"@types/node": "^22.13.8",
-		"nodemon": "^3.1.9",
-		"ts-node": "^10.9.2",
 		"typescript": "^5.8.2",
 		"autoprefixer": "^10.4.20",
 		"postcss": "^8.5.3",
