@@ -9,9 +9,3 @@ flyoutMenu?.classList.toggle('hidden');
 closeFlyout?.addEventListener('click', () => {
 flyoutMenu?.classList.add('hidden');
 });
-
-document.getElementById('googleLoginLink')?.addEventListener('click', () => {
-	// alert('Google Login clicked!');
-	window.location.href = '/google-login';
-	
-});

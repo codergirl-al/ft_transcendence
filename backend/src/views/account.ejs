@@ -1,0 +1,76 @@
+<!-- views/accountDashboard.ejs -->
+<div class="min-h-screen bg-purple-900 text-white flex flex-col">
+
+	<!-- Header: User Info & Actions -->
+	<header class="p-4 bg-purple-800 flex justify-between items-center">
+	  <!-- User Avatar + Basic Info -->
+	  <div class="flex items-center space-x-3">
+		<img 
+		  src="<%= user.image_url %>" 
+		  alt="User Avatar" 
+		  class="w-10 h-10 rounded-full border-2 border-purple-600 shadow"
+		>
+		<div>
+		  <p class="font-semibold"><%= user.username %></p>
+		  <p class="text-sm text-purple-200"><%= user.email %></p>
+		</div>
+	  </div>
+	  <!-- Edit Profile & Logout -->
+	  <nav class="space-x-4">
+		<a
+		  href="/api/user/<%= user.username %>/edit"
+		  class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors"
+		>
+		  Edit Profile
+		</a>
+		<a
+		  href="/api/user/logout"
+		  class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors"
+		>
+		  Logout
+		</a>
+	  </nav>
+	</header>
+  
+	<!-- Main Content: Big Title + Buttons -->
+	<main class="flex-grow flex flex-col items-center justify-center text-center px-4">
+	  <!-- Big Title: "PING" with a Ping Pong Emoji -->
+	  <h1 class="text-6xl font-extrabold mb-8 flex items-center space-x-2">
+		<span>PING</span>
+		<span class="text-4xl transform rotate-12">🏓</span>
+	  </h1>
+  
+	  <!-- Action Buttons: Single, Multi, Tournament -->
+	  <div class="flex flex-col space-y-4 w-full max-w-md">
+		<a
+		  href="/game/new?mode=single"
+		  class="block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors"
+		>
+		  SINGLE PLAYER
+		</a>
+		<a
+		  href="/game/new?mode=multi"
+		  class="block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors"
+		>
+		  MULTI PLAYER
+		</a>
+		<a
+		  href="/tournaments"
+		  class="block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors"
+		>
+		  TOURNAMENT
+		</a>
+	  </div>
+	</main>
+  
+	<!-- Footer (Optional) -->
+	<footer class="p-4 bg-purple-800 text-center">
+	  <p class="text-sm text-purple-200">
+		&copy; 2025 PING PONG, Inc. All rights reserved.
+	  </p>
+	</footer>
+  
+  </div>
+  
+  <script src="/index.js"></script>
+  
