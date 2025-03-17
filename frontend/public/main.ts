@@ -48,7 +48,6 @@
 // // Setup Theme & Language Switchers
 // toggleTheme();
 // toggleLanguage();
-import './script.js';
 
 const menuButton = document.getElementById('menuButton');
 const flyoutMenu = document.getElementById('flyoutMenu');

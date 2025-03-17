@@ -10,7 +10,7 @@
 #     volumes:
 #       - ./src:/app/src
 #       - ./logs:/app/logs
-#       # - ./src/public:/app/src/public
+#       - ./src/public:/app/src/public
 #     command: npm run dev
 
 # php
@@ -38,3 +38,4 @@ services:
       - ./src:/app/src
       - ./logs:/app/logs
       # - ./src/public:/app/src/public
+    # command: npm run dev
