@@ -1,0 +1,10 @@
+(https://tailwindcss.com/docs/installation/tailwind-cli)
+should work according to subject but at least as a temporary solution :)
+
+1) npm install tailwindcss @tailwindcss/cli
+2) write '@import "tailwindcss";' into temporary input.css file
+3) npx @tailwindcss/cli -i input.css -o [OUTPUTFILE] --watch
+4) add [OUTPUTFILE] as stylesheet
+
+input.css no longer needed
+use tailwind.config.js to reduce output file size to minimum
