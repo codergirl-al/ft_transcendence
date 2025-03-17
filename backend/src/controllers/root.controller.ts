@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 
 export async function getRoot(request: FastifyRequest, reply: FastifyReply) {
-	return reply.view("root.ejs", { title: "example" });
+	return reply.view("index.ejs", { title: "ft_trans" });
 }
 
 export async function spa(request: FastifyRequest, reply: FastifyReply) {

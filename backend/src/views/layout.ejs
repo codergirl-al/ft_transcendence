@@ -9,19 +9,11 @@
 		<%= title %>
 	</title>
 	<link rel="stylesheet" type="text/css" href="/index.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css">
 </head>
 
-<body>
-	<header>
-		<div class="container">
-			<div id="branding">
-				<h1><a href="/">ft_transcendence</a></h1>
-			</div>
-		</div>
-	</header>
-	<main>
+<body class="relative flex min-h-screen bg-purple-900 items-center justify-center text-white">
 		<div class="container"><%- body %></div>
-	</main>
 </body>
 
 </html>
