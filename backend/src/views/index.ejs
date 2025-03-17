@@ -134,46 +134,7 @@
 		</p>
 	</div>
 
-	<!-- Optional: If you have a compiled TypeScript/JS front-end script -->
- <script>
-	const menuButton = document.getElementById('menuButton');
-	const flyoutMenu = document.getElementById('flyoutMenu');
-	const closeFlyout = document.getElementById('closeFlyout');
-
-menuButton?.addEventListener('click', () => {
-	// Toggle the 'hidden' class on the flyout menu
-	flyoutMenu?.classList.toggle('hidden');
-});
-closeFlyout?.addEventListener('click', () => {
-  flyoutMenu?.classList.add('hidden');
-});
-<script src=""></script>
-<div><%= variable %></div>
-
-  // Get references to the link and the popover
-  const googleLoginLink = document.getElementById('googleLoginLink');
-  const accountPopover = document.getElementById('accountPopover');
-
-  // Toggle popover display when the login link is clicked
-  googleLoginLink.addEventListener('click', function(event) {
-    event.preventDefault();
-    accountPopover.classList.toggle('hidden');
-  });
-
-  // Optional: add event listeners for the popover buttons
-  document.getElementById('existingAccountBtn').addEventListener('click', function() {
-    // Your logic for logging into an existing account goes here.
-    console.log('User chose to log into an existing account');
-    // For example, you might redirect the user or open another modal.
-  });
-
-  document.getElementById('newAccountBtn').addEventListener('click', function() {
-    // Your logic for creating a new account goes here.
-    console.log('User chose to create a new account');
-    // For example, you might redirect to a sign-up page or open a sign-up form.
-  });
- </script>
- <script src="../../dist/public/main.js"></script>
+ <script src="/index.js"></script>
  <!-- <script src="/public/main.js"></script> -->
 
 

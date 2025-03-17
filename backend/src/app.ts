@@ -38,10 +38,10 @@ fastify.register(fastifyView, {
 	layout: "layout.ejs",
 });
 // static files
-// fastify.register(fastifyStatic, {
-// 	root: path.join(__dirname, "../src/public"),
-// 	prefix: "/",
-// });
+fastify.register(fastifyStatic, {
+	root: path.join(__dirname, "../dist/public"),
+	prefix: "/",
+});
 // cookies for login
 fastify.register(fastifyCookie);
 // google authentication

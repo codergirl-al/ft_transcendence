@@ -1,15 +1,15 @@
 
-const menuButton = document.getElementById('menuButton');
-const flyoutMenu = document.getElementById('flyoutMenu');
-const closeFlyout = document.getElementById('closeFlyout');
+// const menuButton = document.getElementById('menuButton');
+// const flyoutMenu = document.getElementById('flyoutMenu');
+// const closeFlyout = document.getElementById('closeFlyout');
 
-menuButton?.addEventListener('click', () => {
-// Toggle the 'hidden' class on the flyout menu
-flyoutMenu?.classList.toggle('hidden');
-});
-closeFlyout?.addEventListener('click', () => {
-flyoutMenu?.classList.add('hidden');
-});
+// menuButton?.addEventListener('click', () => {
+// // Toggle the 'hidden' class on the flyout menu
+// flyoutMenu?.classList.toggle('hidden');
+// });
+// closeFlyout?.addEventListener('click', () => {
+// flyoutMenu?.classList.add('hidden');
+// });
 
 // Example: hooking up event listeners to each menu item
 // document.getElementById('userManagementLink')?.addEventListener('click', () => {

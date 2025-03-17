@@ -10,4 +10,4 @@ services:
       - ../logs:/logs
       - ../backend:/app
     working_dir: /app
-    command: sh -c "npm install -g npm@11.2.0 && npm install && npm run nodemon"
+    command: sh -c "npm install -g npm@11.2.0 && npm install && npm run dev"
