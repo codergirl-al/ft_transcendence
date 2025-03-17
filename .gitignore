@@ -1,5 +1,7 @@
 .env
-src/transcend.db
-node_modules
+backend/src/transcend.db
+backend/node_modules
+backend/package-lock.json
 dist
 logs
+certs
