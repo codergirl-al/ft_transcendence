@@ -1,0 +1,139 @@
+<div class="min-h-screen bg-purple-900 text-white flex flex-col">
+
+	<!-- Header: User Info & Actions -->
+	<header class="p-4 bg-purple-500 flex justify-between items-center">
+	  <!-- User Avatar + Basic Info -->
+	  <div class="flex items-center space-x-3">
+		<img 
+		  src="<%= user.image_url %>" 
+		  alt="User Avatar" 
+		  class="w-10 h-10 rounded-full border-2 border-purple-600 shadow"
+		>
+		<div>
+		  <!-- Make the username clickable by adding an id and cursor style -->
+		  <p id="usernameDisplay" class="font-semibold cursor-pointer"><%= user.username %></p>
+		  <p class="text-sm text-purple-200"><%= user.email %></p>
+		</div>
+	  </div>
+	  <!-- Edit Profile & Logout -->
+	  <nav class="space-x-4">
+		<a
+		  href="/api/user/<%= user.username %>/edit"
+		  class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors"
+		>
+		  Edit Profile
+		</a>
+		<a
+		  href="/api/user/logout"
+		  class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors"
+		>
+		  Logout
+		</a>
+	  </nav>
+	</header>
+	
+	<!-- Main Content -->
+	<main class="flex-grow flex flex-col items-center justify-center text-center px-4">
+	  <h1 class="text-6xl font-extrabold mb-8 flex items-center space-x-2">
+		<span>PONG</span>
+		<span class="text-4xl transform rotate-12">🏓</span>
+	  </h1>
+	  <div class="flex flex-col space-y-8 w-full max-w-md">
+		<!-- SINGLE PLAYER Button -->
+		<div class="relative"> 
+		  <div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
+		  <a
+			href="/game/new?mode=single"
+			class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center"
+		  >
+			SINGLE PLAYER
+		  </a>
+		</div>
+	
+		<!-- MULTI PLAYER Button -->
+		<div class="relative">
+		  <div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
+		  <a
+			href="/game/new?mode=multi"
+			class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center"
+		  >
+			MULTI PLAYER
+		  </a>
+		</div>
+	
+		<!-- TOURNAMENT Button -->
+		<div class="relative">
+		  <div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
+		  <a
+			href="/tournaments"
+			class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center"
+		  >
+			TOURNAMENT
+		  </a>
+		</div>
+	  </div>
+	</main>
+	
+	<!-- Footer -->
+	<footer class="p-4 bg-purple-500 text-center">
+	  <p class="text-sm text-purple-200">
+		&copy; 2025 Team SAFARI, Inc. All rights reserved.
+	  </p>
+	</footer>
+	
+  </div>
+  
+  <!-- User Stats Modal (hidden by default) -->
+  <div
+  id="userStatsModal"
+  class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden"
+>
+  <!-- Main panel -->
+  <div class="bg-purple-200 text-black w-1/2 p-6 rounded relative shadow-lg">
+	<!-- Close button -->
+	<button
+	  id="closeModalBtn"
+	  class="absolute top-2 right-2 text-2xl font-bold text-black hover:text-gray-600"
+	>
+	  &times;
+	</button>
+
+	<!-- Title -->
+	<h2 class="text-xl font-bold mb-6 text-black tracking-wider text-center">
+	  <%= user.username %> score
+	</h2>
+
+	<!-- Stat Items Container -->
+	<div class="space-y-4">
+	  <!-- Total Games -->
+	  <div class="relative">
+		<!-- Green offset -->
+		<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
+		<!-- Purple box -->
+		<div class="relative bg-purple-600 text-white p-3 rounded text-center">
+		  <p class="font-bold">Total Games</p>
+		  <p><%= stats.total_games %></p>
+		</div>
+	  </div>
+
+	  <!-- Wins -->
+	  <div class="relative">
+		<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
+		<div class="relative bg-purple-600 text-white p-3 rounded text-center">
+		  <p class="font-bold">Wins</p>
+		  <p><%= stats.wins %></p>
+		</div>
+	  </div>
+
+	  <!-- Losses -->
+	  <div class="relative">
+		<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
+		<div class="relative bg-purple-600 text-white p-3 rounded text-center">
+		  <p class="font-bold">Losses</p>
+		  <p><%= stats.losses %></p>
+		</div>
+	  </div>
+	</div>
+  </div>
+</div>
+  <script src="/index.js"></script>
