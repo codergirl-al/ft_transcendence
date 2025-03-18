@@ -1,4 +1,4 @@
-DC_FILE := compose/docker-compose.yml
+DC_FILE := docker-compose.yml
 
 up:
 	@echo "Building and starting all containers..."
@@ -12,9 +12,17 @@ stop:
 	@echo "Stopping containers..."
 	@docker compose -f $(DC_FILE) stop
 
-start: ensure-dirs
+start:
 	@echo "Starting containers..."
 	@docker compose -f $(DC_FILE) start
+
+elk:
+	@echo "Starting the log management system..."
+	@docker compose up -d logstash
+
+app:
+	@echo "Starting the app..."
+	@docker compose up -d nginx
 
 status:
 	@echo "Showing status of containers..."
@@ -39,4 +47,4 @@ fclean: down clean
 	@echo "Performing system-wide cleanup of Docker resources..."
 	@docker system prune -f
 
-.PHONY: up down stop start status clean clean-images clean-volumes fclean
+.PHONY: up down stop start status clean clean-images clean-volumes fclean elk app

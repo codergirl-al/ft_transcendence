@@ -11,9 +11,8 @@
     "noImplicitAny": true
   },
   "include": [
-    "src/**/*",
-    "public/**/*"
-, "public"  ],
+    "src/**/*", "public/**/*"
+  ],
   "exclude": [
     "node_modules"
   ]

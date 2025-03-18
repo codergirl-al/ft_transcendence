@@ -11,7 +11,11 @@
 		"build": "npm run build:css && npm run build:ts",
 		"dev:css": "tailwindcss -i ./src/public/css/tailwind.css -o ./src/public/css/output.css --watch",
 		"dev:ts": "tsc -w",
+<<<<<<< HEAD
 		"dev": "concurrently \"tsc --watch \" \"nodemon\""
+=======
+		"dev": "concurrently \"tsc --watch\" \"nodemon\""
+>>>>>>> origin
 	},
 	"keywords": [],
 	"author": "",
@@ -23,6 +27,7 @@
 		"@fastify/static": "^7.0.0",
 		"@fastify/view": "^7.0.0",
 		"@tailwindcss/cli": "^4.0.12",
+<<<<<<< HEAD
 		"ajv": "^7.0.0",
 		"better-sqlite3": "^11.8.1",
 		"concurrently": "^7.6.0",
@@ -32,14 +37,34 @@
 		"env-schema": "^6.0.1",
 		"fastify": "^4.28.1",
 		"winston": "^3.17.0"
+=======
+		"better-sqlite3": "^11.8.1",
+		"ejs": "^3.1.9",
+		"env-schema": "^6.0.1",
+		"fastify": "^4.28.1",
+		"winston": "^3.17.0",
+		"nodemon": "^3.1.9",
+		"ts-node": "^10.9.2",
+		"ajv": "^7.0.0",
+		"concurrently": "^7.6.0"
+>>>>>>> origin
 	},
 	"devDependencies": {
 		"@types/better-sqlite3": "^7.6.12",
 		"@types/ejs": "^3.1.5",
 		"@types/node": "^22.13.8",
+<<<<<<< HEAD
 		"autoprefixer": "^10.4.20",
 		"postcss": "^8.5.3",
 		"tailwindcss": "^4.0.12",
 		"typescript": "^5.8.2"
 	}
 }
+=======
+		"typescript": "^5.8.2",
+		"autoprefixer": "^10.4.20",
+		"postcss": "^8.5.3",
+		"tailwindcss": "^4.0.12"
+	}
+}
+>>>>>>> origin
