@@ -22,7 +22,7 @@ elk:
 
 app:
 	@echo "Starting the app..."
-	@docker compose up -d backend
+	@docker compose up -d nginx
 
 status:
 	@echo "Showing status of containers..."
