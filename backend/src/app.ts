@@ -76,9 +76,6 @@ fastify.addHook("onResponse", async (request: FastifyRequest, reply: FastifyRepl
 	serverLogger.info(`RES ${reply.statusCode}`);
 });
 
-// "res":{"statusCode":304}
-// "req":{"method":"GET","url":"/index.css","hostname":"localhost:3000","remoteAddress":"172.18.0.1","remotePort":62214}
-
 // configure routes (./routes/routes.ts)
 fastify.register(routes);
 

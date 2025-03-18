@@ -203,8 +203,13 @@ export async function callback(request: FastifyRequest, reply: FastifyReply) {
 		request.log.error(err);
 		return reply.code(500).send({ error: 'Login failed' });
 	}
-	const user = await getUserInfo(request);
-	authLogger.info(`User ${user.email} logged in`);
+
+	const api_call = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+		headers: { Authorization: `Bearer ${token}` },
+	});
+	const userInfo = await api_call.json();
+	if (!userInfo.error)
+		authLogger.info(`User ${userInfo.email} logged in`);
 	// Redirect to the dashboard route so that accountDashboard is invoked.
 	return reply.redirect('/api/user/dashboard');
 }
