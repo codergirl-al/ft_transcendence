@@ -25,8 +25,8 @@ if [ "$VAULT_STATUS" = "501" ]; then
   echo "Vault initialized and unsealed."
   echo "UNSEAL_KEY: $UNSEAL_KEY"
   echo "ROOT_TOKEN: $ROOT_TOKEN"
-  echo "$ROOT_TOKEN" > /home/curl_user/root-token.txt
-  echo "$UNSEAL_KEY" > /home/curl_user/unseal-key.txt
+  echo "$ROOT_TOKEN" > /home/curl_user/tokens/root-token.txt
+  echo "$UNSEAL_KEY" > /home/curl_user/tokens/unseal-key.txt
 
   # Enable the KV secrets engine at the 'secret/' path
   echo "Enabling KV secrets engine at 'secret/' path..."

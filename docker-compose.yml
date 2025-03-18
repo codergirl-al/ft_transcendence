@@ -39,7 +39,6 @@ services:
       vault-setup:
         condition: service_healthy
 
-
   # For running elasticsearch
   elasticsearch:
     depends_on:
@@ -187,8 +186,8 @@ services:
     container_name: vault-setup
     volumes:
       - ./vault/vault-init.sh:/home/curl_user/vault-init-unseal.sh
-      - ./vault/root-token.txt:/home/curl_user/root-token.txt
-      - ./vault/unseal-key.txt:/home/curl_user/unseal-key.txt
+      - ./vault/:/home/curl_user/tokens
+      - ./vault/:/home/curl_user/tokens
       - ./token:/home/curl_user/token
       - .env.elk:/home/curl_user/.env.elk
       - .env.backend:/home/curl_user/.env.backend
@@ -216,4 +215,3 @@ services:
     depends_on:
       vault-setup:
         condition: service_healthy
-  
