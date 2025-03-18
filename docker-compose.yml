@@ -83,7 +83,7 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
-  
+
   # For running kibana
   kibana:
     depends_on:
@@ -116,7 +116,7 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
-    
+
   # For running logstash
   logstash:
     depends_on:
@@ -138,7 +138,7 @@ services:
       - ELASTIC_USER=elastic
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - ELASTIC_HOSTS=https://elasticsearch:9200
-    
+
   # For running nginx
   nginx:
     build: ./nginx
@@ -146,7 +146,7 @@ services:
       - "443:443"
     depends_on:
       - backend
-    
+
   # For running vault
   vault:
     build: ./vault
@@ -161,13 +161,13 @@ services:
       test: >
         sh -c "
           echo 'Starting Health Check!' > /proc/1/fd/1;
-          if [ $(curl -s -o /dev/null -w '%{http_code}' http://localhost:8200/v1/sys/health || echo '000') = 501 ]; then
+          if [ $$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8200/v1/sys/health || echo '000') = 501 ]; then
             echo 'OK: Vault is not initialized' > /proc/1/fd/1;
             exit 0;
-          elif [ $(curl -s -o /dev/null -w '%{http_code}' http://localhost:8200/v1/sys/health || echo '000') = 503 ]; then
+          elif [ $$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8200/v1/sys/health || echo '000') = 503 ]; then
             echo 'OK: Vault is sealed' > /proc/1/fd/1;
             exit 0;
-          elif [ $(curl -s -o /dev/null -w '%{http_code}' http://localhost:8200/v1/sys/health || echo '000') = 200 ]; then
+          elif [ $$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8200/v1/sys/health || echo '000') = 200 ]; then
             echo 'OK: Vault is sealed' > /proc/1/fd/1;
             exit 0;
           else
@@ -187,7 +187,6 @@ services:
     volumes:
       - ./vault/vault-init.sh:/home/curl_user/vault-init-unseal.sh
       - ./vault/:/home/curl_user/tokens
-      - ./vault/:/home/curl_user/tokens
       - ./token:/home/curl_user/token
       - .env.elk:/home/curl_user/.env.elk
       - .env.backend:/home/curl_user/.env.backend
@@ -201,7 +200,7 @@ services:
     depends_on:
       vault:
         condition: service_healthy
-  
+
   # For running backend
   backend:
     build: ./backend/
