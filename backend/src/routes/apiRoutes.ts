@@ -1,17 +1,34 @@
 import { FastifyInstance } from "fastify";
-import { newUserForm, newUser, showUser, loggedinUser, editUserForm, editUser, deleteUser, logout } from "../controllers/login.controller";
+import { newUserForm, newUser, showUser, loggedinUser, editUserForm, editUser, deleteUser, logout, accountDashboard } from "../controllers/login.controller";
 import { newGameForm, newGame, showGame, showAllGames, editGameForm, editGame, deleteGame } from "../controllers/game.controller";
 
+// async function userRoutes(userRoutes: FastifyInstance) {
+// 	userRoutes.get("/", loggedinUser);//show logged in user
+// 	userRoutes.post("/", newUser);//add user to db
+// 	userRoutes.get("/:name", showUser);//show data of a user
+// 	userRoutes.post("/:name", editUser);//edit user in db
+// 	userRoutes.get("/:name/delete", deleteUser);//delete user and cookie
+// 	userRoutes.get("/:name/edit", editUserForm);//form to edit user			TMP
+// 	userRoutes.get("/new", newUserForm);//form to create a user				TMP
+// 	userRoutes.get("/logout", logout);//delete user token cookie
+// }
+// In your user route definitions
 async function userRoutes(userRoutes: FastifyInstance) {
-	userRoutes.get("/", loggedinUser);//show logged in user
-	userRoutes.post("/", newUser);//add user to db
-	userRoutes.get("/:name", showUser);//show data of a user
-	userRoutes.post("/:name", editUser);//edit user in db
-	userRoutes.get("/:name/delete", deleteUser);//delete user and cookie
-	userRoutes.get("/:name/edit", editUserForm);//form to edit user			TMP
-	userRoutes.get("/new", newUserForm);//form to create a user				TMP
-	userRoutes.get("/logout", logout);//delete user token cookie
-}
+	// This route checks if a user is logged in and then redirects appropriately.
+	userRoutes.get("/", loggedinUser);
+	
+	// Route to show the dashboard. You can have /dashboard be a separate route.
+	userRoutes.get("/dashboard", accountDashboard);
+	
+	userRoutes.get("/new", newUserForm); // if user not registered, create profile
+	userRoutes.post("/", newUser); // process new profile creation
+	userRoutes.get("/:name", showUser); // (optional) JSON view or different page
+	userRoutes.post("/:name", editUser); // update profile
+	userRoutes.get("/:name/delete", deleteUser);
+	userRoutes.get("/:name/edit", editUserForm);
+	userRoutes.get("/logout", logout);
+  }
+  
 
 async function gameRoutes(gameRoutes: FastifyInstance) {
 	gameRoutes.post("/", newGame);//start a new game
