@@ -23,21 +23,20 @@ networks:
 services:
   # For setting up elasticsearch
   setup:
-    build: ./elk/setup
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     environment:
-      - ELASTIC_PASSWORD=trans01
-      - KIBANA_PASSWORD=trans01
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - KIBANA_PASSWORD=${KIBANA_PASSWORD}
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
-      - ./token/elk-token.txt:/elk-token.txt
+      - ./elk/setup/elasticsearch-setup.sh:/usr/share/elasticsearch/setup-elasticsearch.sh
+    user: "0"
+    command: sh setup-elasticsearch.sh
     healthcheck:
       test: ["CMD-SHELL", "[ -f config/certs/elasticsearch/elasticsearch.crt ]"]
       interval: 1s
       timeout: 5s
       retries: 120
-    depends_on:
-      vault-setup:
-        condition: service_healthy
 
   # For running elasticsearch
   elasticsearch:
@@ -69,11 +68,6 @@ services:
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.license.self_generated.type=${LICENSE}
-    mem_limit: ${ES_MEM_LIMIT}
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
     healthcheck:
       test:
         [
@@ -152,7 +146,6 @@ services:
     build: ./vault
     volumes:
       - vault-data:/vault/file
-      - "./.env:/.env"
     ports:
       - "8200:8200"
     cap_add:
@@ -188,7 +181,6 @@ services:
       - ./vault/vault-init.sh:/home/curl_user/vault-init-unseal.sh
       - ./vault/:/home/curl_user/tokens
       - ./token:/home/curl_user/token
-      - .env.elk:/home/curl_user/.env.elk
       - .env.backend:/home/curl_user/.env.backend
     command: >
       sh -c "apk add jq; /home/curl_user/vault-init-unseal.sh; touch /home/curl_user/ready; sleep 100"

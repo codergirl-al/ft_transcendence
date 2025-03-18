@@ -14,4 +14,4 @@ WORKDIR /app
 COPY . .
 
 # Set the entrypoint
-CMD ["sh", "-c", "source /fetch-secrets.sh && npm run old"]
+CMD ["sh", "-c", "source /fetch-secrets.sh && npm install -g npm@11.2.0 && npm install && npm run dev"]

@@ -8,6 +8,7 @@ export default async function routes(fastify: FastifyInstance) {
 	setFastifyInstance(fastify);
 
 	fastify.get("/login", loginPage);
+	fastify.get("/", getRoot);
 	fastify.get("/google-login/callback", callback);
 	fastify.register(apiRoutes, { prefix: "/api" });
 

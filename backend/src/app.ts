@@ -25,7 +25,7 @@ declare module "fastify" {
 
 // ----------------------------------------------------------------------
 // get fastify
-const fastify: FastifyInstance = Fastify({ logger: true });
+const fastify: FastifyInstance = Fastify();
 
 // PLUGINS---------------------------------------------------------------
 // request body
@@ -39,7 +39,7 @@ fastify.register(fastifyView, {
 });
 // static files
 fastify.register(fastifyStatic, {
-	root: path.join(__dirname, "../src/public"),
+	root: path.join(__dirname, "../dist/public"),
 	prefix: "/",
 });
 // cookies for login
@@ -56,12 +56,13 @@ fastify.register(fastifyOauth2, {
 		auth: fastifyOauth2.GOOGLE_CONFIGURATION,
 	},
 	startRedirectPath: '/google-login',
-	callbackUri: `${process.env.BASE_URL}/google-login/callback`,
+	callbackUri: `${process.env.CALLBACK_URL}`,
 });
 // create database
 fastify.register(dbConnector);
 // only allow authenticated api access
 fastify.addHook("onRequest", async (request: FastifyRequest, reply: FastifyReply) => {
+	serverLogger.info(`REQ ${request.method} ${request.hostname}${request.url}   client ${request.socket.remoteAddress}:${request.socket.remotePort}`);
 	if (request.url.startsWith("/api")) {
 		const userInfo = await getUserInfo(request);
 		// const token = request.cookies.auth_token;
@@ -70,16 +71,24 @@ fastify.addHook("onRequest", async (request: FastifyRequest, reply: FastifyReply
 		}
 	}
 });
+
+fastify.addHook("onResponse", async (request: FastifyRequest, reply: FastifyReply) => {
+	serverLogger.info(`RES ${reply.statusCode}`);
+});
+
+// "res":{"statusCode":304}
+// "req":{"method":"GET","url":"/index.css","hostname":"localhost:3000","remoteAddress":"172.18.0.1","remotePort":62214}
+
 // configure routes (./routes/routes.ts)
 fastify.register(routes);
 
 // SERVER----------------------------------------------------------------
-const port = Number(process.env.PORT) || 3000;
-const address = process.env.ADDRESS;
+const port = Number(process.env.FASTIFY_PORT) || 3000;
+const address = process.env.FASTIFY_ADDRESS;
 fastify.listen({ port: port, host: address }, (err, addr) => {
 	if (err) {
 		fastify.log.error(err);
 		process.exit(1);
 	}
-	serverLogger.info(`transcendence is running in ${process.env.NODE_ENV} mode at ${addr}`);
+	serverLogger.info(`transcendence is running in ${process.env.FASTIFY_NODE_ENV} mode at ${addr}`);
 });

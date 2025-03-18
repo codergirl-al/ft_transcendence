@@ -80,7 +80,7 @@ if [ "$VAULT_STATUS" = "501" ]; then
 else
   # Vault is already initialized
   echo "Vault is already initialized. Skipping initialization and KV secrets addition."
-  UNSEAL_KEY=$(cat /home/curl_user/unseal-key.txt)
+  UNSEAL_KEY=$(cat /home/curl_user/tokens/unseal-key.txt)
   echo "Unsealing Vault..."
   curl -s -X PUT -d "{\"key\": \"$UNSEAL_KEY\"}" http://vault:8200/v1/sys/unseal
 fi
