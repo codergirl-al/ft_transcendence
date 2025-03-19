@@ -1,11 +1,15 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { dbLogger, authLogger } from "../conf/logger";
-import { UserInfo } from "os";
+import fs from 'fs'
+import util from 'util'
+import { pipeline } from 'stream'
+
+const pump = util.promisify(pipeline)
 
 let fastify: FastifyInstance;
 interface LoginRequestBody {
 	username: string;
-	avatar: string;
+	avatarFile: BinaryType;
 }
 export interface RequestParams {
 	name: string;
@@ -128,7 +132,7 @@ export async function editUserForm(request: FastifyRequest, reply: FastifyReply)
 
 // POST /api/user/:name - Edit user in DB
 export async function editUser(request: FastifyRequest, reply: FastifyReply) {
-	const { username, avatar } = request.body as LoginRequestBody;
+	// const { username, avatarFile } = request.body as LoginRequestBody;
 	const { db } = request.server;
 	const { name } = request.params as RequestParams;
 
@@ -145,15 +149,26 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 		return reply.code(401).send({ message: "Unauthorized" });
 	}
 
+	let username = "";
+	const data = request.files();
+	for await (const part of data) {
+		if (part.fieldname == 'username') {
+			let chunks = [];
+			for await (const chunk of part.file) {
+				chunks.push(chunk);
+			}
+			username = Buffer.concat(chunks).toString();
+		} else {
+			await pump(part.file, fs.createWriteStream(`../../uploads/${username}.png`));
+		}
+	}
+
 	const taken = db
 		.prepare('SELECT username FROM users WHERE username = ?')
 		.get(username) as UserData | undefined;
 	if (taken) return reply.redirect(`/api/user/${name}/edit`);
 
-	if (avatar) {
-		const updateStatement = db.prepare('UPDATE users SET username = ?, image_url = ? WHERE username = ?');
-		updateStatement.run(username, avatar, name);
-	} else {
+	if (username) {
 		const updateStatement = db.prepare('UPDATE users SET username = ? WHERE username = ?');
 		updateStatement.run(username, name);
 	}
@@ -233,20 +248,20 @@ export async function logout(request: FastifyRequest, reply: FastifyReply) {
 export async function accountDashboard(request: FastifyRequest, reply: FastifyReply) {
 	const userInfo = await getUserInfo(request);
 	if (!userInfo) {
-		return reply.redirect('/login');
+		return reply.redirect('/');
 	}
 	const { db } = request.server;
-	
+
 	// Modify query to include the user id.
 	const user = db
 		.prepare('SELECT id, username, email, image_url FROM users WHERE email = ?')
 		.get(userInfo.email) as UserData | undefined;
-	
+
 	if (!user) {
 		// If the user isn't found, redirect to create a new profile.
 		return reply.redirect('/api/user/new');
 	}
-	
+
 	// Query user stats using the user's id.
 	const stats = db
 		.prepare("SELECT total_games, wins, losses FROM user_stats WHERE user_id = ?")

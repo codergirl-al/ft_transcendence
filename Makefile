@@ -46,5 +46,6 @@ clean-volumes:
 fclean: down clean
 	@echo "Performing system-wide cleanup of Docker resources..."
 	@docker system prune -f
+	@rm -rf ./backend/src/transcend.db
 
 .PHONY: up down stop start status clean clean-images clean-volumes fclean elk app

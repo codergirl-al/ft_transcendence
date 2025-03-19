@@ -14,12 +14,8 @@ import { newGameForm, newGame, showGame, showAllGames, editGameForm, editGame, d
 // }
 // In your user route definitions
 async function userRoutes(userRoutes: FastifyInstance) {
-	// This route checks if a user is logged in and then redirects appropriately.
-	userRoutes.get("/", loggedinUser);
-	
-	// Route to show the dashboard. You can have /dashboard be a separate route.
 	userRoutes.get("/dashboard", accountDashboard);
-	
+	userRoutes.get("/", loggedinUser);
 	userRoutes.get("/new", newUserForm); // if user not registered, create profile
 	userRoutes.post("/", newUser); // process new profile creation
 	userRoutes.get("/:name", showUser); // (optional) JSON view or different page

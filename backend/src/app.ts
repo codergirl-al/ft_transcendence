@@ -1,4 +1,3 @@
-// import "./types/fastify.d";
 import Fastify, { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 // project files
 import routes from "./routes/routes";
@@ -12,6 +11,7 @@ import fastifyStatic from "@fastify/static";
 import fastifyFormbody from "@fastify/formbody";
 import { fastifyOauth2, OAuth2Namespace } from '@fastify/oauth2';
 import fastifyCookie from "@fastify/cookie";
+import multipart, { MultipartFile } from "@fastify/multipart";
 // utils
 import path from "node:path";
 import ejs from "ejs";
@@ -20,8 +20,10 @@ declare module "fastify" {
 	interface FastifyInstance {
 		googleOAuth2: OAuth2Namespace;
 		db: Database;
+		file?: MultipartFile;
 	}
 }
+
 
 // ----------------------------------------------------------------------
 // get fastify
@@ -29,6 +31,7 @@ const fastify: FastifyInstance = Fastify();
 
 // PLUGINS---------------------------------------------------------------
 // request body
+fastify.register(multipart);
 fastify.register(fastifyFormbody);
 // ejs
 fastify.register(fastifyView, {
@@ -82,10 +85,17 @@ fastify.register(routes);
 // SERVER----------------------------------------------------------------
 const port = Number(process.env.FASTIFY_PORT) || 3000;
 const address = process.env.FASTIFY_ADDRESS;
-fastify.listen({ port: port, host: address }, (err, addr) => {
-	if (err) {
-		fastify.log.error(err);
-		process.exit(1);
-	}
-	serverLogger.info(`transcendence is running in ${process.env.FASTIFY_NODE_ENV} mode at ${addr}`);
-});
+console.log("Starting server...");
+
+try {
+	fastify.listen({ port: port, host: address }, (err, addr) => {
+		if (err) {
+			serverLogger.error(err);
+			process.exit(1);
+		}
+		serverLogger.info(`transcendence is running in ${process.env.FASTIFY_NODE_ENV} mode at ${addr}`);
+	});
+} catch (err) {
+	serverLogger.error(err);
+	process.exit(1);
+}
