@@ -2,6 +2,7 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { apiRoutes } from "./apiRoutes";
 import { getRoot, spa } from "../controllers/root.controller";
 import { setFastifyInstance, loginPage, callback } from "../controllers/login.controller";
+import { newGameForm } from "../controllers/game.controller";
 // import { createProfile, addNewProfile, showProfile, setFastifyInstance, userLogin, loginPage, callback } from "../controllers/login.controller.js";
 
 export default async function routes(fastify: FastifyInstance) {
@@ -10,11 +11,17 @@ export default async function routes(fastify: FastifyInstance) {
 	fastify.get("/login", loginPage);
 	fastify.get("/", getRoot);
 	fastify.get("/google-login/callback", callback);
+	fastify.get("/game/new", newGameForm)
 	fastify.register(apiRoutes, { prefix: "/api" });
 
-	fastify.setNotFoundHandler((request: FastifyRequest, reply: FastifyReply) => {
-		reply.sendFile('index.html');
+	// fastify.setNotFoundHandler((request: FastifyRequest, reply: FastifyReply) => {
+	// 	reply.sendFile('index.html');
+	// });
+	// Catch-all route for SPA (all non-API requests)
+	fastify.get("/*", (request: FastifyRequest, reply: FastifyReply) => {
+		reply.view("index.ejs", { title: "Transcendence" });
 	});
+	// This means that every request (except for API endpoints) returns your index.ejs wrapped in your layout, and then your client‑side code handles the navigation.
 }
 
 // export default async function routes(fastify: FastifyInstance) {

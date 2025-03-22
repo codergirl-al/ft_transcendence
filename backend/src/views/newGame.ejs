@@ -1,7 +1,89 @@
-<form class="game-form" action="/api/game" method="post">
-	<label for="user1">Player 1:</label>
-	<input type="text" id="user1" name="user1" required />
-	<label for="user2">Player 2:</label>
-	<input type="text" id="user2" name="user2" required />
-	<button type="submit">Start!</button>
-</form>
+<!-- newGame.ejs -->
+<div class="flex flex-col items-center">
+	<h1 class="text-3xl font-bold mb-4">Offline Single-Player Pong</h1>
+	<canvas id="gameCanvas" width="800" height="600" class="border-4 border-white"></canvas>
+	<p class="mt-4">Move your mouse to control your paddle.</p>
+  </div>
+  
+  <script>
+	const canvas = document.getElementById('gameCanvas');
+	const ctx = canvas.getContext('2d');
+  
+	// Paddle and ball parameters
+	const PADDLE_WIDTH = 10, PADDLE_HEIGHT = 100;
+	let playerY = 250, aiY = 250;
+	let ballX = canvas.width / 2, ballY = canvas.height / 2;
+	let ballSpeedX = 5, ballSpeedY = 3;
+	const BALL_RADIUS = 8;
+  
+	// Mouse control for the player's paddle
+	canvas.addEventListener('mousemove', evt => {
+	  const rect = canvas.getBoundingClientRect();
+	  const mouseY = evt.clientY - rect.top;
+	  playerY = mouseY - (PADDLE_HEIGHT / 2);
+	});
+  
+	function gameLoop() {
+	  update();
+	  draw();
+	  requestAnimationFrame(gameLoop);
+	}
+  
+	function update() {
+	  // Move ball
+	  ballX += ballSpeedX;
+	  ballY += ballSpeedY;
+  
+	  // Bounce off top and bottom
+	  if (ballY < 0 || ballY > canvas.height) ballSpeedY = -ballSpeedY;
+  
+	  // Collision with left paddle
+	  if (ballX < PADDLE_WIDTH) {
+		if (ballY > playerY && ballY < playerY + PADDLE_HEIGHT) {
+		  ballSpeedX = -ballSpeedX;
+		} else {
+		  resetBall();
+		}
+	  }
+	  // Collision with right paddle (AI)
+	  if (ballX > canvas.width - PADDLE_WIDTH) {
+		if (ballY > aiY && ballY < aiY + PADDLE_HEIGHT) {
+		  ballSpeedX = -ballSpeedX;
+		} else {
+		  resetBall();
+		}
+	  }
+  
+	  // Simple AI for right paddle
+	  const aiCenter = aiY + (PADDLE_HEIGHT / 2);
+	  if (aiCenter < ballY - 35) aiY += 6;
+	  else if (aiCenter > ballY + 35) aiY -= 6;
+	}
+  
+	function draw() {
+	  // Clear canvas
+	  ctx.fillStyle = "#000";
+	  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+	  // Draw paddles
+	  ctx.fillStyle = "#fff";
+	  ctx.fillRect(0, playerY, PADDLE_WIDTH, PADDLE_HEIGHT);
+	  ctx.fillRect(canvas.width - PADDLE_WIDTH, aiY, PADDLE_WIDTH, PADDLE_HEIGHT);
+  
+	  // Draw the ball
+	  ctx.beginPath();
+	  ctx.arc(ballX, ballY, BALL_RADIUS, 0, Math.PI * 2);
+	  ctx.fillStyle = "#ff0";
+	  ctx.fill();
+	}
+  
+	function resetBall() {
+	  ballX = canvas.width / 2;
+	  ballY = canvas.height / 2;
+	  ballSpeedX = -ballSpeedX;
+	  ballSpeedY = 3;
+	}
+  
+	requestAnimationFrame(gameLoop);
+  </script>
+  

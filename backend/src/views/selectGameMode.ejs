@@ -1,0 +1,62 @@
+<!-- selectGameMode.ejs -->
+<div class="flex flex-col items-center space-y-8">
+	<h1 class="text-3xl font-bold">Select Your Game Mode</h1>
+	<!-- Button to open the modal -->
+	<button id="openNewGameModal" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700 transition-colors">
+	  New Game
+	</button>
+  </div>
+  
+  <!-- New Game Mode Selection Modal (hidden by default) -->
+  <div id="newGameModal" class="fixed inset-0 flex w-1/2 h-1/2 bg-purple-200 justify-center bg-black bg-opacity-50 hidden">
+	<div class="bg-purple-200 text-black p-6 relative shadow-lg">
+	  <!-- Close button -->
+	  <button id="closeNewGameModal" class="absolute top-2 right-2 text-2xl font-bold hover:text-gray-600">&times;</button>
+	  <h2 class="text-xl font-bold mb-4 text-center">Select Game Mode</h2>
+	  
+	  <!-- Single Player Options -->
+	  <div class="mb-6">
+		<h3 class="text-lg font-semibold mb-2 text-center">Single Player</h3>
+		<div class="flex justify-around">
+		  <a href="/game/new?mode=single&connection=offline" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors">
+			Offline
+		  </a>
+		  <a href="/game/new?mode=single&connection=online" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors">
+			Online
+		  </a>
+		</div>
+	  </div>
+	  
+	  <!-- Multi Player Options -->
+	  <div>
+		<h3 class="text-lg font-semibold mb-2 text-center">Multi Player</h3>
+		<div class="flex justify-around">
+		  <a href="/game/new?mode=multi&connection=offline" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors">
+			Offline
+		  </a>
+		  <a href="/game/new?mode=multi&connection=online" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors">
+			Online
+		  </a>
+		</div>
+	  </div>
+	</div>
+  </div>
+  
+  <!-- JavaScript to handle modal open/close -->
+  <script>
+	document.addEventListener('DOMContentLoaded', () => {
+	  const openModalBtn = document.getElementById('openNewGameModal');
+	  const newGameModal = document.getElementById('newGameModal');
+	  const closeModalBtn = document.getElementById('closeNewGameModal');
+  
+	  openModalBtn.addEventListener('click', () => {
+		newGameModal.classList.remove('hidden');
+	  });
+  
+	  closeModalBtn.addEventListener('click', () => {
+		newGameModal.classList.add('hidden');
+	  });
+	});
+  </script>
+  
+  <script src="index.js"></script>
