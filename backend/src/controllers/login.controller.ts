@@ -101,7 +101,6 @@ export async function newUser(request: FastifyRequest, reply: FastifyReply) {
 	insertStatement.run(username, userInfo.email, userInfo.picture);
 	authLogger.info(`Created new user ${username}`);
 	dbLogger.info(`insert into users username = ${username}`);
-	// return reply.redirect(`/api/user/${username}`);
 	return reply.redirect('/api/user/dashboard');
 }
 
@@ -149,32 +148,28 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 		return reply.code(401).send({ message: "Unauthorized" });
 	}
 
-	let username = "";
 	const data = request.files();
 	for await (const part of data) {
 		if (part.fieldname == 'username') {
-			let chunks = [];
-			for await (const chunk of part.file) {
-				chunks.push(chunk);
-			}
-			username = Buffer.concat(chunks).toString();
+			console.log(part);
 		} else {
-			await pump(part.file, fs.createWriteStream(`../../uploads/${username}.png`));
+			const filename = __dirname + '/../../dist/public/uploads/' + user.id + '.png';
+			await pump(part.file, fs.createWriteStream(filename, { flags: 'w' }));
 		}
 	}
 
-	const taken = db
-		.prepare('SELECT username FROM users WHERE username = ?')
-		.get(username) as UserData | undefined;
-	if (taken) return reply.redirect(`/api/user/${name}/edit`);
+	// const taken = db
+	// 	.prepare('SELECT username FROM users WHERE username = ?')
+	// 	.get(username) as UserData | undefined;
+	// if (taken) return reply.redirect(`/api/user/${name}/edit`);
 
-	if (username) {
-		const updateStatement = db.prepare('UPDATE users SET username = ? WHERE username = ?');
-		updateStatement.run(username, name);
-	}
+	// if (username) {
+	// 	const updateStatement = db.prepare('UPDATE users SET username = ? WHERE username = ?');
+	// 	updateStatement.run(username, name);
+	// }
 	authLogger.info(`Updated user data of ${userInfo.email}`);
 	dbLogger.info(`update users where email = ${userInfo.email}`);
-	return reply.redirect(`/api/user/${username}`);
+	return reply.redirect(`/api/user/${name}`);
 }
 
 // GET /api/user/:name/delete - Delete user and clear cookie
