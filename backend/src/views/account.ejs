@@ -18,7 +18,7 @@
 		</div>
 		<!-- Edit Profile & Logout -->
 		<nav class="space-x-4">
-			<a href="/api/user/<%= user.username %>/edit"
+			<a href="/test/editUser/<%= user.username %>"
 				class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">
 				Edit Profile
 			</a>
@@ -38,7 +38,7 @@
 			<!-- SINGLE PLAYER Button -->
 			<div class="relative">
 				<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-				<a href="/game/new?mode=single"
+				<a href="/api/game/new"
 					class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
 					SINGLE PLAYER
 				</a>
@@ -47,7 +47,7 @@
 			<!-- MULTI PLAYER Button -->
 			<div class="relative">
 				<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-				<a href="/game/new?mode=multi"
+				<a href="/api/game/new"
 					class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
 					MULTI PLAYER
 				</a>

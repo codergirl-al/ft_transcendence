@@ -24,7 +24,6 @@ declare module "fastify" {
 	}
 }
 
-
 // ----------------------------------------------------------------------
 // get fastify
 const fastify: FastifyInstance = Fastify();

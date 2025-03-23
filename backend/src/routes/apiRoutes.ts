@@ -18,13 +18,13 @@ async function userRoutes(userRoutes: FastifyInstance) {
 	userRoutes.get("/", loggedinUser);
 	userRoutes.get("/new", newUserForm); // if user not registered, create profile
 	userRoutes.post("/", newUser); // process new profile creation
-	userRoutes.get("/:name", showUser); // (optional) JSON view or different page
-	userRoutes.post("/:name", editUser); // update profile
-	userRoutes.get("/:name/delete", deleteUser);
-	userRoutes.get("/:name/edit", editUserForm);
+	userRoutes.get("/:id", showUser); // (optional) JSON view or different page
+	userRoutes.post("/:id", editUser); // update profile
+	userRoutes.get("/:id/delete", deleteUser);
+	userRoutes.get("/:id/edit", editUserForm);
 	userRoutes.get("/logout", logout);
-  }
-  
+}
+
 
 async function gameRoutes(gameRoutes: FastifyInstance) {
 	gameRoutes.post("/", newGame);//start a new game

@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { dbLogger, authLogger } from "../conf/logger";
+import { RequestParams, UserData, UserRequestBody } from "../types/types"
 import fs from 'fs'
 import util from 'util'
 import { pipeline } from 'stream'
@@ -7,20 +8,8 @@ import { pipeline } from 'stream'
 const pump = util.promisify(pipeline)
 
 let fastify: FastifyInstance;
-interface LoginRequestBody {
-	username: string;
-	avatarFile: BinaryType;
-}
-export interface RequestParams {
-	name: string;
-	id: string;
-}
-export interface UserData {
-	id: Number;
-	username: string;
-	image_url: string;
-	email: string;
-}
+
+// ---------------------------------------------------------------------------------------------------
 
 export function setFastifyInstance(fastifyInstance: FastifyInstance) {
 	fastify = fastifyInstance;
@@ -43,53 +32,26 @@ export async function getUserInfo(request: FastifyRequest) {
 
 // ---------------------------------------------------------------------------------------------------
 
-// GET /api/user/ - Check logged-in user and redirect accordingly
-export async function loggedinUser(request: FastifyRequest, reply: FastifyReply) {
-	const userInfo = await getUserInfo(request);
-	const { db } = request.server;
-	const user = db
-		.prepare('SELECT username FROM users WHERE email = ?')
-		.get(userInfo.email) as UserData | undefined;
-	if (!user) {
-		return reply.redirect("/api/user/new");
-	}
-	return reply.redirect(`/api/user/${user.username}`);
-}
-
-// GET /api/user/:name - Show data of a user
+// GET /api/user/:id - Show data of a user
 export async function showUser(request: FastifyRequest, reply: FastifyReply) {
-	const { name } = request.params as RequestParams;
+	const { id } = request.params as RequestParams;
 	const { db } = request.server;
 	const user = db
 		.prepare('SELECT username, email, image_url FROM users WHERE username = ?')
-		.get(name) as UserData | undefined;
+		.get(id) as UserData | undefined;
 	if (!user) {
 		return reply.code(404).send({ message: "user not found" });
 	}
-	dbLogger.info(`select users where username = ${name}`);
+	dbLogger.info(`select users where username = ${id}`);
 	return reply.code(200).send(user);
-}
-
-// GET /api/user/new - Form to create a new user
-export async function newUserForm(request: FastifyRequest, reply: FastifyReply) {
-	const userInfo = await getUserInfo(request);
-	const { db } = request.server;
-	const user = db
-		.prepare('SELECT username FROM users WHERE email = ?')
-		.get(userInfo.email) as UserData | undefined;
-
-	if (user) {
-		return reply.code(400).send({ message: "a user with this email already exists" });
-	}
-	return reply.view("createProfile.ejs", { title: "New Profile", email: userInfo.email, status: "enter data" });
 }
 
 // POST /api/user/ - Add new user to the DB
 export async function newUser(request: FastifyRequest, reply: FastifyReply) {
-	const { username } = request.body as LoginRequestBody;
+	const { username } = request.body as UserRequestBody;
 	const { db } = request.server;
 	const userInfo = await getUserInfo(request);
-	if (!userInfo) return reply.redirect("/login");
+	if (!userInfo) return reply.code(401).send({ success: false, })
 
 	const user = db
 		.prepare('SELECT username FROM users WHERE username = ?')
@@ -104,47 +66,22 @@ export async function newUser(request: FastifyRequest, reply: FastifyReply) {
 	return reply.redirect('/api/user/dashboard');
 }
 
-// GET /api/user/:name/edit - Form to edit user
-export async function editUserForm(request: FastifyRequest, reply: FastifyReply) {
-	const { db } = request.server;
-	const { name } = request.params as RequestParams;
-
-	const user = db
-		.prepare('SELECT * FROM users WHERE username = ?')
-		.get(name) as UserData | undefined;
-	if (!user) {
-		return reply.code(404).send({ message: "the user with this name was not found" });
-	}
-
-	const userInfo = await getUserInfo(request);
-	const allowed = db
-		.prepare('SELECT username FROM users WHERE email = ?')
-		.get(userInfo.email) as UserData | undefined;
-	if (!allowed) {
-		return reply.redirect("/api/user/new");
-	} else if (name !== allowed.username) {
-		authLogger.warn(`Attempt to request update of user data of ${name} by ${userInfo.email}`);
-		return reply.code(401).send({ message: "Unauthorized" });
-	}
-	return reply.view("editProfile.ejs", { title: "Edit Profile", user: user, status: "click submit to save changes" });
-}
-
 // POST /api/user/:name - Edit user in DB
 export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 	// const { username, avatarFile } = request.body as LoginRequestBody;
 	const { db } = request.server;
-	const { name } = request.params as RequestParams;
+	const { id } = request.params as RequestParams;
 
 	const user = db
 		.prepare('SELECT * FROM users WHERE username = ?')
-		.get(name) as UserData | undefined;
+		.get(id) as UserData | undefined;
 	if (!user) {
 		return reply.code(404).send({ message: "User not found" });
 	}
 
 	const userInfo = await getUserInfo(request);
 	if (user.email !== userInfo.email) {
-		authLogger.warn(`Attempt to update user data of ${name} by ${userInfo.email}`);
+		authLogger.warn(`Attempt to update user data of ${id} by ${userInfo.email}`);
 		return reply.code(401).send({ message: "Unauthorized" });
 	}
 
@@ -169,31 +106,31 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 	// }
 	authLogger.info(`Updated user data of ${userInfo.email}`);
 	dbLogger.info(`update users where email = ${userInfo.email}`);
-	return reply.redirect(`/api/user/${name}`);
+	return reply.redirect(`/api/user/${id}`);
 }
 
 // GET /api/user/:name/delete - Delete user and clear cookie
 export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
-	const { name } = request.params as RequestParams;
+	const { id } = request.params as RequestParams;
 	const { db } = request.server;
 	const userInfo = await getUserInfo(request);
 	const user = db
 		.prepare("SELECT email FROM users WHERE username = ?")
-		.get(name) as UserData | undefined;
+		.get(id) as UserData | undefined;
 
 	if (!user) {
-		authLogger.info(`Attempt to delete nonexistent user ${name}`);
+		authLogger.info(`Attempt to delete nonexistent user ${id}`);
 		return reply.code(400).send({ message: "user does not exist" });
 	}
 	if (userInfo.email !== user.email) {
-		authLogger.warn(`Attempt to delete user ${name} by ${userInfo.email}`);
+		authLogger.warn(`Attempt to delete user ${id} by ${userInfo.email}`);
 		return reply.code(401).send({ message: "Unauthorized" });
 	}
 
 	const deleteStatement = db.prepare("DELETE FROM users WHERE username = ?");
-	deleteStatement.run(name);
-	authLogger.info(`User ${name} deleted`);
-	dbLogger.info(`delete users where username = ${name}`);
+	deleteStatement.run(id);
+	authLogger.info(`User ${id} deleted`);
+	dbLogger.info(`delete users where username = ${id}`);
 
 	reply.clearCookie('auth_token');
 	return reply.redirect("/");
@@ -224,11 +161,6 @@ export async function callback(request: FastifyRequest, reply: FastifyReply) {
 	return reply.redirect('/api/user/dashboard');
 }
 
-// GET /login - Render the login page
-export async function loginPage(request: FastifyRequest, reply: FastifyReply) {
-	return reply.view("g_login.ejs", { title: "Login" });
-}
-
 // GET /api/user/logout - Logout and clear cookie
 export async function logout(request: FastifyRequest, reply: FastifyReply) {
 	const user = await getUserInfo(request);
@@ -238,8 +170,60 @@ export async function logout(request: FastifyRequest, reply: FastifyReply) {
 }
 
 // ---------------------------------------------------------------------------------------------------
-// GET /api/user/dashboard - Render the account dashboard
 
+// TEST		GET /test/editUser/:name - Form to edit user
+export async function editUserForm(request: FastifyRequest, reply: FastifyReply) {
+	const { db } = request.server;
+	const { id } = request.params as RequestParams;
+
+	const user = db
+		.prepare('SELECT * FROM users WHERE username = ?')
+		.get(id) as UserData | undefined;
+	if (!user) {
+		return reply.code(404).send({ message: "the user with this name was not found" });
+	}
+
+	const userInfo = await getUserInfo(request);
+	const allowed = db
+		.prepare('SELECT username FROM users WHERE email = ?')
+		.get(userInfo.email) as UserData | undefined;
+	if (!allowed) {
+		return reply.redirect("/api/user/new");
+	} else if (id !== allowed.username) {
+		authLogger.warn(`Attempt to request update of user data of ${name} by ${userInfo.email}`);
+		return reply.code(401).send({ message: "Unauthorized" });
+	}
+	return reply.view("editProfile.ejs", { title: "Edit Profile", user: user, status: "click submit to save changes" });
+}
+
+// TEST		GET /test/newUser - Form to create a new user
+export async function newUserForm(request: FastifyRequest, reply: FastifyReply) {
+	const userInfo = await getUserInfo(request);
+	const { db } = request.server;
+	const user = db
+		.prepare('SELECT username FROM users WHERE email = ?')
+		.get(userInfo.email) as UserData | undefined;
+
+	if (user) {
+		return reply.code(400).send({ message: "a user with this email already exists" });
+	}
+	return reply.view("createProfile.ejs", { title: "New Profile", email: userInfo.email, status: "enter data" });
+}
+
+// TEST		GET /test/currentuser/ - Check logged-in user and redirect accordingly
+export async function loggedinUser(request: FastifyRequest, reply: FastifyReply) {
+	const userInfo = await getUserInfo(request);
+	const { db } = request.server;
+	const user = db
+		.prepare('SELECT username FROM users WHERE email = ?')
+		.get(userInfo.email) as UserData | undefined;
+	if (!user) {
+		return reply.redirect("/test/newUser");
+	}
+	return reply.redirect(`/api/user/${user.username}`);
+}
+
+// TEST		GET /test/dashboard - Render the account dashboard
 export async function accountDashboard(request: FastifyRequest, reply: FastifyReply) {
 	const userInfo = await getUserInfo(request);
 	if (!userInfo) {

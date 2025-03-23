@@ -2,7 +2,7 @@ import fp from "fastify-plugin";
 import Database from "better-sqlite3";
 import { FastifyInstance } from "fastify";
 import { dbLogger } from "./logger";
-import { UserData } from "../controllers/login.controller";
+import { UserData } from "../types/types";
 
 async function dbConnector(fastify: FastifyInstance) {
 	const dbFile: string = process.env.FASTIFY_DB_FILE || "../transcend.db";
