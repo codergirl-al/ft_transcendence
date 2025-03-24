@@ -20,6 +20,7 @@
 	"dependencies": {
 		"@fastify/cookie": "^6.0.0",
 		"@fastify/formbody": "^7.0.0",
+		"@fastify/jwt": "^9.1.0",
 		"@fastify/multipart": "^8.0.0",
 		"@fastify/oauth2": "^7.0.0",
 		"@fastify/static": "^7.0.0",

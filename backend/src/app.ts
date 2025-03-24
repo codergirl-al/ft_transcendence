@@ -4,6 +4,7 @@ import routes from "./routes/routes";
 import dbConnector from "./conf/db";
 import { serverLogger } from "./conf/logger";
 import { getUserInfo } from "./controllers/login.controller";
+import { sendResponse } from "./controllers/root.controller";
 // fastify plugins
 import fastifyView from "@fastify/view";
 import { Database } from "better-sqlite3";
@@ -12,6 +13,7 @@ import fastifyFormbody from "@fastify/formbody";
 import { fastifyOauth2, OAuth2Namespace } from '@fastify/oauth2';
 import fastifyCookie from "@fastify/cookie";
 import multipart, { MultipartFile } from "@fastify/multipart";
+import fastifyJWT from "@fastify/jwt";
 // utils
 import path from "node:path";
 import ejs from "ejs";
@@ -29,8 +31,10 @@ declare module "fastify" {
 const fastify: FastifyInstance = Fastify();
 
 // PLUGINS---------------------------------------------------------------
-// request body
+
+// uploads
 fastify.register(multipart);
+// request body
 fastify.register(fastifyFormbody);
 // ejs
 fastify.register(fastifyView, {
@@ -69,7 +73,7 @@ fastify.addHook("onRequest", async (request: FastifyRequest, reply: FastifyReply
 		const userInfo = await getUserInfo(request);
 		// const token = request.cookies.auth_token;
 		if (!userInfo) {
-			reply.code(401).send({ error: "Unauthorized" });
+			return sendResponse(reply, 401, undefined, "Unauthorized");
 		}
 	}
 });

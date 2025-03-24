@@ -9,4 +9,7 @@ declare module "fastify" {
 		db: Database;
 		file?: MultipartFile;
 	}
+	interface FastifyRequest {
+		body: 
+	}
 }

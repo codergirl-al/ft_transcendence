@@ -20,6 +20,10 @@ unimplemented:
 > ...
 
 -- todo --
-> ensure json in api
-> handle image uploads
+> JWT						<<<<< CURRENT
+> prevalidation function (auth)
+> form data in multipart handling
+> session for user data
+> authorization levels (none, user, admin)
+> 2FA
 > 

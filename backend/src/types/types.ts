@@ -1,16 +1,14 @@
+
+// standart api reply format
+export interface ApiReply<T> {
+	success: boolean;
+	error?: string;
+	data?: T;
+}
+
 // game.id or user.username inside uri
 export interface RequestParams {
 	id: string;
-}
-
-// standart api reply format
-export interface ApiReply {
-	success: boolean;
-	message: string;
-	content: {
-		user?: UserData;
-		game?: GameData;
-	};
 }
 
 // layout of user table
