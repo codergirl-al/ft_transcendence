@@ -1,5 +1,5 @@
-import { FastifyInstance } from "fastify";
-import { newUser, showUser, editUser, deleteUser } from "../controllers/login.controller";
+import fastify, { FastifyInstance } from "fastify";
+import { newUser, showUser, editUser, deleteUser, logout } from "../controllers/login.controller";
 import { newGame, showGame, showAllGames, editGame, deleteGame } from "../controllers/game.controller";
 import { sendResponse } from "../controllers/root.controller";
 
@@ -21,6 +21,7 @@ const gameParamSchema = {
 
 async function userRoutes(userRoutes: FastifyInstance) {
 	userRoutes.post("/", { // process new profile creation
+		preValidation: userRoutes.authenticate,
 		schema: {
 			body: {
 				type: "object",
@@ -31,13 +32,14 @@ async function userRoutes(userRoutes: FastifyInstance) {
 	}, newUser);
 	userRoutes.get("/:id", { schema: { params: userParamSchema } }, showUser); // get data of user
 	userRoutes.post("/:id", { // update profile
-		preValidation: async (request, reply) => {
+		preValidation: [async (request, reply) => {
 			if (!request.isMultipart())
 				return sendResponse(reply, 400, undefined, "Invalid request type. expected multipart/form-data");
-		},
+		}, userRoutes.authenticate],
 		schema: { params: userParamSchema }
 	}, editUser);
-	userRoutes.get("/:id/delete", { schema: { params: userParamSchema } }, deleteUser);
+	userRoutes.get("/logout", logout);
+	userRoutes.get("/:id/delete", { preValidation: userRoutes.authenticate, schema: { params: userParamSchema } }, deleteUser);
 }
 
 async function gameRoutes(gameRoutes: FastifyInstance) {

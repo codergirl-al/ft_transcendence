@@ -23,7 +23,7 @@ export async function showUser(request: FastifyRequest, reply: FastifyReply) {
 	const { id } = request.params as RequestParams;
 	const { db } = request.server;
 	const user = db
-		.prepare('SELECT username, email, image_url FROM users WHERE username = ?')
+		.prepare('SELECT username, email FROM users WHERE username = ?')
 		.get(id) as UserData | undefined;
 	if (!user)
 		return sendResponse(reply, 404, undefined, "User not found");
@@ -33,9 +33,10 @@ export async function showUser(request: FastifyRequest, reply: FastifyReply) {
 }
 
 // POST /api/user/ - Add new user to the DB
-export async function newUser(request: FastifyRequest<{ Body: UserRequestBody }>, reply: FastifyReply) {
-	const { username, email } = request.body;
+export async function newUser(request: FastifyRequest, reply: FastifyReply) {
+	const { username } = request.body as UserRequestBody;
 	const { db } = request.server;
+	const { email } = request.user as TokenData;
 
 	const user = db
 		.prepare('SELECT username FROM users WHERE username = ?')
@@ -57,9 +58,9 @@ export async function newUser(request: FastifyRequest<{ Body: UserRequestBody }>
 }
 
 // POST /api/user/:name - Edit user in DB
-export async function editUser(request: FastifyRequest<{ Params: RequestParams }>, reply: FastifyReply) {
+export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 	const { db } = request.server;
-	const { id } = request.params;
+	const { id } = request.params as RequestParams;
 	const { email } = request.user as TokenData;
 
 	const user = db
@@ -140,19 +141,22 @@ export async function callback(request: FastifyRequest, reply: FastifyReply) {
 
 	const user = db.prepare("SELECT * FROM users WHERE email = ?").get(userInfo.email) as UserData | undefined;
 	const jwtPayload = { email: userInfo.email, role: "user" };
-	const jwtToken = await reply.jwtSign(jwtPayload);
-	if (!user)
-		return reply.redirect("/test/newUser");//CHECK
+	const jwtToken = fastify.jwt.sign(jwtPayload);
+
+	reply.setCookie("auth_token", jwtToken, { httpOnly: true, secure: true, sameSite: 'strict', path: '/' });
+	// if (!user)
+	// 	return reply.redirect("/test/newUser");//CHECK
 	return sendResponse(reply, 200, jwtToken);
 }
 
 // GET /api/user/logout - Logout and clear cookie		OLD
-// export async function logout(request: FastifyRequest, reply: FastifyReply) {
-// const user = await getUserInfo(request);
-// reply.clearCookie('auth_token');
-// authLogger.info(`User ${user.email} logged out`);
-// return sendResponse(reply, 200);
-// }
+export async function logout(request: FastifyRequest, reply: FastifyReply) {
+	// const user = await getUserInfo(request);
+	reply.clearCookie('auth_token');
+	// reply.clearCookie('oauth2-redirect-state');
+	// authLogger.info(`User ${user.email} logged out`);
+	return sendResponse(reply, 200);
+}
 
 // ---------------------------------------------------------------------------------------------------
 

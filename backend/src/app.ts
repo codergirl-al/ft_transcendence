@@ -22,7 +22,8 @@ declare module "fastify" {
 		googleOAuth2: OAuth2Namespace;
 		db: Database;
 		file?: MultipartFile;
-		user: TokenData;
+		user?: TokenData;
+		authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
 	}
 }
 
@@ -34,9 +35,13 @@ const fastify: FastifyInstance = Fastify();
 // JWT
 fastify.register(fastifyJWT, {
 	secret: process.env.JWT_SECRET!,
-	sign: { expiresIn: "1h" }
+	sign: { expiresIn: "1h" },
+	cookie: {
+		cookieName: 'auth_token',
+		signed: false
+	}
 });
-fastify.decorate("authenticate", async (request: FastifyRequest, reply: FastifyReply) => {
+fastify.decorate("authenticate", async function (request: FastifyRequest, reply: FastifyReply) {
 	try {
 		await request.jwtVerify();
 	} catch (err) {
