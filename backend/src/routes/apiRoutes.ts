@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { newUserForm, newUser, showUser, loggedinUser, editUserForm, editUser, deleteUser, logout, accountDashboard } from "../controllers/login.controller";
-import { newGameForm, newGame, showGame, showAllGames, editGameForm, editGame, deleteGame } from "../controllers/game.controller";
+import { newGameForm, showGame, showAllGames, editGameForm, editGame, deleteGame } from "../controllers/game.controller";
 
 // async function userRoutes(userRoutes: FastifyInstance) {
 // 	userRoutes.get("/", loggedinUser);//show logged in user
@@ -32,7 +32,7 @@ async function userRoutes(userRoutes: FastifyInstance) {
 
 async function gameRoutes(gameRoutes: FastifyInstance) {
 	gameRoutes.get("/new", newGameForm);//form to start a new game			TMP
-	gameRoutes.post("/", newGame);//start a new game
+	// gameRoutes.post("/", newGame);//start a new game
 	gameRoutes.get("/", showAllGames);//show game data
 	gameRoutes.get("/:id", showGame);//show game data
 	gameRoutes.post("/:id", editGame);//edit game data

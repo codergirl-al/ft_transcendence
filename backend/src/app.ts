@@ -25,7 +25,7 @@ declare module "fastify" {
 
 // ----------------------------------------------------------------------
 // get fastify
-const fastify: FastifyInstance = Fastify();
+const fastify: FastifyInstance = Fastify({ logger: true });
 
 // PLUGINS---------------------------------------------------------------
 // request body

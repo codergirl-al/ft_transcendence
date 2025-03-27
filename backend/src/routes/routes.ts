@@ -3,7 +3,7 @@ import { apiRoutes } from "./apiRoutes";
 import { getRoot, spa } from "../controllers/root.controller";
 import { setFastifyInstance, loginPage, callback } from "../controllers/login.controller";
 // import { createProfile, addNewProfile, showProfile, setFastifyInstance, userLogin, loginPage, callback } from "../controllers/login.controller.js";
-import { newGame, newGameForm } from "../controllers/game.controller";
+import { newGameForm } from "../controllers/game.controller";
 
 export default async function routes(fastify: FastifyInstance) {
 	setFastifyInstance(fastify);
@@ -12,7 +12,7 @@ export default async function routes(fastify: FastifyInstance) {
 	fastify.get("/", getRoot);
 	fastify.get("/google-login/callback", callback);
 	fastify.get("/game/new", newGameForm);
-	fastify.post("/api/game/", newGame);
+	// fastify.post("/api/game/", newGame);
 	fastify.register(apiRoutes, { prefix: "/api" });
 
 	fastify.setNotFoundHandler((request: FastifyRequest, reply: FastifyReply) => {

@@ -25,23 +25,23 @@ export interface GameData {
 }
 
 // POST /api/game
-export async function newGame(request: FastifyRequest, reply: FastifyReply) {
-	const { user1, user2 } = request.body as GameRequestBody;
-	const { db } = request.server;
+// export async function newGame(request: FastifyRequest, reply: FastifyReply) {
+// 	// const { user1, user2 } = request.body as GameRequestBody;
+// 	// const { db } = request.server;
 
-	const data = db.prepare("SELECT id, username FROM users WHERE username = ? OR username = ?").all(user1, user2) as UserData[];
-	console.log("Submitted users:", user1, user2);
-	console.log("Query result:", data);
-	if (data.length < 2) {
-		return reply.code(400).send({ message: "Invalid Username" });
-	}
+// 	// const data = db.prepare("SELECT id, username FROM users WHERE username = ? OR username = ?").all(user1, user2) as UserData[];
+// 	// console.log("Submitted users:", user1, user2);
+// 	// console.log("Query result:", data);
+// 	// if (data.length < 2) {
+// 	// 	return reply.code(400).send({ message: "Invalid Username" });
+// 	// }
 
-	const insertStatement = db.prepare(
-		"INSERT INTO games (user_id1, user_id2) VALUES (?, ?)"
-	);
-	const info = insertStatement.run(data[0].id, data[1].id);
-	return reply.redirect(`/api/game/${info.lastInsertRowid}`);
-}
+// 	// const insertStatement = db.prepare(
+// 	// 	"INSERT INTO games (user_id1, user_id2) VALUES (?, ?)"
+// 	// );
+// 	// const info = insertStatement.run(data[0].id, data[1].id);
+// 	// return reply.redirect(`/api/game/${info.lastInsertRowid}`);
+// }
 
 // POST /api/game/:id
 export async function editGame(request: FastifyRequest, reply: FastifyReply) {
@@ -80,7 +80,7 @@ export async function deleteGame(request: FastifyRequest, reply: FastifyReply) {
 // GET /api/game/new
 export async function newGameForm(request: FastifyRequest, reply: FastifyReply) {
 	const mode = (request.query as any).mode || "single";
-	return reply.view("newGame.ejs", { title: "new Game", mode });
+	return reply.view("game.ejs", { title: "new Game", mode });
 }
 
 // GET /api/game/:id/edit
