@@ -31,12 +31,12 @@ async function userRoutes(userRoutes: FastifyInstance) {
   
 
 async function gameRoutes(gameRoutes: FastifyInstance) {
+	gameRoutes.get("/new", newGameForm);//form to start a new game			TMP
 	gameRoutes.post("/", newGame);//start a new game
 	gameRoutes.get("/", showAllGames);//show game data
 	gameRoutes.get("/:id", showGame);//show game data
 	gameRoutes.post("/:id", editGame);//edit game data
 	gameRoutes.get("/:id/delete", deleteGame);//delete game related data
-	gameRoutes.get("/new", newGameForm);//form to start a new game			TMP
 	gameRoutes.get("/:id/edit", editGameForm);//form to edit game stats		TMP
 }
 

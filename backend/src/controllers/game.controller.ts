@@ -30,16 +30,16 @@ export async function newGame(request: FastifyRequest, reply: FastifyReply) {
 	const { db } = request.server;
 
 	const data = db.prepare("SELECT id, username FROM users WHERE username = ? OR username = ?").all(user1, user2) as UserData[];
+	console.log("Submitted users:", user1, user2);
+	console.log("Query result:", data);
 	if (data.length < 2) {
-		dbLogger.info(`New Game failed: ${user1} or ${user2} not found`);
 		return reply.code(400).send({ message: "Invalid Username" });
 	}
-	
+
 	const insertStatement = db.prepare(
 		"INSERT INTO games (user_id1, user_id2) VALUES (?, ?)"
 	);
-	const info = insertStatement.run(data[0].id, data[1].id) as { lastInsertRowid: Number };
-	dbLogger.info(`insert into games id = ${info.lastInsertRowid}`);
+	const info = insertStatement.run(data[0].id, data[1].id);
 	return reply.redirect(`/api/game/${info.lastInsertRowid}`);
 }
 
@@ -79,7 +79,8 @@ export async function deleteGame(request: FastifyRequest, reply: FastifyReply) {
 
 // GET /api/game/new
 export async function newGameForm(request: FastifyRequest, reply: FastifyReply) {
-	return reply.view("newGame.ejs", { title: "new Game" });
+	const mode = (request.query as any).mode || "single";
+	return reply.view("newGame.ejs", { title: "new Game", mode });
 }
 
 // GET /api/game/:id/edit
@@ -98,7 +99,7 @@ export async function showGame(request: FastifyRequest, reply: FastifyReply) {
 	const game = getGameData(request);
 	if (!game)
 		return reply.code(400).send({ message: "game not found" });
-	return reply.code(200).send(game);
+	return reply.view("game.ejs", { title: "Play", game });
 }
 
 // GET /api/game
