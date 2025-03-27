@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { newUser, showUser, editUser, deleteUser, logout } from "../controllers/login.controller";
+import { newUser, showUser, editUser, deleteUser } from "../controllers/login.controller";
 import { newGame, showGame, showAllGames, editGame, deleteGame } from "../controllers/game.controller";
 import { sendResponse } from "../controllers/root.controller";
 
@@ -38,7 +38,6 @@ async function userRoutes(userRoutes: FastifyInstance) {
 		schema: { params: userParamSchema }
 	}, editUser);
 	userRoutes.get("/:id/delete", { schema: { params: userParamSchema } }, deleteUser);
-	userRoutes.get("/logout", logout);
 }
 
 async function gameRoutes(gameRoutes: FastifyInstance) {

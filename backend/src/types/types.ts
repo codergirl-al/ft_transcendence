@@ -12,15 +12,22 @@ export interface RequestParams {
 }
 
 // layout of user table
+export interface TokenData {
+	email: string;
+	token: string;
+}
+
+// layout of user table
 export interface UserData {
 	id: Number;
 	username?: string;
-	image_url?: string;
 	email?: string;
 }
+
 // request body during user creation
 export interface UserRequestBody {
 	username: string;
+	email: string;
 }
 
 // layout of games table

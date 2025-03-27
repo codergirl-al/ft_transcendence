@@ -15,8 +15,7 @@ async function dbConnector(fastify: FastifyInstance) {
 		CREATE TABLE IF NOT EXISTS users (
 		id INTEGER PRIMARY KEY,
 		username TEXT UNIQUE NOT NULL,
-		email TEXT UNIQUE NOT NULL,
-		image_url TEXT NOT NULL DEFAULT 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR81iX4Mo49Z3oCPSx-GtgiMAkdDop2uVmVvw&s'
+		email TEXT UNIQUE NOT NULL
 		);
 	`);
 	// user stats for dashboard
@@ -74,7 +73,7 @@ async function dbConnector(fastify: FastifyInstance) {
 	} else if (notfound.username != "usernotfound") {
 		db.exec(`DELETE FROM users WHERE username = ${notfound.username}`);
 		db.exec("INSERT INTO users (id, username, email) VALUES (1, 'usernotfound', 'noemail@nothing.com');");
-		db.exec(`INSERT INTO users (username, email, image_url) VALUES (${notfound.username}, ${notfound.email}, ${notfound.image_url});`);
+		db.exec(`INSERT INTO users (username, email) VALUES (${notfound.username}, ${notfound.email});`);
 		dbLogger.info(`Created blank user 'usernotfound' ID 1, moved user ${notfound.username}`);
 	}
 

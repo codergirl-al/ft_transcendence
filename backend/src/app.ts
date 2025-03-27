@@ -3,15 +3,14 @@ import Fastify, { FastifyInstance, FastifyRequest, FastifyReply } from "fastify"
 import routes from "./routes/routes";
 import dbConnector from "./conf/db";
 import { serverLogger } from "./conf/logger";
-import { getUserInfo } from "./controllers/login.controller";
 import { sendResponse } from "./controllers/root.controller";
+import { TokenData } from "./types/types";
 // fastify plugins
 import fastifyView from "@fastify/view";
 import { Database } from "better-sqlite3";
 import fastifyStatic from "@fastify/static";
 import fastifyFormbody from "@fastify/formbody";
 import { fastifyOauth2, OAuth2Namespace } from '@fastify/oauth2';
-import fastifyCookie from "@fastify/cookie";
 import multipart, { MultipartFile } from "@fastify/multipart";
 import fastifyJWT from "@fastify/jwt";
 // utils
@@ -23,6 +22,7 @@ declare module "fastify" {
 		googleOAuth2: OAuth2Namespace;
 		db: Database;
 		file?: MultipartFile;
+		user: TokenData;
 	}
 }
 
@@ -31,7 +31,18 @@ declare module "fastify" {
 const fastify: FastifyInstance = Fastify();
 
 // PLUGINS---------------------------------------------------------------
-
+// JWT
+fastify.register(fastifyJWT, {
+	secret: process.env.JWT_SECRET!,
+	sign: { expiresIn: "1h" }
+});
+fastify.decorate("authenticate", async (request: FastifyRequest, reply: FastifyReply) => {
+	try {
+		await request.jwtVerify();
+	} catch (err) {
+		return sendResponse(reply, 401, undefined, "Unauthorized");
+	}
+});
 // uploads
 fastify.register(multipart);
 // request body
@@ -49,7 +60,7 @@ fastify.register(fastifyStatic, {
 	prefix: "/",
 });
 // cookies for login
-fastify.register(fastifyCookie);
+// fastify.register(fastifyCookie);
 // google authentication
 fastify.register(fastifyOauth2, {
 	name: 'googleOAuth2',
@@ -69,13 +80,6 @@ fastify.register(dbConnector);
 // only allow authenticated api access
 fastify.addHook("onRequest", async (request: FastifyRequest, reply: FastifyReply) => {
 	serverLogger.info(`REQ ${request.method} ${request.hostname}${request.url}   client ${request.socket.remoteAddress}:${request.socket.remotePort}`);
-	if (request.url.startsWith("/api")) {
-		const userInfo = await getUserInfo(request);
-		// const token = request.cookies.auth_token;
-		if (!userInfo) {
-			return sendResponse(reply, 401, undefined, "Unauthorized");
-		}
-	}
 });
 
 fastify.addHook("onResponse", async (request: FastifyRequest, reply: FastifyReply) => {
@@ -88,7 +92,6 @@ fastify.register(routes);
 // SERVER----------------------------------------------------------------
 const port = Number(process.env.FASTIFY_PORT) || 3000;
 const address = process.env.FASTIFY_ADDRESS;
-console.log("Starting server...");
 
 try {
 	fastify.listen({ port: port, host: address }, (err, addr) => {
