@@ -20,15 +20,6 @@ unimplemented:
 > ...
 
 -- todo --
-> JWT						<<<<< CURRENT
-> prevalidation function (auth)
 > form data in multipart handling
-> session for user data
 > authorization levels (none, user, admin)
 > 2FA
-
--- how to log out --
-function logout() {
-  localStorage.removeItem("token"); // ✅ Removes the JWT
-  window.location.href = "/login"; // Redirect user
-}

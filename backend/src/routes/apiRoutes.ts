@@ -1,4 +1,4 @@
-import fastify, { FastifyInstance } from "fastify";
+import fastify, { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { newUser, showUser, editUser, deleteUser, logout } from "../controllers/login.controller";
 import { newGame, showGame, showAllGames, editGame, deleteGame } from "../controllers/game.controller";
 import { sendResponse } from "../controllers/root.controller";
@@ -17,6 +17,11 @@ const gameParamSchema = {
 	properties: { id: { type: "number" } }
 }
 
+async function multipartRequest(request: FastifyRequest, reply: FastifyReply) {
+	if (!request.isMultipart())
+		return sendResponse(reply, 400, undefined, "Invalid request type. expected multipart/form-data");
+}
+
 // ---------------------------------------------------------------------------------------------------
 
 async function userRoutes(userRoutes: FastifyInstance) {
@@ -32,11 +37,19 @@ async function userRoutes(userRoutes: FastifyInstance) {
 	}, newUser);
 	userRoutes.get("/:id", { schema: { params: userParamSchema } }, showUser); // get data of user
 	userRoutes.post("/:id", { // update profile
-		preValidation: [async (request, reply) => {
-			if (!request.isMultipart())
-				return sendResponse(reply, 400, undefined, "Invalid request type. expected multipart/form-data");
-		}, userRoutes.authenticate],
-		schema: { params: userParamSchema }
+		preValidation: [multipartRequest, userRoutes.authenticate],
+		schema: {
+			params: userParamSchema,
+			consumes: ['multipart/form-data'],
+			body: {
+				type: 'object',
+				required: ['username', 'avatarFile'],
+				properties: {
+					avatarFile: { type: 'object' },
+					username: usernameFormat
+				}
+			}
+		}
 	}, editUser);
 	userRoutes.get("/logout", logout);
 	userRoutes.get("/:id/delete", { preValidation: userRoutes.authenticate, schema: { params: userParamSchema } }, deleteUser);

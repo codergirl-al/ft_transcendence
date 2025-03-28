@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { dbLogger, authLogger } from "../conf/logger";
 import { sendResponse } from "./root.controller";
-import { RequestParams, TokenData, UserData, UserRequestBody } from "../types/types"
+import { RequestParams, TokenData, UserData, UserRequestBody, UploadBody } from "../types/types"
 import fs from 'fs'
 import util from 'util'
 import { pipeline } from 'stream'
@@ -62,6 +62,7 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 	const { db } = request.server;
 	const { id } = request.params as RequestParams;
 	const { email } = request.user as TokenData;
+	const { username, avatarFile } = request.body as UploadBody;
 
 	const user = db
 		.prepare('SELECT * FROM users WHERE username = ?')
@@ -73,15 +74,17 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 		return sendResponse(reply, 401, undefined, "Unauthorized");
 	}
 
-	const data = request.files();
-	for await (const part of data) {
-		if (part.fieldname == 'username') {
-			console.log(part);
-		} else {
-			const filename = __dirname + '/../../dist/public/uploads/' + user.id + '.png';
-			await pump(part.file, fs.createWriteStream(filename, { flags: 'w' }));
-		}
-	}
+	// const data = request.files();
+	// for await (const part of data) {
+	// 	if (part.fieldname == 'username') {
+	// 		console.log(part);
+	// 	} else {
+	// 		const filename = __dirname + '/../../dist/public/uploads/' + user.id + '.png';
+	// 		await pump(part.file, fs.createWriteStream(filename, { flags: 'w' }));
+	// 	}
+	// }
+	console.log("!!! username:", username);
+	console.log("!!! avatarFile:", avatarFile);
 
 	// const taken = db
 	// 	.prepare('SELECT username FROM users WHERE username = ?')
@@ -121,6 +124,7 @@ export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
 	dbLogger.info(`delete users where username = ${id}`);
 
 	// logout on success
+	reply.clearCookie('auth_token');
 	return sendResponse(reply, 200);
 }
 
@@ -143,7 +147,12 @@ export async function callback(request: FastifyRequest, reply: FastifyReply) {
 	const jwtPayload = { email: userInfo.email, role: "user" };
 	const jwtToken = fastify.jwt.sign(jwtPayload);
 
-	reply.setCookie("auth_token", jwtToken, { httpOnly: true, secure: true, sameSite: 'strict', path: '/' });
+	reply.setCookie("auth_token", jwtToken, {
+		httpOnly: true,
+		secure: process.env.FASTIFY_NODE_ENV === 'production',
+		path: '/',
+		sameSite: 'lax' });
+	console.log("cookie set: " + jwtToken);
 	// if (!user)
 	// 	return reply.redirect("/test/newUser");//CHECK
 	return sendResponse(reply, 200, jwtToken);

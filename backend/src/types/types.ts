@@ -51,3 +51,9 @@ export interface GameRequestBody {
 	score2: Number;
 	winner: string;
 }
+
+// request body during profile edit (multipart)
+export interface UploadBody {
+	username: string;
+	avatarFile: string;
+}

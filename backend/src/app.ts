@@ -11,6 +11,7 @@ import { Database } from "better-sqlite3";
 import fastifyStatic from "@fastify/static";
 import fastifyFormbody from "@fastify/formbody";
 import { fastifyOauth2, OAuth2Namespace } from '@fastify/oauth2';
+import fastifyCookie from "@fastify/cookie";
 import multipart, { MultipartFile } from "@fastify/multipart";
 import fastifyJWT from "@fastify/jwt";
 // utils
@@ -32,6 +33,8 @@ declare module "fastify" {
 const fastify: FastifyInstance = Fastify();
 
 // PLUGINS---------------------------------------------------------------
+// cookies for login
+fastify.register(fastifyCookie);
 // JWT
 fastify.register(fastifyJWT, {
 	secret: process.env.JWT_SECRET!,
@@ -49,9 +52,10 @@ fastify.decorate("authenticate", async function (request: FastifyRequest, reply:
 	}
 });
 // uploads
-fastify.register(multipart);
+fastify.register(multipart, { attachFieldsToBody: 'keyValues' });
 // request body
 fastify.register(fastifyFormbody);
+
 // ejs
 fastify.register(fastifyView, {
 	engine: { ejs },
@@ -64,8 +68,7 @@ fastify.register(fastifyStatic, {
 	root: path.join(__dirname, "../dist/public"),
 	prefix: "/",
 });
-// cookies for login
-// fastify.register(fastifyCookie);
+
 // google authentication
 fastify.register(fastifyOauth2, {
 	name: 'googleOAuth2',
