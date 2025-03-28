@@ -62,7 +62,8 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 	const { db } = request.server;
 	const { id } = request.params as RequestParams;
 	const { email } = request.user as TokenData;
-	const { username, avatarFile } = request.body as UploadBody;
+	let username = '';
+	// const { username, avatarFile } = request.body as UploadBody;
 
 	const user = db
 		.prepare('SELECT * FROM users WHERE username = ?')
@@ -74,27 +75,27 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 		return sendResponse(reply, 401, undefined, "Unauthorized");
 	}
 
-	// const data = request.files();
-	// for await (const part of data) {
-	// 	if (part.fieldname == 'username') {
-	// 		console.log(part);
-	// 	} else {
-	// 		const filename = __dirname + '/../../dist/public/uploads/' + user.id + '.png';
-	// 		await pump(part.file, fs.createWriteStream(filename, { flags: 'w' }));
-	// 	}
-	// }
-	console.log("!!! username:", username);
-	console.log("!!! avatarFile:", avatarFile);
+	const data = request.parts()
+	for await (const part of data) {
+		if (part.type == 'field') {
+			username = part.value as string;
+		} else {
+			const filename = '/app/dist/public/uploads/' + user.id + '.png';
+			await pump(part.file, fs.createWriteStream(filename, { flags: 'w' }));
+		}
+	}
+	// console.log("!!! username:", username);
+	// console.log("!!! avatarFile:", avatarFile);
 
-	// const taken = db
-	// 	.prepare('SELECT username FROM users WHERE username = ?')
-	// 	.get(username) as UserData | undefined;
-	// if (taken) return reply.redirect(`/api/user/${name}/edit`);
+	const taken = db
+		.prepare('SELECT username FROM users WHERE username = ?')
+		.get(username) as UserData | undefined;
+	if (taken) return reply.redirect(`/api/user/${id}/edit`);
 
-	// if (username) {
-	// 	const updateStatement = db.prepare('UPDATE users SET username = ? WHERE username = ?');
-	// 	updateStatement.run(username, name);
-	// }
+	if (username) {
+		const updateStatement = db.prepare('UPDATE users SET username = ? WHERE username = ?');
+		updateStatement.run(username, id);
+	}
 	authLogger.info(`Updated user data of ${email}`);
 	dbLogger.info(`update users where email = ${email}`);
 	return sendResponse(reply, 200);

@@ -38,18 +38,7 @@ async function userRoutes(userRoutes: FastifyInstance) {
 	userRoutes.get("/:id", { schema: { params: userParamSchema } }, showUser); // get data of user
 	userRoutes.post("/:id", { // update profile
 		preValidation: [multipartRequest, userRoutes.authenticate],
-		schema: {
-			params: userParamSchema,
-			consumes: ['multipart/form-data'],
-			body: {
-				type: 'object',
-				required: ['username', 'avatarFile'],
-				properties: {
-					avatarFile: { type: 'object' },
-					username: usernameFormat
-				}
-			}
-		}
+		schema: { params: userParamSchema }
 	}, editUser);
 	userRoutes.get("/logout", logout);
 	userRoutes.get("/:id/delete", { preValidation: userRoutes.authenticate, schema: { params: userParamSchema } }, deleteUser);

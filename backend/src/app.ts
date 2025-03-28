@@ -52,7 +52,7 @@ fastify.decorate("authenticate", async function (request: FastifyRequest, reply:
 	}
 });
 // uploads
-fastify.register(multipart, { attachFieldsToBody: 'keyValues' });
+fastify.register(multipart);
 // request body
 fastify.register(fastifyFormbody);
 
