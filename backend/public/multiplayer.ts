@@ -279,7 +279,8 @@ function restartGame() {
   loop = window.setInterval(gameLoop, 1000 / 60);
 }
 
-// Start the game loop
-export function startGame() {
+// // Start the game loop
+// export function startGame() {
+//   console.log("startGame() called");
+// }
   loop = window.setInterval(gameLoop, 1000 / 60);
-}

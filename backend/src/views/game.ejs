@@ -1,2 +1,15 @@
-<canvas id="pong" width="800" height="500"></canvas>
-<script type="module" src="/public/pongLoad.js"></script>
+<canvas id="pong" width="800" height="600"></canvas>
+
+	<!-- <script type="module">
+		document.addEventListener("DOMContentLoaded", async () => {
+			console.log("DOM fully loaded");
+			try {
+				const { startGame } = await import("/multiplayer.js");
+				console.log("multiplayer module imported successfully");
+				startGame();
+			} catch (error) {
+				console.error("Error importing multiplayer module:", error);
+			}
+		});
+	</script> -->
+	<script src="/multiplayer.js"></script>
