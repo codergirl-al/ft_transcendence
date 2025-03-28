@@ -24,7 +24,6 @@ export interface GameData {
   user2_name: string;
 }
 
-<<<<<<< HEAD
 // POST /api/game
 // export async function newGame(request: FastifyRequest, reply: FastifyReply) {
 // 	// const { user1, user2 } = request.body as GameRequestBody;
@@ -43,28 +42,6 @@ export interface GameData {
 // 	// const info = insertStatement.run(data[0].id, data[1].id);
 // 	// return reply.redirect(`/api/game/${info.lastInsertRowid}`);
 // }
-=======
-// POST /api/game - Create a new game using two usernames
-export async function newGame(request: FastifyRequest, reply: FastifyReply) {
-  const { user1, user2 } = request.body as GameRequestBody;
-  const { db } = request.server;
-
-  const data = db
-	.prepare("SELECT id, username FROM users WHERE username = ? OR username = ?")
-	.all(user1, user2) as UserData[];
-  if (data.length < 2) {
-	dbLogger.info(`New Game failed: ${user1} or ${user2} not found`);
-	return reply.code(400).send({ message: "Invalid Username" });
-  }
-
-  const insertStatement = db.prepare(
-	"INSERT INTO games (user_id1, user_id2) VALUES (?, ?)"
-  );
-  const info = insertStatement.run(data[0].id, data[1].id) as { lastInsertRowid: Number };
-  dbLogger.info(`insert into games id = ${info.lastInsertRowid}`);
-  return reply.redirect(`/api/game/${info.lastInsertRowid}`);
-}
->>>>>>> frontend
 
 // POST /api/game/:id - Edit an existing game
 export async function editGame(request: FastifyRequest, reply: FastifyReply) {
@@ -93,6 +70,7 @@ export async function editGame(request: FastifyRequest, reply: FastifyReply) {
 export async function deleteGame(request: FastifyRequest, reply: FastifyReply) {
   const { id } = request.params as RequestParams;
   const { db } = request.server;
+}
 
 // GET /api/game/new
 export async function newGameForm(request: FastifyRequest, reply: FastifyReply) {
@@ -140,28 +118,28 @@ export async function showAllGames(request: FastifyRequest, reply: FastifyReply)
 }
 
 // GET /game/new - Render the game creation page based on mode and connection query parameters
-export async function newGameForm(request: FastifyRequest, reply: FastifyReply) {
-	const { mode, connection } = request.query as { mode?: string; connection?: string };
+// export async function newGameForm(request: FastifyRequest, reply: FastifyReply) {
+// 	const { mode, connection } = request.query as { mode?: string; connection?: string };
   
-	// Default to offline single-player if no query parameters are provided
-	if (!mode && !connection) {
-	  // return reply.view('newGame.ejs', { title: 'Offline Single-Player' });
-    return reply.redirect("/#account");
-	}
+// 	// Default to offline single-player if no query parameters are provided
+// 	if (!mode && !connection) {
+// 	  // return reply.view('newGame.ejs', { title: 'Offline Single-Player' });
+//     return reply.redirect("/#account");
+// 	}
   
-	if (mode === 'single' && connection === 'offline') {
-	  return reply.view('newGame.ejs', { title: 'Offline Single-Player' });
-	} else if (mode === 'single' && connection === 'online') {
-	  return reply.view('onlineSingle.ejs', { title: 'Online Single-Player' });
-	} else if (mode === 'multi' && connection === 'offline') {
-	  return reply.view('newGameOfflineMulti.ejs', { title: 'Offline Multi-Player' });
-	} else if (mode === 'multi' && connection === 'online') {
-	  return reply.view('onlineMulti.ejs', { title: 'Online Multi-Player' });
-	}
+// 	if (mode === 'single' && connection === 'offline') {
+// 	  return reply.view('newGame.ejs', { title: 'Offline Single-Player' });
+// 	} else if (mode === 'single' && connection === 'online') {
+// 	  return reply.view('onlineSingle.ejs', { title: 'Online Single-Player' });
+// 	} else if (mode === 'multi' && connection === 'offline') {
+// 	  return reply.view('newGameOfflineMulti.ejs', { title: 'Offline Multi-Player' });
+// 	} else if (mode === 'multi' && connection === 'online') {
+// 	  return reply.view('onlineMulti.ejs', { title: 'Online Multi-Player' });
+// 	}
   
-	// Fallback in case of invalid query parameters
-	return reply.view('selectGameMode.ejs', { title: 'Select Game Mode' });
-  }
+// 	// Fallback in case of invalid query parameters
+// 	return reply.view('selectGameMode.ejs', { title: 'Select Game Mode' });
+//   }
   
 // Helper function to get game data along with usernames
 function getGameData(request: FastifyRequest) {
