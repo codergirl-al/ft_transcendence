@@ -79,8 +79,13 @@ export async function deleteGame(request: FastifyRequest, reply: FastifyReply) {
 
 // GET /api/game/new
 export async function newGameForm(request: FastifyRequest, reply: FastifyReply) {
-	const mode = (request.query as any).mode || "single";
-	return reply.view("game.ejs", { title: "new Game", mode });
+  const mode = (request.query as any).mode || "multi";
+  return reply.view("multiGame.ejs", { title: "New Multiplayer Game", mode });
+}
+
+export async function newSingleGameForm(request: FastifyRequest, reply: FastifyReply) {
+  const mode = (request.query as any).mode || "single";
+	return reply.view("singleGame.ejs", { title: "New Single Player Game", mode: "single" });
 }
 
 // GET /api/game/:id/edit
@@ -99,7 +104,7 @@ export async function showGame(request: FastifyRequest, reply: FastifyReply) {
 	const game = getGameData(request);
 	if (!game)
 		return reply.code(400).send({ message: "game not found" });
-	return reply.view("game.ejs", { title: "Play", game });
+	return reply.view("multiGame.ejs", { title: "Play", game });
 }
 
 // GET /api/game
