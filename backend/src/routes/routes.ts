@@ -1,26 +1,31 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
+import { FastifyInstance, FastifyRequest, FastifyReply,  } from "fastify";
 import { apiRoutes } from "./apiRoutes";
-import { getRoot, spa } from "../controllers/root.controller";
+import { spa } from "../controllers/root.controller";
 import { setFastifyInstance, loginPage, callback } from "../controllers/login.controller";
 import { newGameForm } from "../controllers/game.controller";
+import path from "path";
+// import path from "node:path";
+// import fastifyStatic from "@fastify/static";
 // import { createProfile, addNewProfile, showProfile, setFastifyInstance, userLogin, loginPage, callback } from "../controllers/login.controller.js";
-
 export default async function routes(fastify: FastifyInstance) {
 	setFastifyInstance(fastify);
 
 	fastify.get("/login", loginPage);
-	fastify.get("/", getRoot);
+	fastify.get("/", spa);
+	// fastify.get('/', async (request, reply) => {
+	// 	return reply.sendFile('index.html', path.join(__dirname, "../public"));
+	//   });
+	  
 	fastify.get("/google-login/callback", callback);
 	fastify.get("/game/new", newGameForm)
 	fastify.register(apiRoutes, { prefix: "/api" });
 
 	// fastify.setNotFoundHandler((request: FastifyRequest, reply: FastifyReply) => {
-	// 	reply.sendFile('index.html');
+	// 	// reply.sendFile('index.html');
+	// 	// reply.view("index.ejs", { title: "Transcendence", view: "index" });
+	// 	// reply.redirect("/index.html");
 	// });
-	// Catch-all route for SPA (all non-API requests)
-	fastify.get("/*", (request: FastifyRequest, reply: FastifyReply) => {
-		reply.view("index.ejs", { title: "Transcendence" });
-	});
+	  
 	// This means that every request (except for API endpoints) returns your index.ejs wrapped in your layout, and then your client‑side code handles the navigation.
 }
 

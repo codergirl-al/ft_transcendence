@@ -118,7 +118,8 @@ export async function newGameForm(request: FastifyRequest, reply: FastifyReply) 
   
 	// Default to offline single-player if no query parameters are provided
 	if (!mode && !connection) {
-	  return reply.view('newGame.ejs', { title: 'Offline Single-Player' });
+	  // return reply.view('newGame.ejs', { title: 'Offline Single-Player' });
+    return reply.redirect("/#account");
 	}
   
 	if (mode === 'single' && connection === 'offline') {
