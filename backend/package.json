@@ -11,8 +11,8 @@
 		"build": "npm run build:css && npm run build:ts",
 		"dev:css": "tailwindcss -i ./src/public/css/tailwind.css -o ./src/public/css/output.css --watch",
 		"dev:ts": "tsc -w",
-		"dev": "concurrently \"npm run dev:ts\" \"npm run dev:css\" \"npm run dev:copy\" \"nodemon\"",
-		"dev:copy": "onchange 'src/public/**/*.{html,css,png}' -- copyfiles -u 2 'src/public/**/*.{html,css,png}' dist/public"
+		"dev:copy": "copyfiles -u 2 'src/public/**/*.{html,css,png}' dist/public --watch",
+		"dev": "concurrently \"npm run dev:ts\" \"npm run dev:css\" \"npm run dev:copy\" \"nodemon\""
 	},
 	"keywords": [],
 	"author": "",
@@ -20,7 +20,8 @@
 	"dependencies": {
 		"@fastify/cookie": "^6.0.0",
 		"@fastify/formbody": "^7.0.0",
-		"@fastify/multipart": "^9.0.3",
+		"@fastify/jwt": "^8.0.0",
+		"@fastify/multipart": "^8.0.0",
 		"@fastify/oauth2": "^7.0.0",
 		"@fastify/static": "^7.0.0",
 		"@fastify/view": "^7.0.0",
@@ -28,14 +29,13 @@
 		"ajv": "^7.0.0",
 		"better-sqlite3": "^11.8.1",
 		"concurrently": "^7.6.0",
+		"copyfiles": "^2.4.1",
 		"ejs": "^3.1.9",
 		"env-schema": "^6.0.1",
 		"fastify": "^4.28.1",
 		"nodemon": "^3.1.9",
 		"ts-node": "^10.9.2",
-		"winston": "^3.17.0",
-		"copyfiles": "^2.4.1",
-		"onchange":"^7.1.0"
+		"winston": "^3.17.0"
 	},
 	"devDependencies": {
 		"@types/better-sqlite3": "^7.6.12",

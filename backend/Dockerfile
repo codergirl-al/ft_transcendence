@@ -10,6 +10,8 @@ RUN chmod +x /fetch-secrets.sh
 # Set the working directory
 WORKDIR /app
 
+RUN mkdir -p /app/dist/public/uploads
+
 # Copy application files
 COPY . .
 

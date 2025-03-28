@@ -1,0 +1,25 @@
+-- tests --
+ready:
+> request index
+> log in with different google accounts
+> show user info
+> edit user info
+> upload a profile picture
+> log out
+> access a profile without logging in
+> delete user
+
+unimplemented:
+> show another users profile
+> send a friend request
+> accept a friend request
+> play and record a full game
+> interrupt a game, see if it logs
+> play a local tournament
+> local play against a friend
+> ...
+
+-- todo --
+> form data in multipart handling
+> authorization levels (none, user, admin)
+> 2FA

@@ -10,4 +10,5 @@ export FASTIFY_NODE_ENV=$(curl -s -H "X-Vault-Token: $VAULT_TOKEN" http://vault:
 export FASTIFY_DB_FILE=$(curl -s -H "X-Vault-Token: $VAULT_TOKEN" http://vault:8200/v1/secret/data/backend/FASTIFY_DB_FILE | jq -r '.data.data.FASTIFY_DB_FILE')
 export GOOGLE_CLIENT_ID=$(curl -s -H "X-Vault-Token: $VAULT_TOKEN" http://vault:8200/v1/secret/data/backend/GOOGLE_CLIENT_ID | jq -r '.data.data.GOOGLE_CLIENT_ID')
 export GOOGLE_CLIENT_SECRET=$(curl -s -H "X-Vault-Token: $VAULT_TOKEN" http://vault:8200/v1/secret/data/backend/GOOGLE_CLIENT_SECRET | jq -r '.data.data.GOOGLE_CLIENT_SECRET')
+export JWT_SECRET=$(curl -s -H "X-Vault-Token: $VAULT_TOKEN" http://vault:8200/v1/secret/data/backend/JWT_SECRET | jq -r '.data.data.JWT_SECRET')
 
