@@ -1,4 +1,4 @@
-/*! tailwindcss v4.0.14 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.0.17 | MIT License | https://tailwindcss.com */
 .\@container {
   container-type: inline-size;
 }
@@ -756,10 +756,6 @@
 .border-2 {
   border-style: var(--tw-border-style);
   border-width: 2px;
-}
-.border-4 {
-  border-style: var(--tw-border-style);
-  border-width: 4px;
 }
 .border-x {
   border-inline-style: var(--tw-border-style);
