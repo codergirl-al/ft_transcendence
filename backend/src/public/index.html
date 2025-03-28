@@ -116,19 +116,33 @@
 		</div>
 		<div class="relative">
 			<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-				<a href="/tournaments" class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
+				<a href="#tournaments" class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
 					TOURNAMENT
 				</a>
 				</div>
 				</div>
 			</main>
-			<!-- 
-			<footer class="p-4 bg-purple-500 text-center">
-				<p class="text-sm text-purple-200">
-					&copy; 2025 Team SAFARI, Inc. All rights reserved.
-				</p>
-			</footer>
-		User Stats Modal -->
+				<section id="tournament-view" class="view min-h-screen flex flex-col items-center justify-center">
+					<h1 class="text-4xl font-bold mb-4">Tournament Registration</h1>
+					<form id="tournamentForm" class="w-full max-w-md mb-6">
+						<div class="mb-4">
+							<label for="tournamentPlayers" class="block text-lg mb-2">Enter Player Aliases (separated by commas)</label>
+							<textarea id="tournamentPlayers" name="tournamentPlayers" required class="w-full p-2 rounded text-black"
+								rows="3" placeholder="e.g., Alice, Bob, Charlie"></textarea>
+						</div>
+						<button type="button" id="registerTournamentButton"
+							class="w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors mb-4">
+							Register Tournament
+						</button>
+					</form>
+					<button type="button" id="startTournamentButton"
+						class="w-full max-w-md py-3 text-xl bg-green-500 rounded hover:bg-green-600 transition-colors">
+						Start Tournament
+					</button>
+					<button type="button" onclick="location.href='#index'"
+						class="mt-4 px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">Back</button>
+				</section>
+			<!-- User Stats Modal -->
 			<div id="userStatsModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
 				<div class="bg-purple-200 text-black w-1/2 p-6 rounded relative shadow-lg">
 					<button id="closeModalBtn" class="absolute top-2 right-2 text-2xl font-bold text-black hover:text-gray-600">
@@ -310,6 +324,9 @@
         case 'multiplayer':
           showView('multiplayer-view');
           break;
+		case 'tournament':
+		  showView('tournament-view');
+		  break;
         case 'index':
         default:
           showView('index-view');
@@ -340,8 +357,32 @@
 			}
 		});
 	}
-</script>
+
+		function registerMulti() {
+			var p1 = document.getElementById("player1").value.trim();
+			var p2 = document.getElementById("player2").value.trim();
+			if (!p1 || !p2) {
+				alert("Please enter both names.");
+				return;
+			}
+			localStorage.setItem("multiplayerPlayer1", p1);
+			localStorage.setItem("multiplayerPlayer2", p2);
+			startMultiGame();
+		}
+		// Tournament registration and start
+		function registerAndStartTournament() {
+			var input = document.getElementById("tournamentPlayers").value;
+			var players = input.split(",").map(function (name) { return name.trim(); }).filter(function (n) { return n; });
+			if (players.length < 2) {
+				alert("Enter at least two names.");
+				return;
+			}
+			registerTournament(players);
+			startTournament();
+		}
+	</script>
   <script src="multiplayer.js"></script>
   <script src="singleplayer.js"></script>
+	<script src="tournament.js"></script>
 	</body>
 </html>
