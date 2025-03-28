@@ -12,6 +12,7 @@ import fastifyStatic from "@fastify/static";
 import fastifyFormbody from "@fastify/formbody";
 import { fastifyOauth2, OAuth2Namespace } from '@fastify/oauth2';
 import fastifyCookie from "@fastify/cookie";
+import multipart from "@fastify/multipart";
 // utils
 import path from "node:path";
 import ejs from "ejs";
@@ -25,21 +26,24 @@ declare module "fastify" {
 
 // ----------------------------------------------------------------------
 // get fastify
-const fastify: FastifyInstance = Fastify({ logger: true });
+const fastify: FastifyInstance = Fastify({logger: true});
+
+// Register the multipart plugin before defining routes that need it.
+// fastify.register(multipart);
 
 // PLUGINS---------------------------------------------------------------
 // request body
 fastify.register(fastifyFormbody);
 // ejs
-fastify.register(fastifyView, {
-	engine: { ejs },
-	root: path.join(__dirname, "../src/views"),
-	viewExt: "ejs",
-	layout: "layout.ejs",
-});
+// fastify.register(fastifyView, {
+// 	engine: { ejs },
+// 	root: path.join(__dirname, "../src/views"),
+// 	viewExt: "ejs",
+// 	layout: "layout.ejs",
+// });
 // static files
 fastify.register(fastifyStatic, {
-	root: path.join(__dirname, "../dist/public"),
+	root: "/app/dist/public",
 	prefix: "/",
 });
 // cookies for login
@@ -92,3 +96,6 @@ fastify.listen({ port: port, host: address }, (err, addr) => {
 	}
 	serverLogger.info(`transcendence is running in ${process.env.FASTIFY_NODE_ENV} mode at ${addr}`);
 });
+
+console.log("Views path: /app/src/views");
+console.log("Static files path: /app/dist/public");

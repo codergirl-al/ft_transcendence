@@ -1,7 +1,20 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { dbLogger, authLogger } from "../conf/logger";
-import { UserInfo } from "os";
+import fs from 'fs'
+import util from 'util'
+import { pipeline } from 'stream'
+import '@fastify/multipart';
+// import { Multipart } from '@fastify/multipart';
+import path from "node:path";
 
+const pump = util.promisify(pipeline)
+// Define the absolute path for the uploads directory.
+const uploadDir = path.join(process.cwd(), "uploads");
+
+// Check if the uploads directory exists. If not, create it.
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 let fastify: FastifyInstance;
 interface LoginRequestBody {
 	username: string;
@@ -17,7 +30,6 @@ export interface UserData {
 	image_url: string;
 	email: string;
 }
-
 export function setFastifyInstance(fastifyInstance: FastifyInstance) {
 	fastify = fastifyInstance;
 }
@@ -161,6 +173,82 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 	dbLogger.info(`update users where email = ${userInfo.email}`);
 	return reply.redirect(`/api/user/${username}`);
 }
+// export async function editUser(request: FastifyRequest, reply: FastifyReply) {
+// 	const { db } = request.server;
+// 	const { name } = request.params as RequestParams;
+	
+// 	// Retrieve the existing user record.
+// 	const user = db
+// 	  .prepare('SELECT * FROM users WHERE username = ?')
+// 	  .get(name) as UserData | undefined;
+// 	if (!user) {
+// 	  return reply.code(404).send({ message: "User not found" });
+// 	}
+	
+// 	const userInfo = await getUserInfo(request);
+// 	if (user.email !== userInfo.email) {
+// 	  authLogger.warn(`Attempt to update user data of ${name} by ${userInfo.email}`);
+// 	  return reply.code(401).send({ message: "Unauthorized" });
+// 	}
+	
+// 	// Initialize variables to capture new form values.
+// 	let newUsername = "";
+// 	let avatarLink = "";
+// 	let avatarFilePath = "";
+	
+// 	// Ensure uploads directory exists
+// 	const uploadDir = path.join(process.cwd(), "uploads");
+// 	if (!fs.existsSync(uploadDir)) {
+// 	  fs.mkdirSync(uploadDir, { recursive: true });
+// 	}
+	
+// 	try {
+// 	  const parts = (request as any).parts();
+// 	  for await (const part of parts) {
+// 		if (part.file) {
+// 		  if (part.fieldname === "avatarFile") {
+// 			const filePath = path.join(uploadDir, part.filename);
+// 			await pump(part.file, fs.createWriteStream(filePath));
+// 			avatarFilePath = filePath;
+// 		  }
+// 		} else {
+// 		  if (part.fieldname === "username") {
+// 			newUsername = part.value;
+// 		  } else if (part.fieldname === "avatarLink") {
+// 			avatarLink = part.value;
+// 		  }
+// 		}
+// 	  }
+// 	} catch (error) {
+// 	  request.log.error("File upload error:", error);
+// 	  return reply.code(500).send({ error: "File upload failed" });
+// 	}
+	
+// 	// Check if the new username is already taken (if it was changed).
+// 	const taken = db
+// 	  .prepare('SELECT username FROM users WHERE username = ?')
+// 	  .get(newUsername) as UserData | undefined;
+// 	if (taken && newUsername !== name) {
+// 	  return reply.redirect(`/api/user/${name}/edit`);
+// 	}
+	
+// 	// Update the database:
+// 	// Priority is given to a file upload. If no file was provided, check for an avatar URL.
+// 	if (avatarFilePath) {
+// 	  const updateStatement = db.prepare('UPDATE users SET username = ?, image_url = ? WHERE username = ?');
+// 	  updateStatement.run(newUsername, avatarFilePath, name);
+// 	} else if (avatarLink) {
+// 	  const updateStatement = db.prepare('UPDATE users SET username = ?, image_url = ? WHERE username = ?');
+// 	  updateStatement.run(newUsername, avatarLink, name);
+// 	} else {
+// 	  const updateStatement = db.prepare('UPDATE users SET username = ? WHERE username = ?');
+// 	  updateStatement.run(newUsername, name);
+// 	}
+	
+// 	authLogger.info(`Updated user data of ${userInfo.email}`);
+// 	dbLogger.info(`update users where email = ${userInfo.email}`);
+// 	return reply.redirect(`/api/user/${newUsername}`);
+//   }
 
 // GET /api/user/:name/delete - Delete user and clear cookie
 export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
@@ -248,5 +336,6 @@ export async function accountDashboard(request: FastifyRequest, reply: FastifyRe
 		.get(user.id) || { total_games: 0, wins: 0, losses: 0 };
 
 	// Pass the user and stats data to the view.
-	return reply.view("account.ejs", { title: "Account Dashboard", user, stats });
+	// return reply.view("account.ejs", { title: "Account Dashboard", user, stats });
+	return reply.redirect("/#account");
 }
