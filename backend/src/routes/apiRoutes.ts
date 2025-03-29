@@ -1,9 +1,13 @@
 import fastify, { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { newUser, showUser, myUser, editUser, deleteUser, logout } from "../controllers/login.controller";
-import { newGame, showGame, showAllGames, editGame, deleteGame } from "../controllers/game.controller";
+import { newUser, showUser, editUser, deleteUser, logout, allUsers } from "../controllers/login.controller";
+import { newGame, showGame, showAllGames } from "../controllers/game.controller";
+import { showAllT, newT, showT, winT } from "../controllers/tournament.controller";
 import { sendResponse } from "../controllers/root.controller";
 // ---------------------------------------------------------------------------------------------------
 const usernameFormat = { type: "string", minLength: 3, maxLength: 20 }
+const winnerFormat = { type: "number", enum: [1, 2] }
+const playersFormat = { type: "number", enum: [4, 6, 8] }
+
 const userParamSchema = {
     type: "object",
     properties: { id: usernameFormat }
@@ -17,53 +21,82 @@ async function multipartRequest(request: FastifyRequest, reply: FastifyReply) {
         return sendResponse(reply, 400, undefined, "Invalid request type. expected multipart/form-data");
 }
 // ---------------------------------------------------------------------------------------------------
-async function userRoutes(userRoutes: FastifyInstance) {
-    userRoutes.post("/", { // process new profile creation
-        preValidation: userRoutes.authenticate,
-        schema: {
-            body: {
-                type: "object",
-                required: ["username"],
-                properties: { username: usernameFormat }
-            }
-        }
-    }, newUser);
-    userRoutes.get("/:id", { schema: { params: userParamSchema } }, showUser); // get data of user
-    userRoutes.get("/", { preValidation: userRoutes.authenticate }, myUser); // get data of user
-    userRoutes.post("/:id", { // update profile
-        preValidation: [multipartRequest, userRoutes.authenticate],
-        schema: { params: userParamSchema }
-    }, editUser);
-    userRoutes.get("/logout", logout);
-    userRoutes.get("/delete", { preValidation: userRoutes.authenticate }, deleteUser);
+
+async function userRoutes(userRoutes: FastifyInstance) {//--------------------------------------------
+	userRoutes.post("/", { // process new profile creation
+		preValidation: userRoutes.authenticate,
+		schema: {
+			body: {
+				type: "object",
+				required: ["username"],
+				properties: { username: usernameFormat }
+			}
+		}
+	}, newUser);
+	userRoutes.get("/:id", { schema: { params: userParamSchema } }, showUser); // get data of user
+	userRoutes.get("/all", allUsers); // get data of user
+	userRoutes.post("/:id", { // update profile
+		preValidation: [multipartRequest, userRoutes.authenticate],
+		schema: { params: userParamSchema }
+	}, editUser);
+	userRoutes.get("/logout", { preValidation: userRoutes.authenticate}, logout);
+	userRoutes.get("/:id/delete", { preValidation: userRoutes.authenticate, schema: { params: userParamSchema } }, deleteUser);
 }
-async function gameRoutes(gameRoutes: FastifyInstance) {
-    gameRoutes.post("/", { // start a new game
-        schema: {
-            body: {
-                type: "object",
-                required: ["user1", "user2"],
-                properties: { user1: usernameFormat, user2: usernameFormat }
-            }
-        }
-    }, newGame);
-    gameRoutes.get("/", showAllGames); // show game data
-    gameRoutes.get("/:id", { schema: { params: gameParamSchema } }, showGame); // show game data
-    gameRoutes.post("/:id", { // edit game data
-        schema: {
-            body: {
-                type: "object",
-                required: ["score1", "score2"],
-                properties: { score1: { type: "number" }, score2: { type: "number" }, winner: usernameFormat }
-            },
-            params: gameParamSchema
-        }
-    }, editGame);
-    gameRoutes.get("/:id/delete", { schema: { params: gameParamSchema } }, deleteGame); // delete game related data
+
+async function gameRoutes(gameRoutes: FastifyInstance) {//--------------------------------------------
+	gameRoutes.get("/", showAllGames); // show game data
+	gameRoutes.post("/", { // start a new game
+		schema: {
+			body: {
+				type: "object",
+				required: ["multi", "user1", "winner"],
+				properties: { multi: { type: "boolean" }, user1: usernameFormat, user2: usernameFormat, winner: winnerFormat }
+			}
+		}
+	}, newGame);
+	gameRoutes.get("/:id", { schema: { params: gameParamSchema } }, showGame); // show game data
+	// gameRoutes.post("/:id", { // edit game data
+	// 	schema: {
+	// 		body: {
+	// 			type: "object",
+	// 			required: ["score1", "score2"],
+	// 			properties: { winner: usernameFormat }
+	// 		},
+	// 		params: gameParamSchema
+	// 	}
+	// }, editGame);
+	// gameRoutes.get("/:id/delete", { schema: { params: gameParamSchema } }, deleteGame); // delete game related data
 }
-export async function apiRoutes(routes: FastifyInstance) {
-    routes.register(userRoutes, { prefix: "/user" });
-    routes.register(gameRoutes, { prefix: "/game" });
+
+async function tournamentRoutes(tournamentRoutes: FastifyInstance) {//--------------------------------------------
+	tournamentRoutes.get("/", showAllT); // show all tournaments
+	tournamentRoutes.post("/", { // start a new tournament
+		schema: {
+			body: {
+				type: "object",
+				required: ["players"],
+				properties: { players: playersFormat }
+			}
+		}
+	}, newT);
+	tournamentRoutes.get("/:id", { schema: { params: gameParamSchema } }, showT); // show tournament data
+	tournamentRoutes.post("/:id", { // end a tournament
+		schema: {
+			body: {
+				type: "object",
+				required: ["winner_name"],
+				properties: { winner_name: usernameFormat }
+			},
+			params: gameParamSchema
+		}
+	}, winT);
+	// tournamentRoutes.get("/:id/delete", { schema: { params: gameParamSchema } }, deleteT); // delete tournament related data
+}
+
+export async function apiRoutes(routes: FastifyInstance) {//--------------------------------------------
+	routes.register(userRoutes, { prefix: "/user" });
+	routes.register(gameRoutes, { prefix: "/game" });
+	routes.register(tournamentRoutes, { prefix: "/tournament" });
 }
 // -----------------------------------REST example-------
 // async function rest(restroutes: FastifyInstance) {

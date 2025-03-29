@@ -19,9 +19,17 @@ export interface TokenData {
 
 // layout of user table
 export interface UserData {
-	id: Number;
+	id?: Number;
 	username?: string;
 	email?: string;
+}
+
+// layout of tournament table
+export interface TournamentData {
+	id?: Number;
+	winner?: Number;
+	winner_name?: string;
+	players?: Number;
 }
 
 // request body during user creation
@@ -46,10 +54,9 @@ export interface GameData {
 // request body during game creation
 export interface GameRequestBody {
 	user1: string;
-	user2: string;
-	score1: Number;
-	score2: Number;
-	winner: string;
+	user2?: string;
+	multi: boolean;
+	winner: Number;
 }
 
 // request body during profile edit (multipart)

@@ -18,12 +18,14 @@ async function dbConnector(fastify: FastifyInstance) {
 		email TEXT UNIQUE NOT NULL
 		);
 	`);
+
 	// user stats for dashboard
 	db.exec(`
 		CREATE TABLE IF NOT EXISTS user_stats (
 		user_id INTEGER PRIMARY KEY,
 		total_games INTEGER DEFAULT 0,
-		wins INTEGER DEFAULT 0,
+		tour_wins INTEGER DEFAULT 0,
+		game_wins INTEGER DEFAULT 0,
 		losses INTEGER DEFAULT 0,
 		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 		);
@@ -33,15 +35,14 @@ async function dbConnector(fastify: FastifyInstance) {
 	db.exec(`
 		CREATE TABLE IF NOT EXISTS games (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id1 INTEGER,
-		user_id2 INTEGER,
-		score1 INTEGER NOT NULL DEFAULT 0,
-		score2 INTEGER NOT NULL DEFAULT 0,
-		winner_id INTEGER,
+		multi BOOLEAN,
+		user_id1 INTEGER DEFAULT 1,
+		user_id2 INTEGER DEFAULT 1,
+		winner_id INTEGER DEFAULT 1,
 		date DATETIME DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (user_id1) REFERENCES users(id) ON DELETE SET NULL,
-		FOREIGN KEY (user_id2) REFERENCES users(id) ON DELETE SET NULL,
-		FOREIGN KEY (winner_id) REFERENCES users(id) ON DELETE SET NULL
+		FOREIGN KEY (user_id1) REFERENCES users(id) ON DELETE SET DEFAULT,
+		FOREIGN KEY (user_id2) REFERENCES users(id) ON DELETE SET DEFAULT,
+		FOREIGN KEY (winner_id) REFERENCES users(id) ON DELETE SET DEFAULT
 		);
 	`);
 
@@ -49,22 +50,22 @@ async function dbConnector(fastify: FastifyInstance) {
 	db.exec(`
 		CREATE TABLE IF NOT EXISTS tournaments (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		winner_id INTEGER,
-		participants INTEGER CHECK(participants IN (4, 8, 16)),
-		FOREIGN KEY (winner_id) REFERENCES users(id) ON DELETE SET NULL
+		winner_id INTEGER DEFAULT 1,
+		participants INTEGER CHECK(participants IN (4, 6, 8)),
+		FOREIGN KEY (winner_id) REFERENCES users(id) ON DELETE SET DEFAULT
 		);
 	`);
 
-	// link games to a tournament
-	db.exec(`
-		CREATE TABLE IF NOT EXISTS tournaments_games(
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		tournament_id INTEGER NOT NULL,
-		game_id INTEGER NOT NULL,
-		FOREIGN KEY (tournament_id) REFERENCES tournaments(id) ON DELETE CASCADE,
-		FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
-		);
-	`)
+	// // link games to a tournament
+	// db.exec(`
+	// 	CREATE TABLE IF NOT EXISTS tournaments_games(
+	// 	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	// 	tournament_id INTEGER NOT NULL,
+	// 	game_id INTEGER NOT NULL,
+	// 	FOREIGN KEY (tournament_id) REFERENCES tournaments(id) ON DELETE CASCADE,
+	// 	FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
+	// 	);
+	// `)
 
 	const notfound = db.prepare("SELECT * FROM users WHERE id = ?").get(1) as UserData | undefined;
 	if (!notfound) {

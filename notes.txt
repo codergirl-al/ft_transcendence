@@ -8,6 +8,7 @@ ready:
 > log out
 > access a profile without logging in
 > delete user
+> local play against a friend
 
 unimplemented:
 > show another users profile
@@ -16,10 +17,9 @@ unimplemented:
 > play and record a full game
 > interrupt a game, see if it logs
 > play a local tournament
-> local play against a friend
 > ...
 
 -- todo --
-> form data in multipart handling
-> authorization levels (none, user, admin)
+> password login
 > 2FA
+> authorization levels (none, user, admin)

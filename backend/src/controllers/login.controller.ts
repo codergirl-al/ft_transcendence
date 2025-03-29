@@ -47,6 +47,23 @@ export async function myUser(request: FastifyRequest, reply: FastifyReply) {
 	dbLogger.info(`select users where email = ${email}`);
 	return sendResponse(reply, 200, user);
 }
+// GET /api/user/all - Show data of all users
+export async function allUsers(request: FastifyRequest, reply: FastifyReply) {
+	const { db } = request.server;
+	const user = db
+		.prepare('SELECT username FROM users')
+		.all() as UserData[];
+	if (!user)
+		return sendResponse(reply, 404, undefined, "User not found");
+	let userlist: string[] = [];
+	user.forEach(u => {
+		if (u.username)
+			userlist.push(u.username);
+	});
+
+	dbLogger.info("select users");
+	return sendResponse(reply, 200, userlist);
+}
 
 // POST /api/user/ - Add new user to the DB
 export async function newUser(request: FastifyRequest, reply: FastifyReply) {
@@ -245,19 +262,16 @@ export async function callback(request: FastifyRequest, reply: FastifyReply) {
 		secure: process.env.FASTIFY_NODE_ENV === 'production',
 		path: '/',
 		sameSite: 'lax' });
-	console.log("cookie set: " + jwtToken);
-	// if (!user)
-	// 	return reply.redirect("/test/newUser");//CHECK
 	// return sendResponse(reply, 200, jwtToken);
-	reply.redirect("/#account");
+	return reply.redirect("/#account");
 }
 
 // GET /api/user/logout - Logout and clear cookie		OLD
 export async function logout(request: FastifyRequest, reply: FastifyReply) {
-	// const user = await getUserInfo(request);
+	const user = request.user as TokenData;
 	reply.clearCookie('auth_token');
 	// reply.clearCookie('oauth2-redirect-state');
-	// authLogger.info(`User ${user.email} logged out`);
+	authLogger.info(`User ${user.email} logged out`);
 	return sendResponse(reply, 200);
 }
 
@@ -284,9 +298,7 @@ export async function editUserForm(request: FastifyRequest, reply: FastifyReply)
 		authLogger.warn(`Attempt to request update of user data of ${name} by ${userInfo.email}`);
 		return sendResponse(reply, 401, undefined, "Unauthorized");
 	}
-	return sendResponse(reply, 404, "temp");
-
-	// return reply.view("editProfile.ejs", { title: "Edit Profile", user: user, status: "click submit to save changes" });
+	return sendResponse(reply, 404, undefined, "tmp");
 }
 
 // TEST		GET /test/newUser - Form to create a new user
@@ -299,8 +311,7 @@ export async function newUserForm(request: FastifyRequest, reply: FastifyReply) 
 
 	if (user)
 		return sendResponse(reply, 400, undefined, "User already registered");
-	return sendResponse(reply, 404, "temp");
-	// return reply.view("createProfile.ejs", { title: "New Profile", email: userInfo.email, status: "enter data" });
+	return sendResponse(reply, 404, undefined, "tmp");
 }
 
 // TEST		GET /test/currentuser/ - Check logged-in user and redirect accordingly

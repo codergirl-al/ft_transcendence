@@ -13,7 +13,6 @@ import { fastifyOauth2, OAuth2Namespace } from '@fastify/oauth2';
 import fastifyCookie from "@fastify/cookie";
 import multipart, { MultipartFile } from "@fastify/multipart";
 import fastifyJWT from "@fastify/jwt";
-// utils
 
 declare module "fastify" {
 	interface FastifyInstance {
