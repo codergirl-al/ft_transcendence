@@ -32,6 +32,24 @@ export async function showUser(request: FastifyRequest, reply: FastifyReply) {
 	return sendResponse(reply, 200, user);
 }
 
+// GET /api/user/all - Show data of all users
+export async function allUsers(request: FastifyRequest, reply: FastifyReply) {
+	const { db } = request.server;
+	const user = db
+		.prepare('SELECT username FROM users')
+		.all() as UserData[];
+	if (!user)
+		return sendResponse(reply, 404, undefined, "User not found");
+	let userlist: string[] = [];
+	user.forEach(u => {
+		if (u.username)
+			userlist.push(u.username);
+	});
+
+	dbLogger.info("select users");
+	return sendResponse(reply, 200, userlist);
+}
+
 // POST /api/user/ - Add new user to the DB
 export async function newUser(request: FastifyRequest, reply: FastifyReply) {
 	const { username } = request.body as UserRequestBody;
