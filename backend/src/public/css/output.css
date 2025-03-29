@@ -230,9 +230,6 @@
 .aspect-square {
   aspect-ratio: 1 / 1;
 }
-.h-1\/2 {
-  height: calc(1/2 * 100%);
-}
 .h-full {
   height: 100%;
 }
