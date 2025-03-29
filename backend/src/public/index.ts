@@ -1,15 +1,23 @@
-const menuButton = document.getElementById('menuButton') as HTMLButtonElement | null;
-const flyoutMenu = document.getElementById('flyoutMenu') as HTMLDivElement | null;
-const closeFlyout = document.getElementById('closeFlyout') as HTMLButtonElement | null;
+const menuButton = document.getElementById('menuButton');
+const flyoutMenu = document.getElementById('flyoutMenu');
+const closeFlyout = document.getElementById('closeFlyout');
 
-if (menuButton && flyoutMenu) {
-  menuButton.addEventListener('click', () => {
-    flyoutMenu.classList.toggle('hidden');
-  });
-}
+menuButton?.addEventListener('click', () => {
+// Toggle the 'hidden' class on the flyout menu
+flyoutMenu?.classList.toggle('hidden');
+});
+closeFlyout?.addEventListener('click', () => {
+flyoutMenu?.classList.add('hidden');
+});
 
-if (closeFlyout && flyoutMenu) {
-  closeFlyout.addEventListener('click', () => {
-    flyoutMenu.classList.add('hidden');
+const usernameDisplay = document.getElementById('usernameDisplay');
+const userStatsModal = document.getElementById('userStatsModal');
+const closeModalBtn = document.getElementById('closeModalBtn');
+
+usernameDisplay?.addEventListener('click', function() {
+	userStatsModal?.classList.remove('hidden');
   });
-}
+
+  closeModalBtn?.addEventListener('click', function() {
+	userStatsModal?.classList.add('hidden');
+  });
