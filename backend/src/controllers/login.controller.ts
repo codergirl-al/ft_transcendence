@@ -32,6 +32,22 @@ export async function showUser(request: FastifyRequest, reply: FastifyReply) {
 	return sendResponse(reply, 200, user);
 }
 
+// GET /api/user - Show data of user
+export async function myUser(request: FastifyRequest, reply: FastifyReply) {
+	// const { id } = request.params as RequestParams;
+	const { email } = request.user as TokenData;
+	const { db } = request.server;
+	const user = db
+		.prepare('SELECT * FROM users WHERE email = ?')
+		.get(email) as UserData | undefined;
+	dbLogger.info(`request user ${email}`);
+	if (!user)
+		return sendResponse(reply, 404, undefined, "User not found");
+
+	dbLogger.info(`select users where email = ${email}`);
+	return sendResponse(reply, 200, user);
+}
+
 // POST /api/user/ - Add new user to the DB
 export async function newUser(request: FastifyRequest, reply: FastifyReply) {
 	const { username } = request.body as UserRequestBody;
@@ -77,9 +93,9 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 
 	const data = request.parts()
 	for await (const part of data) {
-		if (part.type == 'field') {
+		if (part.type == 'field' && part.fieldname == 'editUsername') {
 			username = part.value as string;
-		} else {
+		} else if (part.type == 'file') {
 			const filename = '/app/dist/public/uploads/' + user.id + '.png';
 			await pump(part.file, fs.createWriteStream(filename, { flags: 'w' }));
 		}
@@ -179,26 +195,26 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 
 // GET /api/user/:name/delete - Delete user and clear cookie
 export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
-	const { id } = request.params as RequestParams;
+	// const { id } = request.params as RequestParams;
 	const { db } = request.server;
 	const userInfo = request.user as TokenData;
 	const user = db
-		.prepare("SELECT email FROM users WHERE username = ?")
-		.get(id) as UserData | undefined;
+		.prepare("SELECT * FROM users WHERE email = ?")
+		.get(userInfo.email) as UserData | undefined;
 
 	if (!user) {
-		authLogger.info(`Attempt to delete nonexistent user ${id}`);
+		authLogger.info(`Attempt to delete nonexistent user ${userInfo.email}`);
 		return sendResponse(reply, 400, undefined, "User not found");
 	}
-	if (userInfo.email !== user.email) {
-		authLogger.warn(`Attempt to delete user ${id} by ${userInfo.email}`);
-		return sendResponse(reply, 401, undefined, "Unauthorized");
-	}
+	// if (userInfo.email !== user.email) {
+	// 	authLogger.warn(`Attempt to delete user ${id} by ${userInfo.email}`);
+	// 	return sendResponse(reply, 401, undefined, "Unauthorized");
+	// }
 
 	const deleteStatement = db.prepare("DELETE FROM users WHERE username = ?");
-	deleteStatement.run(id);
-	authLogger.info(`User ${id} deleted`);
-	dbLogger.info(`delete users where username = ${id}`);
+	deleteStatement.run(user.username);
+	authLogger.info(`User ${user.username} deleted`);
+	dbLogger.info(`delete users where username = ${user.username}`);
 
 	// logout on success
 	reply.clearCookie('auth_token');
@@ -232,7 +248,8 @@ export async function callback(request: FastifyRequest, reply: FastifyReply) {
 	console.log("cookie set: " + jwtToken);
 	// if (!user)
 	// 	return reply.redirect("/test/newUser");//CHECK
-	return sendResponse(reply, 200, jwtToken);
+	// return sendResponse(reply, 200, jwtToken);
+	reply.redirect("/#account");
 }
 
 // GET /api/user/logout - Logout and clear cookie		OLD
@@ -267,7 +284,9 @@ export async function editUserForm(request: FastifyRequest, reply: FastifyReply)
 		authLogger.warn(`Attempt to request update of user data of ${name} by ${userInfo.email}`);
 		return sendResponse(reply, 401, undefined, "Unauthorized");
 	}
-	return reply.view("editProfile.ejs", { title: "Edit Profile", user: user, status: "click submit to save changes" });
+	return sendResponse(reply, 404, "temp");
+
+	// return reply.view("editProfile.ejs", { title: "Edit Profile", user: user, status: "click submit to save changes" });
 }
 
 // TEST		GET /test/newUser - Form to create a new user
@@ -280,7 +299,8 @@ export async function newUserForm(request: FastifyRequest, reply: FastifyReply) 
 
 	if (user)
 		return sendResponse(reply, 400, undefined, "User already registered");
-	return reply.view("createProfile.ejs", { title: "New Profile", email: userInfo.email, status: "enter data" });
+	return sendResponse(reply, 404, "temp");
+	// return reply.view("createProfile.ejs", { title: "New Profile", email: userInfo.email, status: "enter data" });
 }
 
 // TEST		GET /test/currentuser/ - Check logged-in user and redirect accordingly

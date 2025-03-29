@@ -6,7 +6,6 @@ import { serverLogger } from "./conf/logger";
 import { sendResponse } from "./controllers/root.controller";
 import { TokenData } from "./types/types";
 // fastify plugins
-import fastifyView from "@fastify/view";
 import { Database } from "better-sqlite3";
 import fastifyStatic from "@fastify/static";
 import fastifyFormbody from "@fastify/formbody";
@@ -15,8 +14,6 @@ import fastifyCookie from "@fastify/cookie";
 import multipart, { MultipartFile } from "@fastify/multipart";
 import fastifyJWT from "@fastify/jwt";
 // utils
-import path from "node:path";
-import ejs from "ejs";
 
 declare module "fastify" {
 	interface FastifyInstance {
@@ -100,9 +97,12 @@ fastify.addHook("onResponse", async (request: FastifyRequest, reply: FastifyRepl
 // configure routes (./routes/routes.ts)
 fastify.register(routes);
 
+
 // SERVER----------------------------------------------------------------
 const port = Number(process.env.FASTIFY_PORT) || 3000;
 const address = process.env.FASTIFY_ADDRESS;
+console.log("AAAAAAAAAAAAAAAAA!!!");
+console.log(process.env.JWT_SECRET);
 
 try {
 	fastify.listen({ port: port, host: address }, (err, addr) => {

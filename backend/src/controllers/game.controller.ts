@@ -86,7 +86,8 @@ export async function showAllGames(request: FastifyRequest, reply: FastifyReply)
 
 // TEST		GET /test/newGame
 export async function newGameForm(request: FastifyRequest, reply: FastifyReply) {
-	return reply.view("newGame.ejs", { title: "new Game" });
+	// return reply.view("newGame.ejs", { title: "new Game" });
+	return sendResponse(reply, 404, undefined, "temp");
 }
 
 // TEST		GET /test/editGame/:id
@@ -94,7 +95,9 @@ export async function editGameForm(request: FastifyRequest, reply: FastifyReply)
 	const game = getGameData(request);
 	if (!game)
 		return sendResponse(reply, 404, undefined, "Game ID not found");
-	return reply.view("editGame.ejs", { title: "edit Game", game: game });
+	// return reply.view("editGame.ejs", { title: "edit Game", game: game });
+	return sendResponse(reply, 404,undefined, "temp");
+
 }
 
 // ----------------------------------------------------------------------------------------
