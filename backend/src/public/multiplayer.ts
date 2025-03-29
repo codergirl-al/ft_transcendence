@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
     drawRect(player1.x, player1.y, paddleWidth, paddleHeight, "#FFF");
     drawRect(player2.x, player2.y, paddleWidth, paddleHeight, "#FFF");
     drawCircle(ball.x, ball.y, ball.radius, "#FFF");
-  
+
     if (gameOver) {
       ctx.fillStyle = "#FFF";
       ctx.font = "bold 48px Arial";
@@ -167,4 +167,4 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   loop = window.setInterval(gameLoop, 1000 / 60);
-};
+})

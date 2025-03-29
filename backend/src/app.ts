@@ -101,8 +101,8 @@ fastify.register(routes);
 // SERVER----------------------------------------------------------------
 const port = Number(process.env.FASTIFY_PORT) || 3000;
 const address = process.env.FASTIFY_ADDRESS;
-console.log("AAAAAAAAAAAAAAAAA!!!");
-console.log(process.env.JWT_SECRET);
+// console.log("AAAAAAAAAAAAAAAAA!!!");
+// console.log(process.env.JWT_SECRET);
 
 try {
 	fastify.listen({ port: port, host: address }, (err, addr) => {

@@ -137,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function gameLoop() {
     update();
     render();
+    rendersinglepl();
   }
 
   document.addEventListener("keydown", (e) => {
@@ -151,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loop = window.setInterval(gameLoop, 1000 / 60);
 
-  function render() {
+  function rendersinglepl() {
     drawRect(0, 0, canvas.width, canvas.height, "#000");
     drawText(player.score.toString(), canvas.width / 4, 50);
     drawText(ai.score.toString(), (3 * canvas.width) / 4, 50);
@@ -171,4 +172,4 @@ document.addEventListener("DOMContentLoaded", () => {
       ctx.fillText("Press R to Restart", canvas.width / 2 - 100, canvas.height / 2 + 50);
     }
   }
-};
+});

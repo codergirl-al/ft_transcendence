@@ -293,12 +293,12 @@ function playNextMatch(): void {
   alert("Next Match: " + match.player1 + " vs. " + match.player2);
   
   // Start the multiplayer match.
-  if (typeof runMultiplayerGame === "function") {
-    runMultiplayerGame();
-  } else {
-    console.error("runMultiplayerGame is not defined.");
-    return;
-  }
+  // if (typeof runMultiplayerGame === "function") {
+  //   runMultiplayerGame();
+  // } else {
+  //   console.error("runMultiplayerGame is not defined.");
+  //   return;
+  // }
 
   // Listen for the match completion event.
   document.addEventListener("tournamentMatchComplete", function handler(e: any) {
