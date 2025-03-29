@@ -126,9 +126,31 @@ document.addEventListener("DOMContentLoaded", () => {
     drawCircle(ball.x, ball.y, ball.radius, "#FFF");
   }
 
+  function gamerender() {
+    drawRect(0, 0, canvas.width, canvas.height, "#000");
+    drawText(player1.score.toString(), canvas.width / 4, 50);
+    drawText(player2.score.toString(), (3 * canvas.width) / 4, 50);
+    drawRect(player1.x, player1.y, paddleWidth, paddleHeight, "#FFF");
+    drawRect(player2.x, player2.y, paddleWidth, paddleHeight, "#FFF");
+    drawCircle(ball.x, ball.y, ball.radius, "#FFF");
+  
+    if (gameOver) {
+      ctx.fillStyle = "#FFF";
+      ctx.font = "bold 48px Arial";
+      const winner = player1.score > player2.score ? "Player1" : "Player2";
+      const message = winner + " WON THE GAME";
+      const msgWidth = ctx.measureText(message).width;
+      ctx.fillText("Game Over", canvas.width / 2 - 120, canvas.height / 2 - 40);
+      ctx.fillText(message, canvas.width / 2 - msgWidth / 2, canvas.height / 2 + 10);
+      ctx.font = "24px Arial";
+      ctx.fillText("Press R to Restart", canvas.width / 2 - 100, canvas.height / 2 + 50);
+    }
+  }
+
   function gameLoop() {
     update();
     render();
+    gamerender();
   }
 
   document.addEventListener("keydown", (e) => {
