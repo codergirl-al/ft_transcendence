@@ -150,4 +150,25 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   loop = window.setInterval(gameLoop, 1000 / 60);
+
+  function render() {
+    drawRect(0, 0, canvas.width, canvas.height, "#000");
+    drawText(player.score.toString(), canvas.width / 4, 50);
+    drawText(ai.score.toString(), (3 * canvas.width) / 4, 50);
+    drawRect(player.x, player.y, paddleWidth, paddleHeight, "#FFF");
+    drawRect(ai.x, ai.y, paddleWidth, paddleHeight, "#FFF");
+    drawCircle(ball.x, ball.y, ball.radius, "#FFF");
+
+    if (gameOver) {
+      ctx.fillStyle = "#FFF";
+      ctx.font = "bold 48px Arial";
+      const winner = player.score > ai.score ? "Player" : "AI";
+      const message = winner + " WON THE GAME";
+      const msgWidth = ctx.measureText(message).width;
+      ctx.fillText("Game Over", canvas.width / 2 - 120, canvas.height / 2 - 40);
+      ctx.fillText(message, canvas.width / 2 - msgWidth / 2, canvas.height / 2 + 10);
+      ctx.font = "24px Arial";
+      ctx.fillText("Press R to Restart", canvas.width / 2 - 100, canvas.height / 2 + 50);
+    }
+  }
 };
