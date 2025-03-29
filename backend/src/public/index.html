@@ -4,15 +4,13 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-	<title>ft_trans</title>
+	<title>ft_transcendence</title>
 	<!-- <link href="../../public/css/output.css" rel="stylesheet"> -->
 	<script type="module" src="/app.js"></script>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css">
 	<link rel="stylesheet" href="/css/output.css">
 	<style>
-		/* Hide all views by default */
 		.view { display: none; }
-		/* Only the active view is shown */
 		.active { display: block; }
 	</style>
 </head>
@@ -70,7 +68,6 @@
 			</p>
 		</div>
 	</div>
-		<!-- <script src="/index.js"></script> -->
 	</section>
 
 	<!-- ACCOUNT VIEW -->
@@ -116,7 +113,7 @@
 		</div>
 		<div class="relative">
 			<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-				<a href="#tournaments" class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
+				<a href="#tournament" class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
 					TOURNAMENT
 				</a>
 				</div>
@@ -198,11 +195,6 @@
 							Create
 						</button>
 					</form>
-					<!-- <footer class="absolute bottom-0 left-0 w-full p-4 bg-purple-500 text-center">
-						<p class="text-sm text-purple-200">
-							&copy; 2025 Team SAFARI, Inc. All rights reserved.
-						</p>
-					</footer> -->
 				</div>
 			</div>
 			<script src="/createProfile.js"></script>
@@ -245,51 +237,58 @@
 						</form>
 					</div>
 				</div>
-				<!-- <footer class="absolute bottom-0 left-0 w-full p-4 bg-purple-500 text-center">
-					<p class="text-sm text-purple-200">
-						&copy; 2025 Team SAFARI, Inc. All rights reserved.
-					</p>
-				</footer> -->
 			</div>
 			<script src="/editProfile.js"></script>
 		</section>
 
-		<section id="singleplayer-view" class="view min-h-screen flex flex-col items-center justify-center">
+		<section id="singleplayer-view" class="view flex flex-col items-center justify-center min-h-screen pt-16">
 			<h1 class="text-4xl font-bold mb-4">Single Player Pong</h1>
 			<canvas id="pong" width="800" height="600" class="mb-4"></canvas>
 			<!-- You can add additional controls/buttons here -->
-			<button onclick="location.href='#account'"
-				class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">Back</button>
+			<button onclick="location.href='#account'" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">Back</button>
 		</section>
-		
-<!-- MULTIPLAYER VIEW -->
-<section id="multiplayer-view" class="view min-h-screen flex flex-col items-center justify-center">
-	<!-- Multiplayer Form Container -->
-	<div id="multiplayerFormContainer" class="w-full max-w-md mb-6">
-		<h1 class="text-4xl font-bold mb-4 text-center">Multiplayer Pong</h1>
-		<form id="multiplayerForm" class="w-full max-w-md">
-			<div class="mb-4">
-				<label for="player1" class="block text-lg mb-2">Player 1 Name</label>
-				<input type="text" id="player1" name="player1" required class="w-full p-2 rounded text-black">
+
+
+		<!-- MULTIPLAYER VIEW -->
+		<section id="multiplayer-view" class="view flex items-center justify-center min-h-screen pt-16">
+			<!-- Multiplayer Form Container -->
+			<div id="multiplayerFormContainer" class="w-full max-w-md mb-6">
+				<h1 class="text-4xl font-bold mb-4 text-center">Multiplayer Pong</h1>
+				<form id="multiplayerForm" class="w-full max-w-md">
+					<div class="mb-4">
+						<label for="player1" class="block text-lg mb-2">Player 1 Name</label>
+						<input type="text" id="player1" name="player1" required class="w-full p-2 rounded text-black">
+					</div>
+					<div class="mb-4">
+						<label for="player2" class="block text-lg mb-2">Player 2 Name</label>
+						<input type="text" id="player2" name="player2" required class="w-full p-2 rounded text-black">
+					</div>
+					<button type="button" id="startMultiplayerGame"
+						class="w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors">
+						Start Multiplayer Game
+					</button>
+				</form>
 			</div>
-			<div class="mb-4">
-				<label for="player2" class="block text-lg mb-2">Player 2 Name</label>
-				<input type="text" id="player2" name="player2" required class="w-full p-2 rounded text-black">
+			<!-- Multiplayer Game Container (initially hidden) -->
+			<div id="multiplayerGameContainer" style="display: none;">
+				<canvas id="pongMulti" width="800" height="600" class="mb-4"></canvas>
+				<button onclick="location.href='#account'" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">
+					Back
+				</button>
 			</div>
-			<button type="button" id="startMultiplayerGame"
-				class="w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors">
-				Start Multiplayer Game
-			</button>
-		</form>
-	</div>
-	<!-- Multiplayer Game Container (initially hidden) -->
-	<div id="multiplayerGameContainer" style="display: none;">
-		<canvas id="pongMulti" width="800" height="600" class="mb-4"></canvas>
-		<button onclick="location.href='#account'" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">
-			Back
-		</button>
-	</div>
-</section>
+		</section>
+		<!-- Tournament Registration View -->
+		<section id="tournament-view" class="view flex items-center justify-center min-h-screen pt-16">
+			<h1 class="text-3xl font-bold mb-4 text-center">Tournament Registration</h1>
+			<form id="tournamentForm" class="max-w-md mx-auto mb-4">
+				<label class="block mb-2">Enter player aliases (comma separated):</label>
+				<textarea id="tournamentPlayers" required class="w-full p-2 text-black" rows="3"
+					placeholder="e.g., Alice, Bob, Charlie"></textarea>
+				<button type="button" onclick="registerAndStartTournament()"
+					class="mt-2 w-full px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">
+					Register &amp; Start Tournament
+				</button>
+			</form>
 		</section>
 		</main>
 		<footer class="absolute bottom-0 left-0 w-full p-4 bg-purple-500 text-center">
@@ -299,64 +298,61 @@
 		</footer>
 		<!-- Basic SPA Routing Script -->
 		<script>
-			// Function to show a specific view and hide all others.
-			function showView(viewId) {
-				document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
-				const view = document.getElementById(viewId);
-				if (view) view.classList.add('active');
+		function showView(viewId) {
+			document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+			const view = document.getElementById(viewId);
+			if (view) view.classList.add('active');
+		}
+		function route() {
+			const hash = window.location.hash.slice(1);
+			switch(hash) {
+				case 'account':
+					showView('account-view');
+					break;
+				case 'createProfile':
+					showView('createProfile-view');
+					break;
+				case 'editProfile':
+					showView('editProfile-view');
+					break;
+				case 'singleplayer':
+					showView('singleplayer-view');
+					break;
+				case 'multiplayer':
+					showView('multiplayer-view');
+					break;
+				case 'tournament':
+					showView('tournament-view');
+					break;
+				case 'index':
+				default:
+					showView('index-view');
+					break;
 			}
-			
-    function route() {
-      const hash = window.location.hash.slice(1);
-      switch(hash) {
-        case 'account':
-          showView('account-view');
-          break;
-        case 'createProfile':
-          showView('createProfile-view');
-          break;
-        case 'editProfile':
-          showView('editProfile-view');
-          break;
-        case 'singleplayer':
-          showView('singleplayer-view');
-          break;
-        case 'multiplayer':
-          showView('multiplayer-view');
-          break;
-		case 'tournament':
-		  showView('tournament-view');
-		  break;
-        case 'index':
-        default:
-          showView('index-view');
-          break;
-      }
-    }
-    
-	window.addEventListener('hashchange', route);
-	route();
-	const startMultiBtn = document.getElementById('startMultiplayerGame');
-	if (startMultiBtn) {
-		console.log("pepepeppepe");
-		startMultiBtn.addEventListener('click', async () => {
-			const player1Name = document.getElementById('player1')?.value.trim();
-			const player2Name = document.getElementById('player2')?.value.trim();
-			if (player1Name && player2Name) {
-				// Save names in localStorage (or pass them directly to your game module)
-				localStorage.setItem('multiplayerPlayer1', player1Name);
-				localStorage.setItem('multiplayerPlayer2', player2Name);
+		}
 
-				// Hide the form container and show the game container.
-				const formContainer = document.getElementById('multiplayerFormContainer');
-				const gameContainer = document.getElementById('multiplayerGameContainer');
-				if (formContainer) formContainer.style.display = 'none';
-				if (gameContainer) gameContainer.style.display = 'block';
-			} else {
-				alert('Please enter names for both players.');
-			}
-		});
-	}
+		window.addEventListener('hashchange', route);
+		route();
+
+		const startMultiBtn = document.getElementById('startMultiplayerGame');
+		if (startMultiBtn) {
+			startMultiBtn.addEventListener('click', async () => {
+				const player1Name = document.getElementById('player1')?.value.trim();
+				const player2Name = document.getElementById('player2')?.value.trim();
+				if (player1Name && player2Name) {
+					// Save names in localStorage (or pass them directly to your game module)
+					localStorage.setItem('multiplayerPlayer1', player1Name);
+					localStorage.setItem('multiplayerPlayer2', player2Name);
+
+					const formContainer = document.getElementById('multiplayerFormContainer');
+					const gameContainer = document.getElementById('multiplayerGameContainer');
+					if (formContainer) formContainer.style.display = 'none';
+					if (gameContainer) gameContainer.style.display = 'block';
+				} else {
+					alert('Please enter names for both players.');
+				}
+			});
+		}
 
 		function registerMulti() {
 			var p1 = document.getElementById("player1").value.trim();
@@ -369,20 +365,22 @@
 			localStorage.setItem("multiplayerPlayer2", p2);
 			startMultiGame();
 		}
-		// Tournament registration and start
+
 		function registerAndStartTournament() {
 			var input = document.getElementById("tournamentPlayers").value;
-			var players = input.split(",").map(function (name) { return name.trim(); }).filter(function (n) { return n; });
+			var players = input.split(",").map(function (n) { return n.trim(); }).filter(function (n) { return n; });
 			if (players.length < 2) {
 				alert("Enter at least two names.");
 				return;
 			}
-			registerTournament(players);
-			startTournament();
+			if (typeof registerTournament === "function" && typeof startTournament === "function") {
+				registerTournament(players);
+				startTournament();
+			}
 		}
-	</script>
-  <script src="multiplayer.js"></script>
-  <script src="singleplayer.js"></script>
-	<script src="tournament.js"></script>
+		</script>
+		<script src="multiplayer.js"></script>
+		<script src="singleplayer.js"></script>
+		<script src="tournament.js"></script>
 	</body>
 </html>
