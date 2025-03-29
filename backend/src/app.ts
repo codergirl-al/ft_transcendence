@@ -6,7 +6,6 @@ import { serverLogger } from "./conf/logger";
 import { sendResponse } from "./controllers/root.controller";
 import { TokenData } from "./types/types";
 // fastify plugins
-import fastifyView from "@fastify/view";
 import { Database } from "better-sqlite3";
 import fastifyStatic from "@fastify/static";
 import fastifyFormbody from "@fastify/formbody";
@@ -14,9 +13,6 @@ import { fastifyOauth2, OAuth2Namespace } from '@fastify/oauth2';
 import fastifyCookie from "@fastify/cookie";
 import multipart, { MultipartFile } from "@fastify/multipart";
 import fastifyJWT from "@fastify/jwt";
-// utils
-import path from "node:path";
-import ejs from "ejs";
 
 declare module "fastify" {
 	interface FastifyInstance {

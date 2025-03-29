@@ -40,7 +40,7 @@ async function userRoutes(userRoutes: FastifyInstance) {
 		preValidation: [multipartRequest, userRoutes.authenticate],
 		schema: { params: userParamSchema }
 	}, editUser);
-	userRoutes.get("/logout", logout);
+	userRoutes.get("/logout", { preValidation: userRoutes.authenticate}, logout);
 	userRoutes.get("/:id/delete", { preValidation: userRoutes.authenticate, schema: { params: userParamSchema } }, deleteUser);
 }
 
