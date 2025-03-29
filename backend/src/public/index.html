@@ -240,8 +240,9 @@
 			</div>
 			<script src="/editProfile.js"></script>
 		</section>
+	</main>
 
-		<section id="singleplayer-view" class="view flex flex-col items-center justify-center min-h-screen pt-16">
+		<section id="singleplayer-view" class="view flex flex-col items-center justify-center min-h-screen px-4">
 			<h1 class="text-4xl font-bold mb-4">Single Player Pong</h1>
 			<canvas id="pong" width="800" height="600" class="mb-4"></canvas>
 			<!-- You can add additional controls/buttons here -->
@@ -277,20 +278,39 @@
 				</button>
 			</div>
 		</section>
-		<!-- Tournament Registration View -->
-		<section id="tournament-view" class="view flex items-center justify-center min-h-screen pt-16">
-			<h1 class="text-3xl font-bold mb-4 text-center">Tournament Registration</h1>
-			<form id="tournamentForm" class="max-w-md mx-auto mb-4">
-				<label class="block mb-2">Enter player aliases (comma separated):</label>
-				<textarea id="tournamentPlayers" required class="w-full p-2 text-black" rows="3"
-					placeholder="e.g., Alice, Bob, Charlie"></textarea>
-				<button type="button" onclick="registerAndStartTournament()"
-					class="mt-2 w-full px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">
-					Register &amp; Start Tournament
-				</button>
-			</form>
-		</section>
-		</main>
+<!-- Tournament Registration View -->
+<section id="tournament-registration-view"
+	class="view flex flex-col items-center justify-center min-h-screen pt-16 px-4">
+	<h1 class="text-3xl font-bold mb-4 text-center">Tournament Registration</h1>
+	<!-- User Search / Invite Interface -->
+	<div class="mb-4 w-full max-w-md">
+		<input id="user-search" type="text" placeholder="Search users to invite..." class="w-full p-2 border rounded">
+		<!-- In a real implementation, as you type you would show results and allow selections -->
+		<p class="text-sm mt-2 text-center">Type to search and select users</p>
+	</div>
+	<!-- Register Tournament Button -->
+	<button type="button" onclick="registerTournament()"
+		class="mt-2 w-full max-w-md px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">
+		Register Tournament
+	</button>
+</section>
+
+<!-- Tournament Start View (initially hidden) -->
+<section id="tournament-start-view" class="view flex flex-col items-center justify-center min-h-screen pt-16 px-4"
+	style="display: none;">
+	<h1 class="text-3xl font-bold mb-4 text-center">Tournament Ready</h1>
+	<!-- Display the list of invited players -->
+	<div class="mb-4 w-full max-w-md">
+		<h2 class="text-xl font-semibold mb-2">Invited Players:</h2>
+		<ul id="registered-users" class="list-disc pl-5"></ul>
+	</div>
+	<!-- Start Tournament Button -->
+	<button type="button" onclick="startTournament()"
+		class="w-full max-w-md px-4 py-2 bg-green-600 rounded hover:bg-green-700">
+		Start Tournament Now
+	</button>
+</section>
+
 		<footer class="absolute bottom-0 left-0 w-full p-4 bg-purple-500 text-center">
 			<p class="text-sm text-purple-200">
 				&copy; 2025 Team SAFARI, Inc. All rights reserved.
@@ -321,8 +341,11 @@
 				case 'multiplayer':
 					showView('multiplayer-view');
 					break;
+				case 'tournament-start':
+					showView('tournament-start-view');
+					break;
 				case 'tournament':
-					showView('tournament-view');
+					showView('tournament-registration-view');
 					break;
 				case 'index':
 				default:
@@ -363,24 +386,43 @@
 			}
 			localStorage.setItem("multiplayerPlayer1", p1);
 			localStorage.setItem("multiplayerPlayer2", p2);
-			startMultiGame();
-		}
-
-		function registerAndStartTournament() {
-			var input = document.getElementById("tournamentPlayers").value;
-			var players = input.split(",").map(function (n) { return n.trim(); }).filter(function (n) { return n; });
-			if (players.length < 2) {
-				alert("Enter at least two names.");
-				return;
-			}
-			if (typeof registerTournament === "function" && typeof startTournament === "function") {
-				registerTournament(players);
-				startTournament();
-			}
+			// startMultiGame();
 		}
 		</script>
 		<script src="multiplayer.js"></script>
 		<script src="singleplayer.js"></script>
 		<script src="tournament.js"></script>
+		<script>
+			    // Simulated registration call (replace with your actual fetch call)
+					function registerTournament() {
+						console.log("Register Tournament clicked");
+
+						// Simulate backend call delay
+						setTimeout(() => {
+							// Simulated list of invited users; normally, this would be returned from your backend.
+							const registeredUsers = ['Alice', 'Bob', 'Charlie'];
+
+							// Populate the list in the tournament start view.
+							const userListElement = document.getElementById('registered-users');
+							userListElement.innerHTML = ''; // clear previous entries if any
+							registeredUsers.forEach(user => {
+								const li = document.createElement('li');
+								li.textContent = user;
+								userListElement.appendChild(li);
+							});
+
+							// Hide the registration view and show the start view.
+							document.getElementById('tournament-registration-view').style.display = 'none';
+							document.getElementById('tournament-start-view').style.display = 'flex';
+						}, 1000); // 1 second delay to simulate fetch call
+					}
+
+					// Temporary function to simulate starting the tournament
+					function startTournament() {
+						console.log("Start Tournament Now clicked");
+						// You can navigate to a tournament game page or perform additional logic here.
+						alert("Tournament Started!");
+					}
+		</script>
 	</body>
 </html>

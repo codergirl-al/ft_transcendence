@@ -202,6 +202,8 @@
 
 // tournament.ts
 
+console.log("beeeeeppp");
+
 interface TournamentMatch {
   player1: string;
   player2: string;
