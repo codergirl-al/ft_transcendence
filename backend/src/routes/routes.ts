@@ -10,7 +10,7 @@ export default async function routes(fastify: FastifyInstance) {
 	fastify.get("/", spa);
 	fastify.get("/google-login/callback", callback);
 	fastify.register(apiRoutes, { prefix: "/api" });
-	fastify.register(testRoutes, { prefix: "/test" });
+	// fastify.register(testRoutes, { prefix: "/test" });
 
 	// fastify.setNotFoundHandler((request: FastifyRequest, reply: FastifyReply) => {
 	// 	// reply.sendFile('index.html');

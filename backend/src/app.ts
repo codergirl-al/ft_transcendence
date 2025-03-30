@@ -24,6 +24,29 @@ declare module "fastify" {
 	}
 }
 
+// Validate required environment variables
+function validateEnvVariables() {
+	const requiredEnvVars = [
+		"JWT_SECRET",
+		"GOOGLE_CLIENT_ID",
+		"GOOGLE_CLIENT_SECRET",
+		"CALLBACK_URL",
+		"FASTIFY_PORT",
+		"FASTIFY_ADDRESS",
+		"FASTIFY_NODE_ENV",
+		"FASTIFY_DB_FILE"
+	];
+
+	const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+
+	if (missingEnvVars.length > 0) {
+		console.error(`Missing required environment variables: ${missingEnvVars.join(", ")}`);
+		process.exit(1);
+	}
+}
+
+validateEnvVariables();
+
 // ----------------------------------------------------------------------
 // get fastify
 const fastify: FastifyInstance = Fastify({logger: true});
@@ -100,8 +123,6 @@ fastify.register(routes);
 // SERVER----------------------------------------------------------------
 const port = Number(process.env.FASTIFY_PORT) || 3000;
 const address = process.env.FASTIFY_ADDRESS;
-// console.log("AAAAAAAAAAAAAAAAA!!!");
-// console.log(process.env.JWT_SECRET);
 
 try {
 	fastify.listen({ port: port, host: address }, (err, addr) => {

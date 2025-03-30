@@ -15,7 +15,8 @@ async function dbConnector(fastify: FastifyInstance) {
 		CREATE TABLE IF NOT EXISTS users (
 		id INTEGER PRIMARY KEY,
 		username TEXT UNIQUE NOT NULL,
-		email TEXT UNIQUE NOT NULL
+		email TEXT UNIQUE NOT NULL,
+		status TEXT CHECK(status IN ('offline', 'online'))
 		);
 	`);
 
@@ -28,6 +29,18 @@ async function dbConnector(fastify: FastifyInstance) {
 		game_wins INTEGER DEFAULT 0,
 		losses INTEGER DEFAULT 0,
 		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+		);
+	`);
+
+	// friends
+	db.exec(`
+		CREATE TABLE IF NOT EXISTS friends (
+		id INTEGER PRIMARY KEY,
+		user_id1 INTEGER DEFAULT 1,
+		user_id2 INTEGER DEFAULT 1,
+		status TEXT NOT NULL CHECK(status IN ('pending', 'accepted')),
+		FOREIGN KEY (user_id1) REFERENCES users(id) ON DELETE CASCADE,
+		FOREIGN KEY (user_id2) REFERENCES users(id) ON DELETE CASCADE
 		);
 	`);
 

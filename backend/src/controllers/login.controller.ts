@@ -96,7 +96,6 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 	const { id } = request.params as RequestParams;
 	const { email } = request.user as TokenData;
 	let username = '';
-	// const { username, avatarFile } = request.body as UploadBody;
 
 	const user = db
 		.prepare('SELECT * FROM users WHERE username = ?')
@@ -133,84 +132,8 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 	dbLogger.info(`update users where email = ${email}`);
 	return sendResponse(reply, 200);
 }
-// export async function editUser(request: FastifyRequest, reply: FastifyReply) {
-// 	const { db } = request.server;
-// 	const { name } = request.params as RequestParams;
-	
-// 	// Retrieve the existing user record.
-// 	const user = db
-// 	  .prepare('SELECT * FROM users WHERE username = ?')
-// 	  .get(name) as UserData | undefined;
-// 	if (!user) {
-// 	  return reply.code(404).send({ message: "User not found" });
-// 	}
-	
-// 	const userInfo = await getUserInfo(request);
-// 	if (user.email !== userInfo.email) {
-// 	  authLogger.warn(`Attempt to update user data of ${name} by ${userInfo.email}`);
-// 	  return reply.code(401).send({ message: "Unauthorized" });
-// 	}
-	
-// 	// Initialize variables to capture new form values.
-// 	let newUsername = "";
-// 	let avatarLink = "";
-// 	let avatarFilePath = "";
-	
-// 	// Ensure uploads directory exists
-// 	const uploadDir = path.join(process.cwd(), "uploads");
-// 	if (!fs.existsSync(uploadDir)) {
-// 	  fs.mkdirSync(uploadDir, { recursive: true });
-// 	}
-	
-// 	try {
-// 	  const parts = (request as any).parts();
-// 	  for await (const part of parts) {
-// 		if (part.file) {
-// 		  if (part.fieldname === "avatarFile") {
-// 			const filePath = path.join(uploadDir, part.filename);
-// 			await pump(part.file, fs.createWriteStream(filePath));
-// 			avatarFilePath = filePath;
-// 		  }
-// 		} else {
-// 		  if (part.fieldname === "username") {
-// 			newUsername = part.value;
-// 		  } else if (part.fieldname === "avatarLink") {
-// 			avatarLink = part.value;
-// 		  }
-// 		}
-// 	  }
-// 	} catch (error) {
-// 	  request.log.error("File upload error:", error);
-// 	  return reply.code(500).send({ error: "File upload failed" });
-// 	}
-	
-// 	// Check if the new username is already taken (if it was changed).
-// 	const taken = db
-// 	  .prepare('SELECT username FROM users WHERE username = ?')
-// 	  .get(newUsername) as UserData | undefined;
-// 	if (taken && newUsername !== name) {
-// 	  return reply.redirect(`/api/user/${name}/edit`);
-// 	}
-	
-// 	// Update the database:
-// 	// Priority is given to a file upload. If no file was provided, check for an avatar URL.
-// 	if (avatarFilePath) {
-// 	  const updateStatement = db.prepare('UPDATE users SET username = ?, image_url = ? WHERE username = ?');
-// 	  updateStatement.run(newUsername, avatarFilePath, name);
-// 	} else if (avatarLink) {
-// 	  const updateStatement = db.prepare('UPDATE users SET username = ?, image_url = ? WHERE username = ?');
-// 	  updateStatement.run(newUsername, avatarLink, name);
-// 	} else {
-// 	  const updateStatement = db.prepare('UPDATE users SET username = ? WHERE username = ?');
-// 	  updateStatement.run(newUsername, name);
-// 	}
-	
-// 	authLogger.info(`Updated user data of ${userInfo.email}`);
-// 	dbLogger.info(`update users where email = ${userInfo.email}`);
-// 	return reply.redirect(`/api/user/${newUsername}`);
-//   }
 
-// GET /api/user/:name/delete - Delete user and clear cookie
+// GET /api/user/delete - Delete user and clear cookie
 export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
 	// const { id } = request.params as RequestParams;
 	const { db } = request.server;
@@ -266,7 +189,7 @@ export async function callback(request: FastifyRequest, reply: FastifyReply) {
 	return reply.redirect("/#account");
 }
 
-// GET /api/user/logout - Logout and clear cookie		OLD
+// GET /api/user/logout - Logout and clear cookie
 export async function logout(request: FastifyRequest, reply: FastifyReply) {
 	const user = request.user as TokenData;
 	reply.clearCookie('auth_token');
@@ -277,70 +200,70 @@ export async function logout(request: FastifyRequest, reply: FastifyReply) {
 
 // ---------------------------------------------------------------------------------------------------
 
-// TEST		GET /test/editUser/:name - Form to edit user
-export async function editUserForm(request: FastifyRequest, reply: FastifyReply) {
-	const { db } = request.server;
-	const { id } = request.params as RequestParams;
-	const userInfo = request.user as TokenData;
+// // TEST		GET /test/editUser/:name - Form to edit user
+// export async function editUserForm(request: FastifyRequest, reply: FastifyReply) {
+// 	const { db } = request.server;
+// 	const { id } = request.params as RequestParams;
+// 	const userInfo = request.user as TokenData;
 
-	const user = db
-		.prepare('SELECT * FROM users WHERE username = ?')
-		.get(id) as UserData | undefined;
-	if (!user)
-		return sendResponse(reply, 404, undefined, "User not found");
+// 	const user = db
+// 		.prepare('SELECT * FROM users WHERE username = ?')
+// 		.get(id) as UserData | undefined;
+// 	if (!user)
+// 		return sendResponse(reply, 404, undefined, "User not found");
 
-	const allowed = db
-		.prepare('SELECT username FROM users WHERE email = ?')
-		.get(userInfo.email) as UserData | undefined;
-	if (!allowed) {
-		return reply.redirect("/test/newUser");
-	} else if (id !== allowed.username) {
-		authLogger.warn(`Attempt to request update of user data of ${name} by ${userInfo.email}`);
-		return sendResponse(reply, 401, undefined, "Unauthorized");
-	}
-	return sendResponse(reply, 404, undefined, "tmp");
-}
+// 	const allowed = db
+// 		.prepare('SELECT username FROM users WHERE email = ?')
+// 		.get(userInfo.email) as UserData | undefined;
+// 	if (!allowed) {
+// 		return reply.redirect("/test/newUser");
+// 	} else if (id !== allowed.username) {
+// 		authLogger.warn(`Attempt to request update of user data of ${name} by ${userInfo.email}`);
+// 		return sendResponse(reply, 401, undefined, "Unauthorized");
+// 	}
+// 	return sendResponse(reply, 404, undefined, "tmp");
+// }
 
-// TEST		GET /test/newUser - Form to create a new user
-export async function newUserForm(request: FastifyRequest, reply: FastifyReply) {
-	const { db } = request.server;
-	const userInfo = request.user as TokenData;
-	const user = db
-		.prepare('SELECT username FROM users WHERE email = ?')
-		.get(userInfo.email) as UserData | undefined;
+// // TEST		GET /test/newUser - Form to create a new user
+// export async function newUserForm(request: FastifyRequest, reply: FastifyReply) {
+// 	const { db } = request.server;
+// 	const userInfo = request.user as TokenData;
+// 	const user = db
+// 		.prepare('SELECT username FROM users WHERE email = ?')
+// 		.get(userInfo.email) as UserData | undefined;
 
-	if (user)
-		return sendResponse(reply, 400, undefined, "User already registered");
-	return sendResponse(reply, 404, undefined, "tmp");
-}
+// 	if (user)
+// 		return sendResponse(reply, 400, undefined, "User already registered");
+// 	return sendResponse(reply, 404, undefined, "tmp");
+// }
 
-// TEST		GET /test/currentuser/ - Check logged-in user and redirect accordingly
-export async function loggedinUser(request: FastifyRequest, reply: FastifyReply) {
-	const { db } = request.server;
-	const userInfo = request.user as TokenData;
-	const user = db
-		.prepare('SELECT username FROM users WHERE email = ?')
-		.get(userInfo.email) as UserData | undefined;
-	if (!user)
-		return reply.redirect("/test/newUser");
-	return reply.redirect(`/api/user/${user.username}`);
-}
+// // TEST		GET /test/currentuser/ - Check logged-in user and redirect accordingly
+// export async function loggedinUser(request: FastifyRequest, reply: FastifyReply) {
+// 	const { db } = request.server;
+// 	const userInfo = request.user as TokenData;
+// 	const user = db
+// 		.prepare('SELECT username FROM users WHERE email = ?')
+// 		.get(userInfo.email) as UserData | undefined;
+// 	if (!user)
+// 		return reply.redirect("/test/newUser");
+// 	return reply.redirect(`/api/user/${user.username}`);
+// }
 
-// TEST		GET /test/dashboard - Render the account dashboard
-export async function accountDashboard(request: FastifyRequest, reply: FastifyReply) {
-	const userInfo = request.user as TokenData;
-	const { db } = request.server;
-	const user = db
-		.prepare('SELECT * FROM users WHERE email = ?')
-		.get(userInfo.email) as UserData | undefined;
-	if (!user)
-		return reply.redirect('/test/newUser');
+// // TEST		GET /test/dashboard - Render the account dashboard
+// export async function accountDashboard(request: FastifyRequest, reply: FastifyReply) {
+// 	const userInfo = request.user as TokenData;
+// 	const { db } = request.server;
+// 	const user = db
+// 		.prepare('SELECT * FROM users WHERE email = ?')
+// 		.get(userInfo.email) as UserData | undefined;
+// 	if (!user)
+// 		return reply.redirect('/test/newUser');
 
-	const stats = db
-		.prepare("SELECT total_games, wins, losses FROM user_stats WHERE user_id = ?")
-		.get(user.id) || { total_games: 0, wins: 0, losses: 0 };
+// 	const stats = db
+// 		.prepare("SELECT total_games, wins, losses FROM user_stats WHERE user_id = ?")
+// 		.get(user.id) || { total_games: 0, wins: 0, losses: 0 };
 
-	// Pass the user and stats data to the view.
-	// return reply.view("account.ejs", { title: "Account Dashboard", user, stats });
-	return reply.redirect("/#account");
-}
+// 	// Pass the user and stats data to the view.
+// 	// return reply.view("account.ejs", { title: "Account Dashboard", user, stats });
+// 	return reply.redirect("/#account");
+// }

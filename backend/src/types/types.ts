@@ -24,6 +24,16 @@ export interface UserData {
 	email?: string;
 }
 
+// layout of friends table
+export interface FriendData {
+	id: Number;
+	user_id1: Number;
+	user_id2: Number;
+	status?: string;
+	username1?: string;
+	username2?: string;
+}
+
 // layout of tournament table
 export interface TournamentData {
 	id?: Number;
