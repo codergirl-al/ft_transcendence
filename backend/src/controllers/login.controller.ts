@@ -109,16 +109,14 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 
 	const data = request.parts()
 	for await (const part of data) {
-		if (part.type == 'field' && part.fieldname == 'editUsername') {
+		if (part.type == 'field' && part.fieldname == 'username') {
 			username = part.value as string;
 		} else if (part.type == 'file') {
 			const filename = '/app/dist/public/uploads/' + user.id + '.png';
 			await pump(part.file, fs.createWriteStream(filename, { flags: 'w' }));
 		}
 	}
-	// console.log("!!! username:", username);
 	// console.log("!!! avatarFile:", avatarFile);
-
 	const taken = db
 		.prepare('SELECT username FROM users WHERE username = ?')
 		.get(username) as UserData | undefined;

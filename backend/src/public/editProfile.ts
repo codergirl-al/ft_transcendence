@@ -24,36 +24,50 @@ async function loadEditProfileData() {
 loadEditProfileData();
 
 // Handle the edit profile form submission.
+
 const editForm = document.getElementById('editProfileForm') as HTMLFormElement | null;
-if (editForm)
-{
+if (editForm) {
 	editForm.addEventListener('submit', async function(event) {
 		event.preventDefault();
 		const formData = new FormData(this);
-		try {
-		// Send the form data to the update endpoint.
-		const response = await fetch(`/api/user/${currentUsername}`, {
-		  method: 'POST',
-		  body: formData
-		});
-		const result = await response.json();
-		if (!response.ok) {
+		console.log("Updated username:", formData.get('username'));
+		
+		// Check if the username is unchanged.
+		if (formData.get('username') === currentUsername) {
 			const status = document.getElementById('editStatus');
 			if (status)
-				status.textContent = result.message || 'Error updating profile';
-		}else {
-			// On success, navigate to the account view.
-			window.location.hash = '#account';
-			window.location.reload();
+				status.textContent = 'No changes detected. Profile not updated.';
+			return; // Exit early without sending a request.
 		}
+		try {
+			// Send the form data to the update endpoint.
+			const response = await fetch(`/api/user/${currentUsername}`, {
+				method: 'POST',
+				body: formData
+			});
+			const result = await response.json();
+			if (!response.ok) {
+				const status = document.getElementById('editStatus');
+				if (status)
+					status.textContent = result.message || 'Error updating profile';
+			} else {
+				// If the server returns updated user data, update currentUsername.
+				if (result.data && result.data.username) {
+					currentUsername = result.data.username;
+				}
+				// On success, navigate to the account view.
+				window.location.hash = '#account';
+				// window.location.reload();
+			}
 		} catch (error) {
 			console.error('Error updating profile:', error);
-			const status = document.getElementById('editStatus')
+			const status = document.getElementById('editStatus');
 			if (status)
 				status.textContent = 'Network error';
 		}
 	});
 }
+
 
 // Handle delete profile button click.
 const deleteProfile = document.getElementById('deleteProfileBtn');
