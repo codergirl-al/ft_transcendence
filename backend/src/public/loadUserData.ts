@@ -12,10 +12,11 @@ async function loadUserData() {
 		// If user is not found, show create profile view
 		if (!response.ok) {
 			if (response.status === 404) {
-				// showView('createProfile-view');
+				showView('createProfile-view');
 				return;
 			} else {
-				throw new Error('Network response was not ok');
+				// throw new Error('Network response was not ok');
+				showView('index-view');
 			}
 		}
 		console.log(response);
