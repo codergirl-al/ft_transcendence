@@ -37,7 +37,6 @@ async function userRoutes(userRoutes: FastifyInstance) {
 	}, newUser);
 	userRoutes.get("/", { preValidation: userRoutes.authenticate }, myUser); // get data of user
 	userRoutes.get("/:id", { schema: { params: userParamSchema } }, showUser); // get data of user
-	userRoutes.get("/", { preValidation: userRoutes.authenticate}, myUser); // get data of user
 	userRoutes.get("/all", allUsers); // get data of user
 	userRoutes.post("/:id", { // update profile
 		preValidation: [multipartRequest, userRoutes.authenticate],

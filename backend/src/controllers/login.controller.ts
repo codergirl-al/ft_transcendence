@@ -1,10 +1,10 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { dbLogger, authLogger } from "../conf/logger";
 import { sendResponse } from "./root.controller";
-import { RequestParams, TokenData, UserData, UserRequestBody, UploadBody } from "../types/types"
-import fs from 'fs'
-import util from 'util'
-import { pipeline } from 'stream'
+import { RequestParams, TokenData, UserData, UserRequestBody } from "../types/types";
+import fs from 'fs';
+import util from 'util';
+import { pipeline, PassThrough } from 'stream';
 
 const pump = util.promisify(pipeline)
 
@@ -34,7 +34,6 @@ export async function showUser(request: FastifyRequest, reply: FastifyReply) {
 
 // GET /api/user - Show data of user
 export async function myUser(request: FastifyRequest, reply: FastifyReply) {
-	// const { id } = request.params as RequestParams;
 	const { email } = request.user as TokenData;
 	const { db } = request.server;
 	const user = db
@@ -47,6 +46,7 @@ export async function myUser(request: FastifyRequest, reply: FastifyReply) {
 	dbLogger.info(`select users where email = ${email}`);
 	return sendResponse(reply, 200, user);
 }
+
 // GET /api/user/all - Show data of all users
 export async function allUsers(request: FastifyRequest, reply: FastifyReply) {
 	const { db } = request.server;
@@ -107,18 +107,35 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 		return sendResponse(reply, 401, undefined, "Unauthorized");
 	}
 
-	const data = request.parts()
+	const data = request.parts();
 	for await (const part of data) {
-		if (part.type == 'field' && part.fieldname == 'editUsername') {
+		if (part.type == 'field' && part.fieldname == 'username') {
 			username = part.value as string;
 		} else if (part.type == 'file') {
 			const filename = '/app/dist/public/uploads/' + user.id + '.png';
-			await pump(part.file, fs.createWriteStream(filename, { flags: 'w' }));
+
+			const passThrough = new PassThrough();
+			let fileSize = 0;
+			part.file.on('data', chunk => {
+				fileSize += chunk.length;
+			});
+			part.file.pipe(passThrough);
+
+			await new Promise<void>((resolve, reject) => {
+				part.file.on('end', () => {
+					if (fileSize > 0) {
+						pump(passThrough, fs.createWriteStream(filename, { flags: 'w' }))
+							.then(resolve)
+							.catch(reject);
+					} else {
+						resolve();
+					}
+				});
+				part.file.on('error', reject);
+			});
 		}
 	}
-	// console.log("!!! username:", username);
-	// console.log("!!! avatarFile:", avatarFile);
-
+	
 	const taken = db
 		.prepare('SELECT username FROM users WHERE username = ?')
 		.get(username) as UserData | undefined;
@@ -132,6 +149,7 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 	dbLogger.info(`update users where email = ${email}`);
 	return sendResponse(reply, 200);
 }
+
 
 // GET /api/user/delete - Delete user and clear cookie
 export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {

@@ -49,7 +49,7 @@ validateEnvVariables();
 
 // ----------------------------------------------------------------------
 // get fastify
-const fastify: FastifyInstance = Fastify({logger: true});
+const fastify: FastifyInstance = Fastify();
 
 // Register the multipart plugin before defining routes that need it.
 // fastify.register(multipart);

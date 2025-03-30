@@ -2,7 +2,6 @@ import { FastifyInstance } from "fastify";
 import { apiRoutes } from "./apiRoutes";
 import { spa } from "../controllers/root.controller";
 import { setFastifyInstance, callback } from "../controllers/login.controller";
-import { testRoutes } from "./testRoutes";
 
 export default async function routes(fastify: FastifyInstance) {
 	setFastifyInstance(fastify);
