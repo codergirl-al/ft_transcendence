@@ -734,9 +734,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.overflow-y-auto {
-  overflow-y: auto;
-}
 .scroll-auto {
   scroll-behavior: auto;
 }
@@ -1376,10 +1373,6 @@
 .transition-normal {
   transition-behavior: normal;
 }
-.duration-200 {
-  --tw-duration: 200ms;
-  transition-duration: 200ms;
-}
 .ease-linear {
   --tw-ease: linear;
   transition-timing-function: linear;
@@ -1795,10 +1788,6 @@
   syntax: "*";
   inherits: false;
 }
-@property --tw-duration {
-  syntax: "*";
-  inherits: false;
-}
 @property --tw-ease {
   syntax: "*";
   inherits: false;
@@ -1816,6 +1805,10 @@
   inherits: false;
 }
 @property --tw-contain-style {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-duration {
   syntax: "*";
   inherits: false;
 }
