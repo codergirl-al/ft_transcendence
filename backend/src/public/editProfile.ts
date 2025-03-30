@@ -57,7 +57,7 @@ if (editForm) {
 				}
 				// On success, navigate to the account view.
 				window.location.hash = '#account';
-				// window.location.reload();
+				window.location.reload();
 			}
 		} catch (error) {
 			console.error('Error updating profile:', error);

@@ -7,7 +7,7 @@ if (login)
 	if (response.ok) {
 	  // After successful logout, redirect to the index view.
 	  window.location.hash = "#index";
-	//   window.location.reload();
+	  window.location.reload();
 	} else {
 	  console.error("Logout failed");
 	}
