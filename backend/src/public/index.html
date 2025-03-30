@@ -6,7 +6,7 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 	<title>ft_transcendence</title>
 	<!-- <link href="../../public/css/output.css" rel="stylesheet"> -->
-	<script type="module" src="/app.js"></script>
+	<!-- <script type="module" src="/app.js"></script> -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css">
 	<link rel="stylesheet" href="/css/output.css">
 	<style>
@@ -18,51 +18,20 @@
 	<main class="flex-grow">
 		<!-- INDEX VIEW -->
 		<section id="index-view" class="view active min-h-screen flex flex-col items-center justify-center">
-			<!-- Hamburger Button & Flyout Menu -->
-			<button id="menuButton" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-purple-700 hover:bg-purple-600 flex items-center justify-center text-2xl cursor-pointer" title="More Information">
-				☰
-			</button>
-			<div id="flyoutMenu" class="hidden fixed top-6 right-6 bottom-16 w-96 overflow-y-auto bg-purple-200 text-gray-800 p-6 rounded-lg shadow-lg transition-all duration-200">
-				<div class="relative mb-4">
-					<h2 class="text-xl font-bold">SETTINGS</h2>
-					<button id="closeFlyout" class="absolute top-0 right-0 text-gray-800 hover:text-gray-600 text-2xl font-bold" title="Close">&times;</button>
-				</div>
-				<ul class="space-y-4">
-					<div class="flex flex-col gap-y-4 mt-10">
-						<li class="relative block">
-							<div class="absolute bg-green-500 w-full h-full top-2 left-2"></div>
-							<a href="#/newGame" id="newGameLink" class="relative block bg-purple-600 text-white px-4 py-2 hover:bg-purple-700">
-								New Game
-							</a>
-						</li>
-						<li class="relative block">
-							<div class="absolute bg-green-500 w-full h-full top-2 left-2"></div>
-							<a id="googleLoginLink" onclick="location.href='/google-login';" class="relative block bg-purple-600 text-white px-4 py-2 hover:bg-purple-700">
-								Login to Account
-							</a>
-						</li>
-						<!-- Optional Account Popover -->
-						<div id="accountPopover" class="absolute hidden flex flex-col bg-white border border-gray-300 rounded shadow p-4 mt-12">
-							<button id="existingAccountBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-2">
-								Login to Existing Account
-							</button>
-							<button id="newAccountBtn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-								Create New Account
-							</button>
-						</div>
-					</div>
-				</ul>
-				<!-- If you have a separate script for index functionality -->
-				<script src="/index.js"></script>
 			</div>
 			<div class="flex items-center justify-center min-h-screen">
 				<div class="text-center">
-					<h1 class="text-6xl font-bold tracking-wide">
-						WELCOME T<span class="inline-block align-middle">🏓</span>PONG
+					<h1 class="text-6xl font-black  tracking-wide">
+						WELCOME TO	P<span class="inline-block align-middle">🏓</span> NG
 					</h1>
-					<p class="mt-6 text-lg">
-						FOR MORE INFORMATION CLICK ON THE TOP RIGHT Hamburger ICON
-					</p>
+					<div class="flex flex-col items-center justify-center gap-y-4 mt-10 w-full">
+					<li class= "relative block">
+						<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
+						<a onclick="location.href='/google-login';" class="relative block w-full py-3 px-6 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
+							Login to Account
+						</a>
+					</li>
+					
 				</div>
 			</div>
 		</section>
@@ -78,64 +47,11 @@
 							<p id="userEmail" class="text-sm text-purple-200"></p>
 						</div>
 					</div>
-					<script>
-						// Utility to show a specific view
-						function showView(viewId) {
-							document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
-							const target = document.getElementById(viewId);
-							if (target) target.classList.add('active');
-						}
-						
-						// Fetch current user data
-						async function loadUserData() {
-							try {
-								const response = await fetch("/api/user", { method: 'GET' });
-								// If user is not found, show create profile view
-								if (!response.ok) {
-									if (response.status === 404) {
-										showView('createProfile-view');
-										return;
-									} else {
-										throw new Error('Network response was not ok');
-									}
-								}
-								const data = await response.json();
-								console.log(data);
-								if (!data.data) {
-									showView('createProfile-view');
-									return;
-								}
-								// Populate header with user data
-								document.getElementById("usernameDisplay").textContent = data.data.username;
-								document.getElementById("userEmail").textContent = data.data.email;
-								document.getElementById("userAvatar").src = `/uploads/${data.data.id}.png`;
-							} catch (error) {
-								console.error('Error fetching user data:', error);
-								showView('createProfile-view');
-							}
-						}
-						loadUserData();
-					</script>
+					<script src="/loadUserData.js"></script>
 					<nav class="space-x-4">
 						<a href="#editProfile" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Edit Profile</a>
-						<a href="/" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Logout</a>
-						<script>
-							document.getElementById("logoutLink").addEventListener("click", async (event) => {
-							  event.preventDefault();
-							  try {
-								const response = await fetch("/api/user/logout", { method: "GET" });
-								if (response.ok) {
-								  // After successful logout, redirect to the index view.
-								  window.location.hash = "#/index";
-								  window.location.reload();
-								} else {
-								  console.error("Logout failed");
-								}
-							  } catch (error) {
-								console.error("Error logging out:", error);
-							  }
-							});
-						  </script>
+						<a id="logoutLink" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Logout</a>
+						<script src="/logoutLink.js"></script>
 					</nav>
 				</header>
 				<main class="flex-grow flex flex-col items-center justify-center text-center px-4">
@@ -220,7 +136,7 @@
 					<h1 class="text-3xl font-bold mb-4 text-center">Create New Profile</h1>
 					<div class="text-center mb-6">
 						<p class="mb-2">Hello!</p>
-						<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR81iX4Mo49Z3oCPSx-GtgiMAkdDop2uVmVvw&s" alt="Avatar" class="mx-auto w-20 h-20 rounded-full border-2 border-purple-600 shadow">
+						<img src="/uploads/default.png" alt="Avatar" class="mx-auto w-20 h-20 rounded-full border-2 border-purple-600 shadow">
 					</div>
 					<form id="createProfileForm" class="space-y-4">
 						<div>
@@ -232,144 +148,48 @@
 							Create
 						</button>
 					</form>
-					<script>
-						// Intercept the create profile form submission and post via fetch
-						document.getElementById('createProfileForm').addEventListener('submit', async function(event) {
-							event.preventDefault();
-							const username = document.getElementById('username').value.trim();
-							if (!username) {
-								document.getElementById('createStatus').textContent = "Username is required";
-								return;
-							}
-							try {
-								const response = await fetch('/api/user', {
-									method: 'POST',
-									headers: { 'Content-Type': 'application/json' },
-									body: JSON.stringify({ username })
-								});
-								const data = await response.json();
-								if (!response.ok) {
-									document.getElementById('createStatus').textContent = data.message || 'Error creating profile';
-								} else {
-									window.location.hash = '#account';
-									window.location.reload();
-								}
-							} catch (error) {
-								console.error('Error creating profile:', error);
-								document.getElementById('createStatus').textContent = 'Network error';
-							}
-						});
-					</script>
-					<!-- Optional external createProfile script -->
 					<script src="/createProfile.js"></script>
 				</div>
 			</div>
 		</section>
 
 		<!-- EDIT PROFILE VIEW -->
-<section id="editProfile-view" class="view">
-	<div class="min-h-screen bg-purple-900 text-white flex items-center justify-center p-4">
-	  <div class="max-w-lg w-full space-y-8">
-		<div class="bg-purple-500 p-6 rounded shadow">
-		  <h1 class="text-3xl font-bold mb-4 text-center">Edit Profile</h1>
-		  <div class="flex flex-col items-center mb-6">
-			<img id="editAvatar" src="" alt="Avatar" class="w-24 h-24 rounded-full border-2 border-purple-600 shadow" onerror="this.onerror=null; this.src='/uploads/default.png';">
-		  </div>
-		  <form id="editProfileForm" class="space-y-4" method="post" enctype="multipart/form-data">
-			<div>
-			  <label for="editUsername" class="block mb-1 font-semibold">Edit Username:</label>
-			  <input type="text" id="editUsername" name="username" class="w-full px-3 py-2 text-black rounded focus:outline-none" placeholder="New username" required>
-			</div>
-			<div>
-			  <label for="avatarFile" class="block mb-1 font-semibold">Upload Avatar:</label>
-			  <input type="file" id="avatarFile" name="avatarFile" accept="image/*" class="w-full px-3 py-2 text-black rounded focus:outline-none">
-			</div>
-			<p id="editStatus" class="text-red-400"></p>
-			<button type="submit" class="w-full py-2 bg-green-500 hover:bg-green-600 text-black font-semibold rounded transition-colors">
-			  Save
-			</button>
-		  </form>
-		</div>
-		<div class="bg-purple-500 p-6 rounded shadow">
-		  <h2 class="text-xl font-bold mb-4 text-center">DANGER ZONE</h2>
-		  <form id="deleteProfileForm" class="flex items-center justify-center">
-			<button type="button" id="deleteProfileBtn" class="w-full py-2 bg-red-500 hover:bg-red-600 text-black font-semibold rounded transition-colors">
-			  Delete Profile
-			</button>
-		  </form>
-		</div>
-	  </div>
-	  <script>
-		// Global variable to store the current username for updating the profile.
-		let currentUsername = null;
-  
-		// Load current user data into the edit form.
-		async function loadEditProfileData() {
-		  try {
-			const response = await fetch("/api/user", { method: 'GET' });
-			if (response.ok) {
-			  const data = await response.json();
-			  if (data.data) {
-				currentUsername = data.data.username; // Save the current username for the update endpoint.
-				document.getElementById("editUsername").value = data.data.username;
-				document.getElementById("editAvatar").src = `/uploads/${data.data.id}.png`;
-			  }
-			}
-		  } catch (error) {
-			console.error('Error fetching user data for edit:', error);
-		  }
-		}
-		loadEditProfileData();
-  
-		// Handle the edit profile form submission.
-		document.getElementById('editProfileForm').addEventListener('submit', async function(event) {
-		  event.preventDefault();
-		  const formData = new FormData(this);
-		  try {
-			// Send the form data to the update endpoint.
-			const response = await fetch(`/api/user/${currentUsername}`, {
-			  method: 'POST',
-			  body: formData
-			});
-			const result = await response.json();
-			if (!response.ok) {
-			  document.getElementById('editStatus').textContent = result.message || 'Error updating profile';
-			} else {
-			  // On success, navigate to the account view.
-			  window.location.hash = '#/account';
-			  window.location.reload();
-			}
-		  } catch (error) {
-			console.error('Error updating profile:', error);
-			document.getElementById('editStatus').textContent = 'Network error';
-		  }
-		});
-  
-		// Handle delete profile button click.
-		document.getElementById('deleteProfileBtn').addEventListener('click', async function() {
-		  if (confirm("Are you sure you want to delete your profile? This action cannot be undone.")) {
-			try {
-			  const response = await fetch('/api/user/delete', { method: 'GET' });
-			  if (response.ok) {
-				window.location.hash = '#index';
-				window.location.reload();
-			  } else {
-				alert("Error deleting profile");
-			  }
-			} catch (error) {
-			  console.error('Error deleting profile:', error);
-			}
-		  }
-		});
-	  </script>
-	  <!-- Optional external edit profile script -->
-	  <script src="/editProfile.js"></script>
-	</div>
-  </section>
+		<section id="editProfile-view" class="view">
+			<div class="min-h-screen bg-purple-900 text-white flex items-center justify-center p-4">
+				<div class="max-w-lg w-full space-y-8">
+					<div class="bg-purple-500 p-6 rounded shadow">
+					<h1 class="text-3xl font-bold mb-4 text-center">Edit Profile</h1>
+					<div class="flex flex-col items-center mb-6">
+						<img id="editAvatar" src="/uploads/default.png" alt="Avatar" class="w-24 h-24 rounded-full border-2 border-purple-600 shadow" onerror="this.onerror=null; this.src='/uploads/default.png';">
+						</div>
+						<form id="editProfileForm" class="space-y-4" method="post" enctype="multipart/form-data">
+							<div>
+								<label for="editUsername" class="block mb-1 font-semibold">Edit Username:</label>
+								<input type="text" id="editUsername" name="username" class="w-full px-3 py-2 text-black rounded focus:outline-none" placeholder="New username" required>
+							</div>
+							<div>
+							<label for="avatarFile" class="block mb-1 font-semibold">Upload Avatar:</label>
+							<input type="file" id="avatarFile" name="avatarFile" accept="image/*" class="w-full px-3 py-2 text-black rounded focus:outline-none">
+							</div>
+							<p id="editStatus" class="text-red-400"></p>
+							<button type="submit" class="w-full py-2 bg-green-500 hover:bg-green-600 text-black font-semibold rounded transition-colors">
+							Save
+							</button>
+						</form>
+					</div>
+					<div class="bg-purple-500 p-6 rounded shadow">
+						<h2 class="text-xl font-bold mb-4 text-center">DANGER ZONE</h2>
+						<form id="deleteProfileForm" class="flex items-center justify-center">
+							<button type="button" id="deleteProfileBtn" class="w-full py-2 bg-red-500 hover:bg-red-600 text-black font-semibold rounded transition-colors">
+							Delete Profile
+							</button>
+						</form>
+					</div>
+				</div>
+				<script src="/editProfile.js"></script>
 			</div>
 		</section>
 	</main>
-
 		<section id="singleplayer-view" class="view flex flex-col items-center justify-center min-h-screen px-4">
 			<h1 class="text-4xl font-bold mb-4">Single Player Pong</h1>
 			<canvas id="pong" width="800" height="600" class="mb-4"></canvas>
@@ -451,9 +271,9 @@
 			const view = document.getElementById(viewId);
 			if (view) view.classList.add('active');
 		}
-		
+
 		function route() {
-			let hash = window.location.hash.slice(1).replace(/^\/+/, '');
+			let hash = window.location.hash.slice(1);
 			switch(hash) {
 				case 'account':
 					showView('account-view');
