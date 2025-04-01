@@ -23,7 +23,7 @@ export async function showUser(request: FastifyRequest, reply: FastifyReply) {
 	const { id } = request.params as RequestParams;
 	const { db } = request.server;
 	const user = db
-		.prepare('SELECT username, email FROM users WHERE username = ?')
+		.prepare('SELECT * FROM users WHERE username = ?')
 		.get(id) as UserData | undefined;
 	if (!user)
 		return sendResponse(reply, 404, undefined, "User not found");
@@ -195,6 +195,11 @@ export async function callback(request: FastifyRequest, reply: FastifyReply) {
 	}
 
 	const user = db.prepare("SELECT * FROM users WHERE email = ?").get(userInfo.email) as UserData | undefined;
+	if (user) {
+		const online = db.prepare("UPDATE users SET status = 'online' WHERE email = ?");
+		online.run(userInfo.email);
+	}
+
 	const jwtPayload = { email: userInfo.email, role: "user" };
 	const jwtToken = fastify.jwt.sign(jwtPayload);
 
@@ -203,85 +208,23 @@ export async function callback(request: FastifyRequest, reply: FastifyReply) {
 		secure: process.env.FASTIFY_NODE_ENV === 'production',
 		path: '/',
 		sameSite: 'lax' });
-	// return sendResponse(reply, 200, jwtToken);
 	return reply.redirect("/#account");
 }
 
 // GET /api/user/logout - Logout and clear cookie
 export async function logout(request: FastifyRequest, reply: FastifyReply) {
 	const user = request.user as TokenData;
+	if (!offline(request, user))
+		authLogger.error(`logged out user ${user.email} still set to online`);
 	reply.clearCookie('auth_token');
 	// reply.clearCookie('oauth2-redirect-state');
 	authLogger.info(`User ${user.email} logged out`);
 	return sendResponse(reply, 200);
 }
 
-// ---------------------------------------------------------------------------------------------------
-
-// // TEST		GET /test/editUser/:name - Form to edit user
-// export async function editUserForm(request: FastifyRequest, reply: FastifyReply) {
-// 	const { db } = request.server;
-// 	const { id } = request.params as RequestParams;
-// 	const userInfo = request.user as TokenData;
-
-// 	const user = db
-// 		.prepare('SELECT * FROM users WHERE username = ?')
-// 		.get(id) as UserData | undefined;
-// 	if (!user)
-// 		return sendResponse(reply, 404, undefined, "User not found");
-
-// 	const allowed = db
-// 		.prepare('SELECT username FROM users WHERE email = ?')
-// 		.get(userInfo.email) as UserData | undefined;
-// 	if (!allowed) {
-// 		return reply.redirect("/test/newUser");
-// 	} else if (id !== allowed.username) {
-// 		authLogger.warn(`Attempt to request update of user data of ${name} by ${userInfo.email}`);
-// 		return sendResponse(reply, 401, undefined, "Unauthorized");
-// 	}
-// 	return sendResponse(reply, 404, undefined, "tmp");
-// }
-
-// // TEST		GET /test/newUser - Form to create a new user
-// export async function newUserForm(request: FastifyRequest, reply: FastifyReply) {
-// 	const { db } = request.server;
-// 	const userInfo = request.user as TokenData;
-// 	const user = db
-// 		.prepare('SELECT username FROM users WHERE email = ?')
-// 		.get(userInfo.email) as UserData | undefined;
-
-// 	if (user)
-// 		return sendResponse(reply, 400, undefined, "User already registered");
-// 	return sendResponse(reply, 404, undefined, "tmp");
-// }
-
-// // TEST		GET /test/currentuser/ - Check logged-in user and redirect accordingly
-// export async function loggedinUser(request: FastifyRequest, reply: FastifyReply) {
-// 	const { db } = request.server;
-// 	const userInfo = request.user as TokenData;
-// 	const user = db
-// 		.prepare('SELECT username FROM users WHERE email = ?')
-// 		.get(userInfo.email) as UserData | undefined;
-// 	if (!user)
-// 		return reply.redirect("/test/newUser");
-// 	return reply.redirect(`/api/user/${user.username}`);
-// }
-
-// // TEST		GET /test/dashboard - Render the account dashboard
-// export async function accountDashboard(request: FastifyRequest, reply: FastifyReply) {
-// 	const userInfo = request.user as TokenData;
-// 	const { db } = request.server;
-// 	const user = db
-// 		.prepare('SELECT * FROM users WHERE email = ?')
-// 		.get(userInfo.email) as UserData | undefined;
-// 	if (!user)
-// 		return reply.redirect('/test/newUser');
-
-// 	const stats = db
-// 		.prepare("SELECT total_games, wins, losses FROM user_stats WHERE user_id = ?")
-// 		.get(user.id) || { total_games: 0, wins: 0, losses: 0 };
-
-// 	// Pass the user and stats data to the view.
-// 	// return reply.view("account.ejs", { title: "Account Dashboard", user, stats });
-// 	return reply.redirect("/#account");
-// }
+function offline(request: FastifyRequest, user: TokenData) {
+	const { db } = request.server;
+	const logout = db.prepare("UPDATE users SET status = 'offline' WHERE email = ?");
+	const info = logout.run(user.email);
+	return (info.changes > 0);
+}

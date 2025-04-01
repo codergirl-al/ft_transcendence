@@ -44,7 +44,9 @@ export async function myFriends(request: FastifyRequest, reply: FastifyReply) {
 	const friends = db.prepare(`
 		SELECT friends.*,
 			user1.username AS username1,
-			user2.username AS username2
+			user2.username AS username2,
+			user1.status AS status1,
+			user2.status AS status2
 		FROM friends
 		LEFT JOIN users AS user1 ON friends.user_id1 = user1.id
 		LEFT JOIN users AS user2 ON friends.user_id2 = user2.id

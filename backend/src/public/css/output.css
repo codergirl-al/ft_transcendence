@@ -493,6 +493,9 @@
 .auto-rows-min {
   grid-auto-rows: min-content;
 }
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
 .grid-cols-none {
   grid-template-columns: none;
 }
@@ -751,6 +754,10 @@
   border-style: var(--tw-border-style);
   border-width: 2px;
 }
+.border-4 {
+  border-style: var(--tw-border-style);
+  border-width: 4px;
+}
 .border-x {
   border-inline-style: var(--tw-border-style);
   border-inline-width: 1px;
@@ -812,6 +819,9 @@
 }
 .bg-\(color\:--my-color\) {
   background-color: var(--my-color);
+}
+.bg-\[\#3b0764\] {
+  background-color: #3b0764;
 }
 .bg-\[\#0088cc\] {
   background-color: #0088cc;

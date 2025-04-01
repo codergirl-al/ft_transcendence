@@ -20,6 +20,6 @@ unimplemented:
 > ...
 
 -- todo --
-> password login
-> 2FA
-> authorization levels (none, user, admin)
+> friend requests frontend
+> user search and pages
+> user stats page
