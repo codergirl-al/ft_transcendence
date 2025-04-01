@@ -23,7 +23,7 @@ export async function showUser(request: FastifyRequest, reply: FastifyReply) {
 	const { id } = request.params as RequestParams;
 	const { db } = request.server;
 	const user = db
-		.prepare('SELECT username, email FROM users WHERE username = ?')
+		.prepare('SELECT * FROM users WHERE username = ?')
 		.get(id) as UserData | undefined;
 	if (!user)
 		return sendResponse(reply, 404, undefined, "User not found");
@@ -83,7 +83,7 @@ export async function newUser(request: FastifyRequest, reply: FastifyReply) {
 	if (emailExists)
 		return sendResponse(reply, 400, undefined, "Email already registered");
 
-	const insertStatement = db.prepare("INSERT INTO users (username, email) VALUES (?, ?)");
+	const insertStatement = db.prepare("INSERT INTO users (username, email, status) VALUES (?, ?, 'online')");
 	insertStatement.run(username, email);
 	authLogger.info(`Created new user ${username}`);
 	dbLogger.info(`insert into users username = ${username}`);
@@ -194,10 +194,16 @@ export async function callback(request: FastifyRequest, reply: FastifyReply) {
 		return sendResponse(reply, 500, undefined, "Google Authentication failed");
 	}
 
-	const user = db.prepare("SELECT * FROM users WHERE email = ?").get(userInfo.email) as UserData | undefined;
+	// const user = db.prepare("SELECT * FROM users WHERE email = ?").get(userInfo.email) as UserData | undefined;
+	let user = db.prepare("SELECT * FROM users WHERE email = ?").get(userInfo.email) as UserData | undefined;
+
+	if (user) {
+	    // If the user does not exist, insert them into the database
+		db.prepare("UPDATE users SET status = 'online' WHERE email = ?").run(userInfo.email);
+	}
+	
 	const jwtPayload = { email: userInfo.email, role: "user" };
 	const jwtToken = fastify.jwt.sign(jwtPayload);
-
 	reply.setCookie("auth_token", jwtToken, {
 		httpOnly: true,
 		secure: process.env.FASTIFY_NODE_ENV === 'production',
@@ -207,11 +213,15 @@ export async function callback(request: FastifyRequest, reply: FastifyReply) {
 	return reply.redirect("/#account");
 }
 
+
 // GET /api/user/logout - Logout and clear cookie
 export async function logout(request: FastifyRequest, reply: FastifyReply) {
+	const { db } = request.server;
 	const user = request.user as TokenData;
+	if (user)
+		db.prepare("UPDATE users SET status = 'offline', last_online = datetime('now') WHERE email = ?").run(user.email);
 	reply.clearCookie('auth_token');
-	// reply.clearCookie('oauth2-redirect-state');
+	reply.clearCookie('oauth2-redirect-state');
 	authLogger.info(`User ${user.email} logged out`);
 	return sendResponse(reply, 200);
 }

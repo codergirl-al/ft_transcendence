@@ -116,6 +116,31 @@ fastify.addHook("onResponse", async (request: FastifyRequest, reply: FastifyRepl
 	serverLogger.info(`RES ${reply.statusCode}`);
 });
 
+fastify.addHook('preHandler', async (request, reply) => {
+	const user = request.user as TokenData | undefined;
+	if (user) {
+		const { db } = request.server;
+		db.prepare("UPDATE users SET last_online = datetime('now') WHERE email = ?").run(user.email);
+	}
+});
+
+function autoOfflineUsers() {
+	const { db } = fastify;
+
+	setInterval(() => {
+		// Set users as offline if they haven't been active for 5+ minutes
+		db.prepare(`
+			UPDATE users 
+			SET status = 'offline' 
+			WHERE status = 'online' 
+			AND last_online < datetime('now', '-1 minutes')
+		`).run();
+			
+		console.log("Checked for inactive users and updated status.");
+	}, 60000); // Runs every 60 seconds (1 min)
+}
+
+
 // configure routes (./routes/routes.ts)
 fastify.register(routes);
 
@@ -130,6 +155,7 @@ try {
 			serverLogger.error(err);
 			process.exit(1);
 		}
+		fastify.ready(autoOfflineUsers);
 		serverLogger.info(`transcendence is running in ${process.env.FASTIFY_NODE_ENV} mode at ${addr}`);
 	});
 } catch (err) {
