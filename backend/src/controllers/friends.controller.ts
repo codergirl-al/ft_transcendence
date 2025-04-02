@@ -14,23 +14,25 @@ export async function newFriend(request: FastifyRequest, reply: FastifyReply) {
 	const friend = db.prepare("SELECT * FROM users WHERE username = ?").get(body.username) as UserData | undefined;
 	if (!db_user || !friend)
 		return sendResponse(reply, 404, undefined, "User not found");
+	if (db_user.id === friend.id || friend.id === 1)
+		return sendResponse(reply, 400, undefined, "invalid username");
 
 	const done = db.prepare("SELECT * FROM friends WHERE (user_id1 = ? AND user_id2 = ?) OR (user_id1 = ? AND user_id2 = ?)")
-				.get(db_user.id, friend.id, friend.id, db_user.id) as FriendData | undefined;
+		.get(db_user.id, friend.id, friend.id, db_user.id) as FriendData | undefined;
 	if (done && done.status === 'accepted') // already done
 		return sendResponse(reply, 400, undefined, "Already friends");
 
 	if (done && done.user_id2 === db_user.id) { // accept request
 		const accept = db.prepare("UPDATE friends SET status = 'accepted' WHERE user_id1 = ? AND user_id2 = ?");
 		const info = accept.run(friend.id, db_user.id);
-		return sendResponse(reply, 200, {id: info.lastInsertRowid});
+		return sendResponse(reply, 200, { id: info.lastInsertRowid });
 	}
 	if (done) // double request
 		return sendResponse(reply, 400, undefined, "friend request already sent");
 
 	const insert = db.prepare("INSERT INTO friends (user_id1, user_id2, status) VALUES (?, ?, 'pending')");
 	const info = insert.run(db_user.id, friend.id);
-	return sendResponse(reply, 200, {id: info.lastInsertRowid});
+	return sendResponse(reply, 200, { id: info.lastInsertRowid });
 }
 
 // GET /api/friend
@@ -66,7 +68,7 @@ export async function getFriend(request: FastifyRequest, reply: FastifyReply) {
 		return sendResponse(reply, 404, undefined, "User not found");
 
 	const friendship = db.prepare("SELECT * FROM friends WHERE (user_id1 = ? AND user_id2 = ?) OR (user_id1 = ? AND user_id2 = ?)")
-				.get(user.id, friend.id, friend.id, user.id) as FriendData | undefined;
+		.get(user.id, friend.id, friend.id, user.id) as FriendData | undefined;
 	return sendResponse(reply, 200, friendship);
 }
 

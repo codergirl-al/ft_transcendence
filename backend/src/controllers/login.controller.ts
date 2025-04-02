@@ -2,9 +2,9 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { dbLogger, authLogger } from "../conf/logger";
 import { sendResponse } from "./root.controller";
 import { RequestParams, TokenData, UserData, UserRequestBody } from "../types/types";
-import fs from 'fs';
 import util from 'util';
-import { pipeline, PassThrough } from 'stream';
+import fs from 'fs';
+import { pipeline } from 'stream/promises';
 
 const pump = util.promisify(pipeline)
 
@@ -107,41 +107,21 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 		return sendResponse(reply, 401, undefined, "Unauthorized");
 	}
 
+	const filename = '/app/dist/public/uploads/' + user.id + '.png';
 	const data = request.parts();
 	for await (const part of data) {
 		if (part.type == 'field' && part.fieldname == 'username') {
 			username = part.value as string;
 		} else if (part.type == 'file') {
-			const filename = '/app/dist/public/uploads/' + user.id + '.png';
-
-			const passThrough = new PassThrough();
-			let fileSize = 0;
-			part.file.on('data', chunk => {
-				fileSize += chunk.length;
-			});
-			part.file.pipe(passThrough);
-
-			await new Promise<void>((resolve, reject) => {
-				part.file.on('end', () => {
-					if (fileSize > 0) {
-						pump(passThrough, fs.createWriteStream(filename, { flags: 'w' }))
-							.then(resolve)
-							.catch(reject);
-					} else {
-						resolve();
-					}
-				});
-				part.file.on('error', reject);
-			});
+			const writeStream = fs.createWriteStream(filename, { flags: 'w' });
+			await pipeline(part.file, writeStream);
 		}
 	}
-	
-	const taken = db
-		.prepare('SELECT username FROM users WHERE username = ?')
-		.get(username) as UserData | undefined;
-	if (taken) return reply.redirect(`/api/user/${id}/edit`);
 
 	if (username) {
+		const taken = db.prepare('SELECT username FROM users WHERE username = ?')
+			.get(username) as UserData | undefined;
+		if (taken) return sendResponse(reply, 400, undefined, "username already taken");
 		const updateStatement = db.prepare('UPDATE users SET username = ? WHERE username = ?');
 		updateStatement.run(username, id);
 	}
@@ -207,7 +187,8 @@ export async function callback(request: FastifyRequest, reply: FastifyReply) {
 		httpOnly: true,
 		secure: process.env.FASTIFY_NODE_ENV === 'production',
 		path: '/',
-		sameSite: 'lax' });
+		sameSite: 'lax'
+	});
 	return reply.redirect("/#account");
 }
 

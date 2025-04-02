@@ -15,8 +15,8 @@
 <body class="bg-purple-900 p-6">
 	<div class="max-w-7xl mx-auto bg-purple-200 shadow-lg rounded-lg p-6">
 		<!-- User Profile -->
-		<div class="flex items-center space-x-4">
-			<img id="myAvatar" src="/uploads/default.png" alt="User Avatar" class="w-16 h-16 rounded-full border-2 border-gray-300">
+		<div class="flex items-center space-x-4 bg-purple-400 rounded-lg p-6">
+			<img id="myAvatar" src="/uploads/default.png" alt="User Avatar" onerror="this.onerror=null; this.src='/uploads/default.png';" class="w-16 h-16 rounded-full border-2 border-gray-300">
 			<h2 id="myUsername" class="text-xl font-semibold"></h2>
 			<p id="myOnlinestatus"></p>
 		</div>
@@ -36,16 +36,12 @@
 					<h3 class="text-lg font-semibold">Friend Requests</h3>
 					<form>
 						<div>
+							<p id="statustext">search for a user...</p>
 							<input id="newFriendBar" type="text">
 							<button id="newFriendBtn" type="button" class="px-3 py-1 bg-purple-500 text-white rounded-md">Send</button>
 						</div>
 					</form>
-					<div id="requestlist" class="mt-2 space-y-2">
-						<div class="flex justify-between items-center p-2 bg-purple-600 rounded-md">
-							<span>New Friend</span>
-							<button class="px-3 py-1 bg-purple-500 text-white rounded-md">Accept</button>
-						</div>
-					</div>
+					<div id="requestlist" class="mt-2 space-y-2"></div>
 				</div>
 			</div>
 
@@ -54,9 +50,9 @@
 				<!-- Match History -->
 				<div>
 					<h3 class="text-lg font-semibold">Match History</h3>
-					<ul class="mt-2 space-y-2">
-						<li class="p-2 bg-purple-600 rounded-md">Match vs Player X - Won</li>
-						<li class="p-2 bg-purple-600 rounded-md">Match vs Player Y - Lost</li>
+					<ul id="matchhistory" class="mt-2 space-y-2">
+						<li class="p-2 bg-purple-400 rounded-md">Match vs Player X - Won</li>
+						<li class="p-2 bg-purple-400 rounded-md">Match vs Player Y - Lost</li>
 					</ul>
 				</div>
 			</div>
