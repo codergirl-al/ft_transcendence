@@ -1,37 +1,92 @@
-document.addEventListener('DOMContentLoaded', () => {
-	// Select the edit profile form by checking the action attribute that starts with "/api/user/"
-	const form = document.querySelector("form[action^='/api/user/']") as HTMLFormElement | null;
-	const statusElement = document.querySelector("p.text-red-400") as HTMLElement | null;
+// Global variable to store the current username for updating the profile.
+let currentUsername = null as any;
   
-	if (form) {
-	  form.addEventListener('submit', async (event) => {
-		event.preventDefault(); // Prevent the default form submission
-  
-		// Gather the form data
-		const formData = new FormData(form);
-  
-		try {
-		  const response = await fetch(form.action, {
-			method: 'POST',
-			body: formData,
-		  });
-  
-		  if (!response.ok) {
-			// If there's an error, read the error message and display it
-			const errorData = await response.json();
-			if (statusElement) {
-			  statusElement.textContent = errorData.message || 'Error updating profile.';
+// Load current user data into the edit form.
+async function loadEditProfileData() {
+	try {
+		const response = await fetch("/api/user", { method: 'GET' });
+		if (response.ok) {
+			const data = await response.json();
+			if (data.data) {
+				currentUsername = data.data.username; // Save the current username for the update endpoint.
+				const editUser = document.getElementById("editUsername") as HTMLInputElement | null;
+				if (editUser)
+					editUser.value = data.data.username;
+				const editImage = document.getElementById("editAvatar") as HTMLImageElement | null;
+				if (editImage)
+					editImage.src = `/uploads/${data.data.id}.png`;
 			}
-		  } else {
-			// On success, redirect the user to the profile view or dashboard
-			window.location.href = `/api/user/${formData.get('username')}`;
-		  }
-		} catch (error) {
-		  console.error('Error submitting edit profile form:', error);
-		  if (statusElement) {
-			statusElement.textContent = 'An unexpected error occurred. Please try again.';
-		  }
 		}
-	  });
-	}
-  });
+	} catch (error) {
+		console.error('Error fetching user data for edit:', error);
+		}
+}
+loadEditProfileData();
+
+// Handle the edit profile form submission.
+
+const editForm = document.getElementById('editProfileForm') as HTMLFormElement | null;
+if (editForm) {
+	editForm.addEventListener('submit', async function(event) {
+		event.preventDefault();
+		const formData = new FormData(this);
+		console.log("Updated username:", formData.get('username'));
+		
+		// Check if the username is unchanged.
+		if (formData.get('username') === currentUsername) {
+			const status = document.getElementById('editStatus');
+			if (status)
+				status.textContent = 'No changes detected. Profile not updated.';
+			return; // Exit early without sending a request.
+		}
+		try {
+			// Send the form data to the update endpoint.
+			const response = await fetch(`/api/user/${currentUsername}`, {
+				method: 'POST',
+				body: formData
+			});
+			const result = await response.json();
+			if (!response.ok) {
+				const status = document.getElementById('editStatus');
+				if (status)
+					status.textContent = result.message || 'Error updating profile';
+			} else {
+				// If the server returns updated user data, update currentUsername.
+				if (result.data && result.data.username) {
+					currentUsername = result.data.username;
+				}
+				// On success, navigate to the account view.
+				window.location.hash = '#account';
+				window.location.reload();
+			}
+		} catch (error) {
+			console.error('Error updating profile:', error);
+			const status = document.getElementById('editStatus');
+			if (status)
+				status.textContent = 'Network error';
+		}
+	});
+}
+
+
+// Handle delete profile button click.
+const deleteProfile = document.getElementById('deleteProfileBtn');
+if (deleteProfile)
+{
+	deleteProfile.addEventListener('click', async function() {
+			if (confirm("Are you sure you want to delete your profile? This action cannot be undone.")) {
+		try {
+			const response = await fetch('/api/user/delete', { method: 'GET' });
+			if (response.ok) {
+			window.location.hash = '#index';
+			showView("index-view");
+			// window.location.reload();
+			} else {
+			alert("Error deleting profile");
+			}
+		} catch (error) {
+			console.error('Error deleting profile:', error);
+		}
+		}
+	});
+}

@@ -2,7 +2,6 @@ import { FastifyInstance } from "fastify";
 import { apiRoutes } from "./apiRoutes";
 import { spa } from "../controllers/root.controller";
 import { setFastifyInstance, callback } from "../controllers/login.controller";
-import { testRoutes } from "./testRoutes";
 
 export default async function routes(fastify: FastifyInstance) {
 	setFastifyInstance(fastify);
@@ -10,7 +9,7 @@ export default async function routes(fastify: FastifyInstance) {
 	fastify.get("/", spa);
 	fastify.get("/google-login/callback", callback);
 	fastify.register(apiRoutes, { prefix: "/api" });
-	fastify.register(testRoutes, { prefix: "/test" });
+	// fastify.register(testRoutes, { prefix: "/test" });
 
 	// fastify.setNotFoundHandler((request: FastifyRequest, reply: FastifyReply) => {
 	// 	// reply.sendFile('index.html');
