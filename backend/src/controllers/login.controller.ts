@@ -112,7 +112,7 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 	for await (const part of data) {
 		if (part.type == 'field' && part.fieldname == 'username') {
 			username = part.value as string;
-		} else if (part.type == 'file') {
+		} else if (part.type == 'file' && part.filename) {
 			const writeStream = fs.createWriteStream(filename, { flags: 'w' });
 			await pipeline(part.file, writeStream);
 		}

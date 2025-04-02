@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const login = await getmyUser();
 	if (!login || login.length < 1)
 		return;
+	gamestats(login);
 	getFriendlist(login);
 	requestList(login);
 });
@@ -138,16 +139,67 @@ async function requestList(login: string) {
 						pending = pending + `<li class="flex justify-between items-center p-2 bg-purple-600 rounded-md">
 								<span><img src='/uploads/${friend.user_id1}.png' class="w-10 h-10 rounded-full border-2 border-purple-600 shadow" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
 								<span>${friend.username1}</span>
-								<button class="px-3 py-1 bg-purple-500 text-green-500 rounded-md">accept</button>
+								<button class="px-3 py-1 bg-purple-500 text-green-500 rounded-md accept-btn" data-username="${friend.username1}">accept</button>
 								</li>`;
 					}
 				}
 			}
 			friendlist.innerHTML = pending + sent;
+
+			// Add event listeners for accept buttons
+			const acceptButtons = document.querySelectorAll('.accept-btn');
+			acceptButtons.forEach(button => {
+				button.addEventListener('click', async (event) => {
+					const username = (event.target as HTMLElement).getAttribute('data-username');
+					if (!username) return;
+					try {
+						const response = await fetch('/api/friend', {
+							method: 'POST',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({ username })
+						});
+						if (response.ok) {
+							window.location.reload();
+						} else {
+							console.error("Error in route - POST /api/friend");
+						}
+					} catch (error) {
+						console.error("Error accepting friend request:", error);
+					}
+				});
+			});
 		} else {
 			friendlist.innerHTML = 'You are not logged in -> go to /google-login';
 		}
 	} catch (error) {
 		console.error("Error friends:", error);
+	}
+}
+
+async function gamestats(login: string) {
+	const matchhistory = document.getElementById('matchhistory');
+
+	if (!matchhistory)
+		return;
+	const response = await fetch(`/api/game`, { method: 'GET' });
+	if (response.status == 401) {
+		matchhistory.innerHTML = 'Log in to see your past games';
+		return;
+	} else if (!response.ok) {
+		console.error("Error in route - GET /api/game");
+		return;
+	}
+	const data = await response.json();
+	if (data.success) {
+		let content = "";
+		for (const game of data.data) {
+			if (game.username1 === login)
+				content = content + `<li class="p-2 bg-purple-400 rounded-md">Match vs ${(game.multi) ? game.username2 : "AI"} - ${(game.winner_id === game.user_id1) ? "WIN" : "LOSS"}</li>`;
+			else
+				content = content + `<li class="p-2 bg-purple-400 rounded-md">Match vs ${(game.multi) ? game.username1 : "AI"} - ${(game.winner_id === game.user_id2) ? "WIN" : "LOSS"}</li>`;
+		}
+		matchhistory.innerHTML = content || "<p>No matches yet</p>";
+	} else {
+		matchhistory.innerHTML = 'Log in to see your past games';
 	}
 }

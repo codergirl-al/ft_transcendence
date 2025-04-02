@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { UserData, RequestParams, GameRequestBody, GameData } from "../types/types";
+import { UserData, RequestParams, GameRequestBody, GameData, TokenData } from "../types/types";
 import { dbLogger } from "../conf/logger";
 import { sendResponse } from "./root.controller";
 
@@ -18,10 +18,10 @@ export async function newGame(request: FastifyRequest, reply: FastifyReply) {
 		const id2 = db.prepare("SELECT id FROM users WHERE username = ?").get(user2) as UserData | undefined;
 		if (!id2)
 			return sendResponse(reply, 404, undefined, "User not found");
-		const info = insertStatement.run(true, id1.id, id2.id, ( winner==1 ? id1.id : id2.id ));
+		const info = insertStatement.run(true, id1.id, id2.id, (winner == 1 ? id1.id : id2.id));
 		dbLogger.info(`insert into games id = ${info.lastInsertRowid}`);
 	} else {
-		const info = insertStatement.run(false, id1.id, 1, ( winner==1 ? id1.id : 1 ));
+		const info = insertStatement.run(false, id1.id, 1, (winner == 1 ? id1.id : 1));
 		dbLogger.info(`insert into games id = ${info.lastInsertRowid}`);
 	}
 	return sendResponse(reply, 200);
@@ -69,7 +69,7 @@ export async function showGame(request: FastifyRequest, reply: FastifyReply) {
 	return sendResponse(reply, 200, game);
 }
 
-// GET /api/game - get a list of all games
+// GET /api/game/all - get a list of all games
 export async function showAllGames(request: FastifyRequest, reply: FastifyReply) {
 	const { db } = request.server;
 	// show all game stats and usernames
@@ -81,6 +81,27 @@ export async function showAllGames(request: FastifyRequest, reply: FastifyReply)
 		LEFT JOIN users AS user1 ON games.user_id1 = user1.id
 		LEFT JOIN users AS user2 ON games.user_id2 = user2.id`).all() as GameData[];
 	dbLogger.info(`select all games`);
+	return sendResponse(reply, 200, game);
+}
+
+// GET /api/game - get a list of all games
+export async function showMyGames(request: FastifyRequest, reply: FastifyReply) {
+	const { db } = request.server;
+	const userInfo = request.user as TokenData;
+
+	const user = db.prepare("SELECT id FROM users WHERE email = ?").get(userInfo.email) as UserData | undefined;
+	if (!user)
+		return sendResponse(reply, 401, "Unauthorized");
+	// show all game stats and usernames
+	const game = db.prepare(`
+		SELECT games.*,
+			user1.username AS username1,
+			user2.username AS username2
+		FROM games
+		LEFT JOIN users AS user1 ON games.user_id1 = user1.id
+		LEFT JOIN users AS user2 ON games.user_id2 = user2.id
+		WHERE games.user_id1 = ? OR games.user_id2 = ?`).all(user.id, user.id) as GameData[];
+	dbLogger.info(`select all user games`);
 	return sendResponse(reply, 200, game);
 }
 

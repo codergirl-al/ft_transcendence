@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { newUser, showUser, editUser, deleteUser, logout, myUser, allUsers } from "../controllers/login.controller";
-import { newGame, showGame, showAllGames } from "../controllers/game.controller";
+import { newGame, showGame, showAllGames, showMyGames } from "../controllers/game.controller";
 import { showAllT, newT, showT, winT } from "../controllers/tournament.controller";
 import { newFriend, getFriend, myFriends, deleteFriend } from "../controllers/friends.controller";
 import { sendResponse } from "../controllers/root.controller";
@@ -66,7 +66,8 @@ async function friendRoutes(friendRoutes: FastifyInstance) {
 }
 
 async function gameRoutes(gameRoutes: FastifyInstance) {
-	gameRoutes.get("/", showAllGames); // show game data
+	gameRoutes.get("/all", showAllGames); // show game data
+	gameRoutes.get("/", { preValidation: gameRoutes.authenticate }, showMyGames); // show users game data
 	gameRoutes.post("/", { // start a new game
 		schema: {
 			body: {
