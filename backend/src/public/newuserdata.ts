@@ -95,9 +95,9 @@ async function getFriendlist(login: string) {
 				let friendindex = (friend.username1 === login) ? 2 : 1;
 				if (friend.status === 'accepted') {
 					accepted = accepted + `<li class="flex justify-between items-center p-2 bg-purple-600 rounded-md">
-								<span><img src='/uploads/${(friendindex === 1) ? friend.user_id1 : friend.user_id2}.png' class="w-10 h-10 rounded-full border-2 border-purple-600 shadow" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
-								<span>${(friendindex === 1) ? friend.username1 : friend.username2}</span>
-								<span class="text-sm text-white">${((friendindex === 1) ? friend.status1 : friend.status2) || "offline"}</span>
+								<span><img src='/uploads/${(friendindex === 1) ? friend.user_id1 : friend.user_id2}.png' class="w-10 h-10 rounded-full border-2 border-gray-300" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
+								<span class="text-white p-2">${(friendindex === 1) ? friend.username1 : friend.username2}</span>
+								<span class="ml-auto text-sm text-white">${((friendindex === 1) ? friend.status1 : friend.status2) || "offline"}</span>
 								</li>`;
 				}
 			}
@@ -131,15 +131,15 @@ async function requestList(login: string) {
 				if (friend.status === 'pending') {
 					if (friend.username1 === login) {
 						sent = sent + `<li class="flex justify-between items-center p-2 bg-purple-600 rounded-md">
-								<span><img src='/uploads/${friend.user_id2}.png' class="w-10 h-10 rounded-full border-2 border-purple-600 shadow" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
-								<span>${friend.username2}</span>
-								<span class="text-sm text-white">waiting...</span>
+								<span><img src='/uploads/${friend.user_id2}.png' class="w-10 h-10 rounded-full border-2 border-gray-300" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
+								<span class="text-white p-2">${friend.username2}</span>
+								<span class="ml-auto text-sm text-white">waiting...</span>
 								</li>`;
 					} else {
 						pending = pending + `<li class="flex justify-between items-center p-2 bg-purple-600 rounded-md">
-								<span><img src='/uploads/${friend.user_id1}.png' class="w-10 h-10 rounded-full border-2 border-purple-600 shadow" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
-								<span>${friend.username1}</span>
-								<button class="px-3 py-1 bg-purple-500 text-green-500 rounded-md accept-btn" data-username="${friend.username1}">accept</button>
+								<span><img src='/uploads/${friend.user_id1}.png' class="w-10 h-10 rounded-full border-2 border-gray-300" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
+								<span class="text-white p-2">${friend.username1}</span>
+								<button class="ml-auto px-3 py-1 bg-purple-400 text-green-500 rounded-md accept-btn" data-username="${friend.username1}">accept</button>
 								</li>`;
 					}
 				}
@@ -194,9 +194,9 @@ async function gamestats(login: string) {
 		let content = "";
 		for (const game of data.data) {
 			if (game.username1 === login)
-				content = content + `<li class="p-2 bg-purple-400 rounded-md">Match vs ${(game.multi) ? game.username2 : "AI"} - ${(game.winner_id === game.user_id1) ? "WIN" : "LOSS"}</li>`;
+				content = content + `<li class="p-2 bg-purple-600 text-white rounded-md">Match vs ${(game.multi) ? game.username2 : "AI"} - ${(game.winner_id === game.user_id1) ? "WIN" : "LOSS"}</li>`;
 			else
-				content = content + `<li class="p-2 bg-purple-400 rounded-md">Match vs ${(game.multi) ? game.username1 : "AI"} - ${(game.winner_id === game.user_id2) ? "WIN" : "LOSS"}</li>`;
+				content = content + `<li class="p-2 bg-purple-600 text-white rounded-md">Match vs ${(game.multi) ? game.username1 : "AI"} - ${(game.winner_id === game.user_id2) ? "WIN" : "LOSS"}</li>`;
 		}
 		matchhistory.innerHTML = content || "<p>No matches yet</p>";
 	} else {
