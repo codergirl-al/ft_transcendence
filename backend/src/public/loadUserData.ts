@@ -28,8 +28,10 @@ async function loadUserData() {
 		}
 		// Populate header with user data
 		const username = document.getElementById("usernameDisplay") as HTMLElement | null;
-		if (username)
+		if (username) {
 			username.textContent = data.data.username;
+			localStorage.setItem("username", data.data.username);
+		}
 		const email = document.getElementById("userEmail") as HTMLElement | null;
 		if (email)
 		email.textContent = data.data.email;
