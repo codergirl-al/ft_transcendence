@@ -194,12 +194,9 @@ export async function callback(request: FastifyRequest, reply: FastifyReply) {
 		return sendResponse(reply, 500, undefined, "Google Authentication failed");
 	}
 
-	// const user = db.prepare("SELECT * FROM users WHERE email = ?").get(userInfo.email) as UserData | undefined;
-	let user = db.prepare("SELECT * FROM users WHERE email = ?").get(userInfo.email) as UserData | undefined;
-
+	const user = db.prepare("SELECT * FROM users WHERE email = ?").get(userInfo.email) as UserData | undefined;
 	if (user) {
-	    // If the user does not exist, insert them into the database
-		db.prepare("UPDATE users SET status = 'online' WHERE email = ?").run(userInfo.email);
+		db.prepare("UPDATE users SET status = 'online', last_online = datetime('now') WHERE email = ?").run(userInfo.email);
 	}
 	
 	const jwtPayload = { email: userInfo.email, role: "user" };
@@ -225,6 +222,10 @@ export async function logout(request: FastifyRequest, reply: FastifyReply) {
 	authLogger.info(`User ${user.email} logged out`);
 	return sendResponse(reply, 200);
 }
+
+// export function renew_login(username: string, db: Database) {
+// 	db.prepare("UPDATE users SET status = 'online', last_online = datetime('now') WHERE username = ?").run(username);
+// }
 
 // ---------------------------------------------------------------------------------------------------
 

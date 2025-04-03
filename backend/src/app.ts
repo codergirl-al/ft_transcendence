@@ -113,14 +113,14 @@ fastify.addHook("onRequest", async (request: FastifyRequest, reply: FastifyReply
 });
 
 fastify.addHook("onResponse", async (request: FastifyRequest, reply: FastifyReply) => {
-	serverLogger.info(`RES ${reply.statusCode}`);
+	serverLogger.info(`RES ${request.hostname}${request.url} ${reply.statusCode}`);
 });
 
 fastify.addHook('preHandler', async (request, reply) => {
 	const user = request.user as TokenData | undefined;
 	if (user) {
 		const { db } = request.server;
-		db.prepare("UPDATE users SET last_online = datetime('now') WHERE email = ?").run(user.email);
+		db.prepare("UPDATE users SET status = 'online', last_online = datetime('now') WHERE email = ?").run(user.email);
 	}
 });
 
@@ -133,17 +133,15 @@ function autoOfflineUsers() {
 			UPDATE users 
 			SET status = 'offline' 
 			WHERE status = 'online' 
-			AND last_online < datetime('now', '-1 minutes')
+			AND last_online < datetime('now', '-2 minutes')
 		`).run();
-			
-		console.log("Checked for inactive users and updated status.");
-	}, 60000); // Runs every 60 seconds (1 min)
-}
 
+		serverLogger.debug("updated online status");
+	}, (60 * 1000)); // Run every 60 seconds
+}
 
 // configure routes (./routes/routes.ts)
 fastify.register(routes);
-
 
 // SERVER----------------------------------------------------------------
 const port = Number(process.env.FASTIFY_PORT) || 3000;

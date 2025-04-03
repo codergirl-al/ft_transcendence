@@ -6,6 +6,7 @@ if (login)
 	const response = await fetch("/api/user/logout", { method: "GET" });
 	if (response.ok) {
 	  // After successful logout, redirect to the index view.
+	  localStorage.removeItem('username');
 	  window.location.hash = "#index";
 	//   window.location.reload();
 	} else {

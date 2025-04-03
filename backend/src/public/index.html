@@ -274,6 +274,9 @@
 
 		function route() {
 			let hash = window.location.hash.slice(1);
+			const user = localStorage.getItem('username');
+			if (!user)
+				hash = 'index';
 			switch(hash) {
 				case 'account':
 					showView('account-view');
@@ -297,8 +300,10 @@
 					showView('tournament-registration-view');
 					break;
 				case 'index':
-				default:
 					showView('index-view');
+					break;
+				default:
+					showView('account-view');
 					break;
 			}
 		}

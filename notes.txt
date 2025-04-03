@@ -20,6 +20,3 @@ unimplemented:
 > ...
 
 -- todo --
-> password login
-> 2FA
-> authorization levels (none, user, admin)
