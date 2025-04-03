@@ -35,7 +35,6 @@
 				</div>
 			</div>
 		</section>
-
 		<!-- ACCOUNT VIEW -->
 		<section id="account-view" class="view">
 			<div class="min-h-screen bg-purple-900 text-white flex flex-col">
@@ -195,22 +194,25 @@
 			<canvas id="pong" width="800" height="600" class="mb-4"></canvas>
 			<!-- You can add additional controls/buttons here -->
 			<button onclick="location.href='#account'" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">Back</button>
+			<button id="pause-btn" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">Pause</button>
+			<button id="restart-btn" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">Restart</button>
+			<script src="singleplayer.js"></script>
 		</section>
-
 
 		<!-- MULTIPLAYER VIEW -->
 		<section id="multiplayer-view" class="view flex items-center justify-center min-h-screen pt-16">
 			<!-- Multiplayer Form Container -->
-			<div id="multiplayerFormContainer" class="w-full max-w-md mb-6">
+			<div id="multiplayerFormContainer" class="mb-6 w-full mx-auto sm:max-w-sm md:max-w-2-lg">
 				<h1 class="text-4xl font-bold mb-4 text-center">Multiplayer Pong</h1>
 				<form id="multiplayerForm" class="w-full max-w-md">
-					<div class="mb-4">
-						<label for="player1" class="block text-lg mb-2">Player 1 Name</label>
-						<input type="text" id="player1" name="player1" required class="w-full p-2 rounded text-black">
+					<div class="mb-10">
+						<p id="player1" class="text-xl font-semibold text-center mb-4"></p>
 					</div>
-					<div class="mb-4">
-						<label for="player2" class="block text-lg mb-2">Player 2 Name</label>
-						<input type="text" id="player2" name="player2" required class="w-full p-2 rounded text-black">
+					<div class="mt-6 mb-10 relative">
+						<input id="player2" type="text" placeholder="Search a user to invite..."
+							class="w-full p-2 border rounded text-black mx-auto sm:max-w-sm md:max-w-md">
+						<div id="search-results-multiplayer"
+							class="absolute top-full left-0 right-0 bg-white border mt-1 text-black hidden z-[1000] w-full mx-auto sm:max-w-sm md:max-w-md"></div>
 					</div>
 					<button type="button" id="startMultiplayerGame"
 						class="w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors">
@@ -219,46 +221,64 @@
 				</form>
 			</div>
 			<!-- Multiplayer Game Container (initially hidden) -->
-			<div id="multiplayerGameContainer" style="display: none;">
-				<canvas id="pongMulti" width="800" height="600" class="mb-4"></canvas>
-				<button onclick="location.href='#account'" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">
-					Back
-				</button>
+			<div id="multiplayerGameContainer" style="display: none;"
+				class="flex flex-col items-center justify-center w-full max-w-3xl mx-auto px-4 py-8">
+				<h1 class="text-4xl font-bold mb-10 text-center">Multiplayer Pong</h1>
+				<canvas id="pongMulti" width="800" height="600" class="mb-4 w-full max-w-lg"></canvas>
+				<div class="flex items-center justify-center gap-4 w-full max-w-md">
+					<button onclick="location.href='#account'" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700 text-white">Back</button>
+					<button id="pause-btn-multi" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700 text-white">Pause</button>
+					<button id="restart-btn-multi" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700 text-white">Restart</button>
+				</div>
 			</div>
+			<script src="multiplayer.js"></script>
 		</section>
-<!-- Tournament Registration View -->
 <section id="tournament-registration-view"
-	class="view flex flex-col items-center justify-center min-h-screen pt-16 px-4">
-	<h1 class="text-3xl font-bold mb-4 text-center">Tournament Registration</h1>
-	<!-- User Search / Invite Interface -->
-	<div class="mb-4 w-full max-w-md">
-		<input id="user-search" type="text" placeholder="Search users to invite..." class="w-full p-2 border rounded">
-		<!-- In a real implementation, as you type you would show results and allow selections -->
-		<p class="text-sm mt-2 text-center">Type to search and select users</p>
+	class="view container mx-auto flex flex-col items-center justify-center min-h-screen pt-16 px-4 text-center">
+	<div class="justify-center">
+		<h1 class="text-3xl font-bold mt-4 mb-4">Tournament Registration</h1>
+		<div class="mt-6 mb-10 relative">
+			<input id="user-search" type="text" placeholder="Search users to invite..."
+				class="w-full p-2 border rounded text-black mx-auto sm:max-w-sm md:max-w-md">
+			<div id="search-results"
+				class="absolute top-full left-0 right-0 bg-white border mt-1 text-black hidden z-[1000] w-full mx-auto sm:max-w-sm md:max-w-md">
+			</div>
+		</div>
+		<div class="mb-6">
+			<h2 class="text-xl font-semibold mb-2">Selected Players:</h2>
+			<ul id="selected-users" class="list-none flex flex-wrap justify-center gap-2"></ul>
+		</div>
+		<button type="button" onclick="registerTournament()"
+			class="mt-2 w-full px-4 py-2 bg-green-500 rounded hover:bg-green-600 sm:max-w-sm md:max-w-md">
+			Register Tournament
+		</button>
 	</div>
-	<!-- Register Tournament Button -->
-	<button type="button" onclick="registerTournament()"
-		class="mt-2 w-full max-w-md px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">
-		Register Tournament
-	</button>
 </section>
 
-<!-- Tournament Start View (initially hidden) -->
-<section id="tournament-start-view" class="view flex flex-col items-center justify-center min-h-screen pt-16 px-4"
+<!-- Tournament Game View -->
+<section id="tournament-game-view" class="view flex flex-col items-center justify-center min-h-screen pt-16 px-4"
 	style="display: none;">
-	<h1 class="text-3xl font-bold mb-4 text-center">Tournament Ready</h1>
-	<!-- Display the list of invited players -->
-	<div class="mb-4 w-full max-w-md">
-		<h2 class="text-xl font-semibold mb-2">Invited Players:</h2>
-		<ul id="registered-users" class="list-disc pl-5"></ul>
+	<h1 class="text-3xl font-bold mb-4 text-center">Tournament Games</h1>
+	<!-- Container for match schedule and current match info -->
+	<div id="match-schedule" class="mb-4 w-full max-w-md"></div>
+	<div id="current-match-info" class="mb-4 w-full max-w-md"></div>
+	<!-- Pong game canvas for playing matches -->
+	<canvas id="pongTournament" width="800" height="600" class="mb-4 w-full max-w-lg"></canvas>
+	<!-- Control buttons -->
+	<div class="flex flex-col gap-4 w-full max-w-md">
+		<button id="start-tournament-btn" class="w-full px-4 py-2 bg-green-600 rounded hover:bg-green-700">
+			Start Tournament
+		</button>
+		<div class="flex gap-4 justify-center">
+			<button id="pause-btn-tournament" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700 text-white">
+				Pause
+			</button>
+			<button id="back-btn-tournament" class="px-4 py-2 bg-red-600 rounded hover:bg-red-700 text-white">
+				Back
+			</button>
+		</div>
 	</div>
-	<!-- Start Tournament Button -->
-	<button type="button" onclick="startTournament()"
-		class="w-full max-w-md px-4 py-2 bg-green-600 rounded hover:bg-green-700">
-		Start Tournament Now
-	</button>
 </section>
-
 		<footer class="absolute bottom-0 left-0 w-full p-4 bg-purple-500 text-center">
 			<p class="text-sm text-purple-200">
 				&copy; 2025 Team SAFARI, Inc. All rights reserved.
@@ -305,73 +325,8 @@
 
 		window.addEventListener('hashchange', route);
 		route();
-
-		const startMultiBtn = document.getElementById('startMultiplayerGame');
-		if (startMultiBtn) {
-			startMultiBtn.addEventListener('click', async () => {
-				const player1Name = document.getElementById('player1')?.value.trim();
-				const player2Name = document.getElementById('player2')?.value.trim();
-				if (player1Name && player2Name) {
-					// Save names in localStorage (or pass them directly to your game module)
-					localStorage.setItem('multiplayerPlayer1', player1Name);
-					localStorage.setItem('multiplayerPlayer2', player2Name);
-
-					const formContainer = document.getElementById('multiplayerFormContainer');
-					const gameContainer = document.getElementById('multiplayerGameContainer');
-					if (formContainer) formContainer.style.display = 'none';
-					if (gameContainer) gameContainer.style.display = 'block';
-				} else {
-					alert('Please enter names for both players.');
-				}
-			});
-		}
-
-		function registerMulti() {
-			var p1 = document.getElementById("player1").value.trim();
-			var p2 = document.getElementById("player2").value.trim();
-			if (!p1 || !p2) {
-				alert("Please enter both names.");
-				return;
-			}
-			localStorage.setItem("multiplayerPlayer1", p1);
-			localStorage.setItem("multiplayerPlayer2", p2);
-			// startMultiGame();
-		}
 		</script>
-		<script src="multiplayer.js"></script>
-		<script src="singleplayer.js"></script>
-		<script src="tournament.js"></script>
-		<script>
-			    // Simulated registration call (replace with your actual fetch call)
-					function registerTournament() {
-						console.log("Register Tournament clicked");
-
-						// Simulate backend call delay
-						setTimeout(() => {
-							// Simulated list of invited users; normally, this would be returned from your backend.
-							const registeredUsers = ['Alice', 'Bob', 'Charlie'];
-
-							// Populate the list in the tournament start view.
-							const userListElement = document.getElementById('registered-users');
-							userListElement.innerHTML = ''; // clear previous entries if any
-							registeredUsers.forEach(user => {
-								const li = document.createElement('li');
-								li.textContent = user;
-								userListElement.appendChild(li);
-							});
-
-							// Hide the registration view and show the start view.
-							document.getElementById('tournament-registration-view').style.display = 'none';
-							document.getElementById('tournament-start-view').style.display = 'flex';
-						}, 1000); // 1 second delay to simulate fetch call
-					}
-
-					// Temporary function to simulate starting the tournament
-					function startTournament() {
-						console.log("Start Tournament Now clicked");
-						// You can navigate to a tournament game page or perform additional logic here.
-						alert("Tournament Started!");
-					}
+		<script src="tournamentctrl.js"></script>
 		</script>
 	</body>
 </html>
