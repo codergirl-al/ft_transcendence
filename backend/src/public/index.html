@@ -59,9 +59,10 @@
 					</div>
 					<script src="/loadUserData.js"></script>
 					<nav class="space-x-4">
+						<a href="#search"
+							class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Search</a>
 						<a href="#editProfile"
-							class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Edit
-							Profile</a>
+							class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Edit Profile</a>
 						<a id="logoutLink"
 							class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Logout</a>
 						<script src="/logoutLink.js"></script>
@@ -259,7 +260,73 @@
 				<script src="/editProfile.js"></script>
 			</div>
 		</section>
+		
+		<section id="search-view" class="view">
+			<div class="min-h-screen bg-purple-900 text-white flex items-center justify-center p-4">
+				<div class="max-w-2-lg w-3/4 space-y-8">
+					<div class="bg-purple-200 p-6 text-black rounded shadow">
+						<h1 class="text-3xl font-bold mb-4 text-center">User Search</h1>
+						<div>
+							<div>
+								<p id="searchstatus"></p>
+								<input id="userSearchbar">
+								<button type="button" id="userSearchBtn">Search</button>
+							</div>
+							<!-- User Profile and Stats -->
+							<div id="userview" class="flex flex-col items-center justify-center space-y-6 hidden">
+								<div class="relative flex-grow w-full">
+									<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
+									<div class="relative flex items-center space-x-4 bg-purple-600 rounded-lg p-6 h-full">
+										<img id="searchAvatar" src="/uploads/default.png" alt="User Avatar"
+											onerror="this.onerror=null; this.src='/uploads/default.png';"
+											class="w-16 h-16 rounded-full border-2 border-gray-300">
+										<div>
+											<h2 id="searchUsername" class="text-xl font-semibold text-white"></h2>
+											<p id="searchOnlinestatus" class="text-white"></p>
+										</div>
+										<div class="w-full"></div>
+										<!-- Game Stats -->
+										<div class="flex space-x-4 h-full ml-auto">
+											<div class="relative h-full">
+												<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">Games</p>
+													<p id="searchGames">0</p>
+												</div>
+											</div>
+											<div class="relative h-full">
+												<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">T-Wins</p>
+													<p id="searchtwins">0</p>
+												</div>
+											</div>
+											<div class="relative h-full">
+												<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">Wins</p>
+													<p id="searchwins">0</p>
+												</div>
+											</div>
+											<div class="relative h-full">
+												<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">Losses</p>
+													<p id="searchlosses">0</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div>
+									<h3 class="text-lg font-semibold">Match History</h3>
+									<ul id="searchMatchhistory" class="mt-2 space-y-2"></ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<script src="/searchUser.js"></script>
+			</div>
+		</section>
 	</main>
+
 	<section id="singleplayer-view" class="view flex flex-col items-center justify-center min-h-screen px-4">
 		<h1 class="text-4xl font-bold mb-4">Single Player Pong</h1>
 		<canvas id="pong" width="800" height="600" class="mb-4"></canvas>
@@ -355,6 +422,9 @@
 					break;
 				case 'editProfile':
 					showView('editProfile-view');
+					break;
+				case 'search':
+					showView('search-view');
 					break;
 				case 'singleplayer':
 					showView('singleplayer-view');

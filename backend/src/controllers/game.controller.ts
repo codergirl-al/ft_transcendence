@@ -91,7 +91,7 @@ export async function showMyGames(request: FastifyRequest, reply: FastifyReply) 
 
 	const user = db.prepare("SELECT id FROM users WHERE email = ?").get(userInfo.email) as UserData | undefined;
 	if (!user)
-		return sendResponse(reply, 401, "Unauthorized");
+		return sendResponse(reply, 401, undefined, "Unauthorized");
 	// show all game stats and usernames
 	const game = db.prepare(`
 		SELECT games.*,
@@ -102,6 +102,27 @@ export async function showMyGames(request: FastifyRequest, reply: FastifyReply) 
 		LEFT JOIN users AS user2 ON games.user_id2 = user2.id
 		WHERE games.user_id1 = ? OR games.user_id2 = ?`).all(user.id, user.id) as GameData[];
 	dbLogger.info(`select all user games`);
+	return sendResponse(reply, 200, game);
+}
+
+// GET /api/game/user/:id - get a list of users games
+export async function showUserGames(request: FastifyRequest, reply: FastifyReply) {
+	const { db } = request.server;
+	const { id } = request.params as RequestParams;
+
+	const user = db.prepare("SELECT id FROM users WHERE username = ?").get(id) as UserData | undefined;
+	if (!user)
+		return sendResponse(reply, 404, undefined, "User not found");
+	// show all game stats and usernames
+	const game = db.prepare(`
+		SELECT games.*,
+			user1.username AS username1,
+			user2.username AS username2
+		FROM games
+		LEFT JOIN users AS user1 ON games.user_id1 = user1.id
+		LEFT JOIN users AS user2 ON games.user_id2 = user2.id
+		WHERE games.user_id1 = ? OR games.user_id2 = ?`).all(user.id, user.id) as GameData[];
+	dbLogger.info(`select all user games ${id}`);
 	return sendResponse(reply, 200, game);
 }
 

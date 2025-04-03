@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { newUser, showUser, editUser, deleteUser, logout, myUser, userStats, allUsers } from "../controllers/login.controller";
-import { newGame, showGame, showAllGames, showMyGames } from "../controllers/game.controller";
+import { newGame, showGame, showAllGames, showMyGames, showUserGames } from "../controllers/game.controller";
 import { showAllT, newT, showT, winT } from "../controllers/tournament.controller";
 import { newFriend, getFriend, myFriends, deleteFriend } from "../controllers/friends.controller";
 import { sendResponse } from "../controllers/root.controller";
@@ -79,6 +79,7 @@ async function gameRoutes(gameRoutes: FastifyInstance) {
 		}
 	}, newGame);
 	gameRoutes.get("/:id", { schema: { params: gameParamSchema } }, showGame); // show game data
+	gameRoutes.get("/user/:id", { schema: { params: userParamSchema } }, showUserGames); // show game data
 }
 
 async function tournamentRoutes(tournamentRoutes: FastifyInstance) {
