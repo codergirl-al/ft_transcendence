@@ -1,3 +1,8 @@
+const player1Elem = document.getElementById("player1") as HTMLElement | null;
+if (player1Elem) {
+  player1Elem.innerHTML = localStorage.getItem("username") || "";
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("pongMulti") as HTMLCanvasElement;
   if (!canvas) return;
@@ -23,7 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const player1: Paddle = { x: 10, y: canvas.height / 2 - 50, dy: 0, score: 0 };
-  const player2: Paddle = { x: canvas.width - 20, y: canvas.height / 2 - 50, dy: 0, score: 0 };
+  const player2: Paddle = {
+    x: canvas.width - 20,
+    y: canvas.height / 2 - 50,
+    dy: 0,
+    score: 0,
+  };
 
   const ball: Ball = {
     x: canvas.width / 2,
@@ -36,6 +46,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let gameOver = false;
   let loop: number;
+  let paused = false;
+  let resultSentMulti = false; // ensure we send the multiplayer result only once
 
   function drawRect(x: number, y: number, w: number, h: number, color: string) {
     ctx.fillStyle = color;
@@ -77,12 +89,19 @@ document.addEventListener("DOMContentLoaded", () => {
     ball.x += ball.dx;
     ball.y += ball.dy;
 
-    if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) ball.dy = -ball.dy;
+    // Clamp the ball vertically if it goes off-screen.
+    if (ball.y - ball.radius < 0) {
+      ball.y = ball.radius;
+      ball.dy = ball.dy >= 0 ? ball.dy : Math.abs(ball.dy) || 1;
+    } else if (ball.y + ball.radius > canvas.height) {
+      ball.y = canvas.height - ball.radius;
+      ball.dy = ball.dy <= 0 ? ball.dy : -Math.abs(ball.dy) || -1;
+    }
 
     if (checkCollision(player1)) {
       let collidePoint = ball.y - (player1.y + paddleHeight / 2);
       collidePoint = collidePoint / (paddleHeight / 2);
-      let angle = collidePoint * (Math.PI / 4);
+      const angle = collidePoint * (Math.PI / 4);
       ball.dx = ball.speed * Math.cos(angle);
       ball.dy = ball.speed * Math.sin(angle);
       ball.speed += 0.5;
@@ -91,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (checkCollision(player2)) {
       let collidePoint = ball.y - (player2.y + paddleHeight / 2);
       collidePoint = collidePoint / (paddleHeight / 2);
-      let angle = collidePoint * (Math.PI / 4);
+      const angle = collidePoint * (Math.PI / 4);
       ball.dx = -ball.speed * Math.cos(angle);
       ball.dy = ball.speed * Math.sin(angle);
       ball.speed += 0.5;
@@ -135,6 +154,11 @@ document.addEventListener("DOMContentLoaded", () => {
     drawCircle(ball.x, ball.y, ball.radius, "#FFF");
 
     if (gameOver) {
+      const multiContainer = document.getElementById("multiplayerGameContainer");
+      if (multiContainer && multiContainer.style.display !== "none" && !resultSentMulti) {
+        sendMultiplayerGameResult();
+        resultSentMulti = true;
+      }
       ctx.fillStyle = "#FFF";
       ctx.font = "bold 48px Arial";
       const winner = player1.score > player2.score ? "Player1" : "Player2";
@@ -143,7 +167,11 @@ document.addEventListener("DOMContentLoaded", () => {
       ctx.fillText("Game Over", canvas.width / 2 - 120, canvas.height / 2 - 40);
       ctx.fillText(message, canvas.width / 2 - msgWidth / 2, canvas.height / 2 + 10);
       ctx.font = "24px Arial";
-      ctx.fillText("Press R to Restart", canvas.width / 2 - 100, canvas.height / 2 + 50);
+      ctx.fillText(
+        "Use the buttons below to restart or pause",
+        canvas.width / 2 - 150,
+        canvas.height / 2 + 50
+      );
     }
   }
 
@@ -158,7 +186,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "s") player1.dy = 7;
     if (e.key === "ArrowUp") player2.dy = -7;
     if (e.key === "ArrowDown") player2.dy = 7;
-    if (gameOver && e.key.toLowerCase() === "r") location.reload();
   });
 
   document.addEventListener("keyup", (e) => {
@@ -167,4 +194,205 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   loop = window.setInterval(gameLoop, 1000 / 60);
-})
+
+  const pauseBtnMulti = document.getElementById("pause-btn-multi") as HTMLButtonElement | null;
+  const restartBtnMulti = document.getElementById("restart-btn-multi") as HTMLButtonElement | null;
+
+  if (pauseBtnMulti) {
+    pauseBtnMulti.addEventListener("click", () => {
+      if (!paused) {
+        clearInterval(loop);
+        paused = true;
+        pauseBtnMulti.textContent = "Resume";
+      } else {
+        loop = window.setInterval(gameLoop, 1000 / 60);
+        paused = false;
+        pauseBtnMulti.textContent = "Pause";
+      }
+    });
+  }
+
+  if (restartBtnMulti) {
+    restartBtnMulti.addEventListener("click", () => {
+      // Reset game state without reloading the page.
+      player1.score = 0;
+      player2.score = 0;
+      player1.y = canvas.height / 2 - 50;
+      player2.y = canvas.height / 2 - 50;
+      ball.x = canvas.width / 2;
+      ball.y = canvas.height / 2;
+      ball.speed = 5;
+      ball.dx = 5;
+      ball.dy = 5;
+      gameOver = false;
+      resultSentMulti = false;
+      if (paused) {
+        paused = false;
+        if (pauseBtnMulti) pauseBtnMulti.textContent = "Pause";
+      }
+      clearInterval(loop);
+      loop = window.setInterval(gameLoop, 1000 / 60);
+    });
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      clearInterval(loop);
+    } else {
+      if (!gameOver && !paused) {
+        clearInterval(loop);
+        loop = window.setInterval(gameLoop, 1000 / 60);
+      }
+    }
+  });
+
+  async function sendMultiplayerGameResult() {
+    const body = {
+      multi: true,
+      user1: localStorage.getItem("username"),
+      user2: localStorage.getItem("multiplayerPlayer2"),
+      winner: player1.score > player2.score ? 1 : 2,
+    };
+    try {
+      const response = await fetch("/api/game", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        console.error("Error sending game result", response.statusText);
+      } else {
+        console.log("Game result sent successfully");
+      }
+    } catch (error) {
+      console.error("Error sending game result", error);
+    }
+  }
+});
+
+// --- MULTIPLAYER FETCHING USER NAMES ---
+interface PlayerResponse {
+  data: string[];
+}
+
+let allPlayersList: PlayerResponse = { data: [] };
+let selectedPlrs: string[] = [];
+
+async function fetchAllPlayers(): Promise<void> {
+  try {
+    const response = await fetch("/api/user/all");
+    if (!response.ok) throw new Error("Network response was not ok");
+    allPlayersList = await response.json();
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  }
+}
+fetchAllPlayers();
+
+const playerSearchInput = document.getElementById("player2") as HTMLInputElement;
+
+playerSearchInput.addEventListener("input", () => {
+  const query = playerSearchInput.value.toLowerCase();
+  if (query.length < 2) {
+    searchResultsContainerMulti!.style.display = "none";
+    searchResultsContainerMulti!.innerHTML = "";
+    return;
+  }
+  const filteredUsers: string[] = allPlayersList.data.filter((username) =>
+    username.toLowerCase().includes(query)
+  );
+  displaySearchResultsMulti(filteredUsers);
+});
+
+const player2Div = document.getElementById("player2") as HTMLElement;
+let searchResultsContainerMulti = document.getElementById("search-results-multiplayer") as HTMLDivElement | null;
+if (!searchResultsContainerMulti) {
+  searchResultsContainerMulti = document.createElement("div");
+  searchResultsContainerMulti.id = "search-results-multiplayer";
+  player2Div.appendChild(searchResultsContainerMulti);
+}
+
+function displaySearchResultsMulti(users: string[]): void {
+  searchResultsContainerMulti!.innerHTML = "";
+  if (users.length === 0) {
+    searchResultsContainerMulti!.style.display = "none";
+    return;
+  }
+  users.forEach((username) => {
+    const div = document.createElement("div");
+    div.textContent = username;
+    div.className = "search-result-item";
+    div.onclick = () => selectPlayer2(username);
+    searchResultsContainerMulti!.appendChild(div);
+  });
+  searchResultsContainerMulti!.style.display = "block";
+}
+
+function selectPlayer2(username: string): void {
+  if (selectedPlrs.includes(username)) return;
+  selectedPlrs.push(username);
+  updateSelectedUser();
+
+  playerSearchInput.style.display = "none";
+  searchResultsContainerMulti!.innerHTML = "";
+  searchResultsContainerMulti!.style.display = "none";
+
+  let displayElem = document.getElementById("player2-display") as HTMLElement | null;
+  if (!displayElem) {
+    displayElem = document.createElement("p");
+    displayElem.id = "player2-display";
+    displayElem.className = "text-xl font-semibold text-center mb-4";
+    player2Div.parentElement?.appendChild(displayElem);
+  }
+  displayElem.textContent = username;
+}
+
+function updateSelectedUser(): void {
+  const list = document.getElementById("selected-users") as HTMLUListElement;
+  list.innerHTML = "";
+  selectedPlrs.forEach((player) => {
+    const li = document.createElement("li");
+    li.classList.add(
+      "px-4",
+      "py-2",
+      "mx-1",
+      "my-1",
+      "rounded-lg",
+      "font-semibold"
+    );
+    li.textContent = player;
+    list.appendChild(li);
+  });
+}
+
+const startMultiBtn = document.getElementById("startMultiplayerGame") as HTMLButtonElement | null;
+if (startMultiBtn) {
+  startMultiBtn.addEventListener("click", async () => {
+    const player2El = document.getElementById("player2-display") as HTMLElement | null;
+    const player1Name = localStorage.getItem("username");
+    const player2Name = player2El?.textContent?.trim();
+
+    if (player1Name && player2Name) {
+      localStorage.setItem("multiplayerPlayer2", player2Name);
+
+      const formContainer = document.getElementById("multiplayerFormContainer") as HTMLElement | null;
+      const gameContainer = document.getElementById("multiplayerGameContainer") as HTMLElement | null;
+      if (formContainer) formContainer.style.display = "none";
+      if (gameContainer) gameContainer.style.display = "block";
+    } else {
+      alert("Please enter names for both players.");
+    }
+  });
+}
+
+function registerMulti(): void {
+  const player1El = document.getElementById("player1") as HTMLInputElement | null;
+  const player2El = document.getElementById("player2") as HTMLInputElement | null;
+  const p1 = player1El?.value.trim();
+  const p2 = player2El?.value.trim();
+
+  if (!p1 || !p2) {
+    alert("Please enter both names.");
+    return;
+  }
+}
