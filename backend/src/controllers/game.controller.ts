@@ -18,10 +18,10 @@ export async function newGame(request: FastifyRequest, reply: FastifyReply) {
 		const id2 = db.prepare("SELECT id FROM users WHERE username = ?").get(user2) as UserData | undefined;
 		if (!id2)
 			return sendResponse(reply, 404, undefined, "User not found");
-		const info = insertStatement.run(true, id1.id, id2.id, ( winner==1 ? id1.id : id2.id ));
+		const info = insertStatement.run('true', id1.id, id2.id, ( winner==1 ? id1.id : id2.id ));
 		dbLogger.info(`insert into games id = ${info.lastInsertRowid}`);
 	} else {
-		const info = insertStatement.run(false, id1.id, 1, ( winner==1 ? id1.id : 1 ));
+		const info = insertStatement.run('false', id1.id, 1, ( winner==1 ? id1.id : 1 ));
 		dbLogger.info(`insert into games id = ${info.lastInsertRowid}`);
 	}
 	return sendResponse(reply, 200);
