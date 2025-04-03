@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,10 +11,16 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css">
 	<link rel="stylesheet" href="/css/output.css">
 	<style>
-		.view { display: none; }
-		.active { display: block; }
+		.view {
+			display: none;
+		}
+
+		.active {
+			display: block;
+		}
 	</style>
 </head>
+
 <body class="relative bg-purple-900 text-white">
 	<main class="flex-grow">
 		<!-- INDEX VIEW -->
@@ -22,18 +29,19 @@
 			<div class="flex items-center justify-center min-h-screen">
 				<div class="text-center">
 					<h1 class="text-6xl font-black  tracking-wide">
-						WELCOME TO	P<span class="inline-block align-middle">🏓</span> NG
+						WELCOME TO P<span class="inline-block align-middle">🏓</span> NG
 					</h1>
 					<div class="flex flex-col items-center justify-center gap-y-4 mt-10 w-full">
-					<li class= "relative block">
-						<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-						<a onclick="location.href='/google-login';" class="relative block w-full py-3 px-6 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
-							Login to Account
-						</a>
-					</li>
-					
+						<li class="relative block">
+							<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
+							<a onclick="location.href='/google-login';"
+								class="relative block w-full py-3 px-6 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
+								Login to Account
+							</a>
+						</li>
+
+					</div>
 				</div>
-			</div>
 		</section>
 
 		<!-- ACCOUNT VIEW -->
@@ -41,7 +49,9 @@
 			<div class="min-h-screen bg-purple-900 text-white flex flex-col">
 				<header class="p-4 bg-purple-500 flex justify-between items-center">
 					<div class="flex items-center space-x-3">
-						<img id="userAvatar" alt="User Avatar" class="w-10 h-10 rounded-full border-2 border-purple-600 shadow" onerror="this.onerror=null; this.src='/uploads/default.png';">
+						<img id="userAvatar" alt="User Avatar"
+							class="w-10 h-10 rounded-full border-2 border-purple-600 shadow"
+							onerror="this.onerror=null; this.src='/uploads/default.png';">
 						<div>
 							<p id="usernameDisplay" class="font-semibold cursor-pointer"></p>
 							<p id="userEmail" class="text-sm text-purple-200"></p>
@@ -49,8 +59,12 @@
 					</div>
 					<script src="/loadUserData.js"></script>
 					<nav class="space-x-4">
-						<a href="#editProfile" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Edit Profile</a>
-						<a id="logoutLink" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Logout</a>
+						<a href="#search"
+							class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Search</a>
+						<a href="#editProfile"
+							class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Edit Profile</a>
+						<a id="logoutLink"
+							class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Logout</a>
 						<script src="/logoutLink.js"></script>
 					</nav>
 				</header>
@@ -62,19 +76,22 @@
 					<div class="flex flex-col space-y-8 w-full max-w-md">
 						<div class="relative">
 							<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-							<a href="#singleplayer" id="singlePlayerBtn" class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
+							<a href="#singleplayer" id="singlePlayerBtn"
+								class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
 								SINGLE PLAYER
 							</a>
 						</div>
 						<div class="relative">
 							<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-							<a href="#multiplayer" id="multiPlayerBtn" class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
+							<a href="#multiplayer" id="multiPlayerBtn"
+								class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
 								MULTI PLAYER
 							</a>
 						</div>
 						<div class="relative">
 							<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-							<a href="#tournament" class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
+							<a href="#tournament"
+								class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
 								TOURNAMENT
 							</a>
 						</div>
@@ -83,49 +100,92 @@
 				<footer class="p-4 bg-purple-500 text-center">
 					<p class="text-sm text-purple-200">&copy; 2025 Team SAFARI, Inc. All rights reserved.</p>
 				</footer>
-				<!-- User Stats Modal (placeholders; update via separate script if needed) -->
-				<div id="userStatsModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-					<div class="bg-purple-200 text-black w-1/2 p-6 rounded relative shadow-lg">
-						<button id="closeModalBtn" class="absolute top-2 right-2 text-2xl font-bold text-black hover:text-gray-600">&times;</button>
-						<h2 class="text-xl font-bold mb-6 text-black tracking-wider text-center" id="userStatsUsername">User Stats</h2>
-						<div class="space-y-4">
-							<div class="relative">
+				<!-- User Stats Modal -->
+				<div id="userStatsModal"
+					class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+					<div class="bg-purple-200 text-black w-3/4 p-6 rounded relative shadow-lg">
+						<button id="closeModalBtn"
+							class="absolute top-2 right-2 text-2xl font-bold text-black hover:text-gray-600">&times;</button>
+						<h2 class="text-xl font-bold mb-6 text-black tracking-wider text-center">
+							User Stats</h2>
+						<!-- User Profile and Game Stats -->
+						<div class="flex items-center space-x-6">
+							<!-- User Profile -->
+							<div class="relative flex-grow">
 								<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-								<div class="relative bg-purple-600 text-white p-3 rounded text-center">
-									<p class="font-bold">Total Games</p>
-									<p id="totalGames">0</p>
-								</div>
-							</div>
-							<div class="relative">
-								<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-								<div class="relative bg-purple-600 text-white p-3 rounded text-center">
-									<p class="font-bold">Wins</p>
-									<p id="wins">0</p>
-								</div>
-							</div>
-							<div class="relative">
-								<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-								<div class="relative bg-purple-600 text-white p-3 rounded text-center">
-									<p class="font-bold">Losses</p>
-									<p id="losses">0</p>
-								</div>
-							</div>
-							<div>
-								<form id="friendrequest" class="w-full max-w-md">
-									<div class="mb-4">
-										<label for="friend" class="block text-lg mb-2">Add a friend:</label>
-										<input type="text" id="friend" name="friend" required class="w-full p-2 rounded text-black">
+								<div class="relative flex items-center space-x-4 bg-purple-600 rounded-lg p-6 h-full">
+									<img id="myAvatar" src="/uploads/default.png" alt="User Avatar"
+										onerror="this.onerror=null; this.src='/uploads/default.png';"
+										class="w-16 h-16 rounded-full border-2 border-gray-300">
+									<div>
+										<h2 id="myUsername" class="text-xl font-semibold text-white"></h2>
+										<p id="myOnlinestatus" class="text-white"></p>
 									</div>
-									<button type="button" id="friendrequestbtn"
-										class="w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors">
-										Send friend request
-									</button>
-								</form>
+									<div class="w-full"></div>
+									<!-- Game Stats -->
+									<div class="flex space-x-4 h-full ml-auto">
+										<div class="relative h-full">
+											<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+												<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">Games</p>
+												<p id="totalGames">0</p>
+											</div>
+										</div>
+										<div class="relative h-full">
+											<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+												<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">T-Wins</p>
+												<p id="tournamentwins">0</p>
+											</div>
+										</div>
+										<div class="relative h-full">
+											<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+												<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">Wins</p>
+												<p id="wins">0</p>
+											</div>
+										</div>
+										<div class="relative h-full">
+											<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+												<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">Losses</p>
+												<p id="losses">0</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Two-Column Layout -->
+						<div class="mt-6 grid grid-cols-2 gap-6">
+							<!-- Left Column -->
+							<div class="space-y-4">
+								<!-- Friends List -->
+								<div class="space-y-4">
+									<h3 class="text-lg font-semibold">Friends</h3>
+									<ul id="friendlist" class="mt-2 space-y-2"></ul>
+								</div>
+								<!-- Friend Requests -->
+								<div class="mt-6">
+									<h3 class="text-lg font-semibold">Friend Requests</h3>
+									<form>
+										<div class="flex space-x-2">
+											<input id="newFriendBar" type="text"
+												class="flex-grow px-3 py-1 border rounded-md">
+											<button id="newFriendBtn" type="button"
+												class="px-3 py-1 bg-purple-600 text-white rounded-md">Send</button>
+										</div>
+										<p id="statustext" class="mt-2">search for a user...</p>
+									</form>
+									<div id="requestlist" class="mt-2 space-y-2"></div>
+								</div>
+							</div>
+							<!-- Match History -->
+							<div>
+								<h3 class="text-lg font-semibold">Match History</h3>
+								<ul id="matchhistory" class="mt-2 space-y-2"></ul>
 							</div>
 						</div>
 					</div>
 				</div>
 				<script src="/account.js"></script>
+				<script src="/newuserdata.js"></script>
 			</div>
 		</section>
 
@@ -136,15 +196,19 @@
 					<h1 class="text-3xl font-bold mb-4 text-center">Create New Profile</h1>
 					<div class="text-center mb-6">
 						<p class="mb-2">Hello!</p>
-						<img src="/uploads/default.png" alt="Avatar" class="mx-auto w-20 h-20 rounded-full border-2 border-purple-600 shadow">
+						<img src="/uploads/default.png" alt="Avatar"
+							class="mx-auto w-20 h-20 rounded-full border-2 border-purple-600 shadow">
 					</div>
 					<form id="createProfileForm" class="space-y-4">
 						<div>
 							<label for="username" class="block mb-1 font-semibold">Choose a Username</label>
-							<input type="text" id="username" name="username" class="w-full px-3 py-2 text-black rounded focus:outline-none" placeholder="Enter your username" required>
+							<input type="text" id="username" name="username"
+								class="w-full px-3 py-2 text-black rounded focus:outline-none"
+								placeholder="Enter your username" required>
 						</div>
 						<p id="createStatus" class="text-red-400"></p>
-						<button type="submit" class="w-full py-2 bg-green-500 hover:bg-green-600 text-black font-semibold rounded transition-colors">
+						<button type="submit"
+							class="w-full py-2 bg-green-500 hover:bg-green-600 text-black font-semibold rounded transition-colors">
 							Create
 						</button>
 					</form>
@@ -158,30 +222,37 @@
 			<div class="min-h-screen bg-purple-900 text-white flex items-center justify-center p-4">
 				<div class="max-w-lg w-full space-y-8">
 					<div class="bg-purple-500 p-6 rounded shadow">
-					<h1 class="text-3xl font-bold mb-4 text-center">Edit Profile</h1>
-					<div class="flex flex-col items-center mb-6">
-						<img id="editAvatar" src="/uploads/default.png" alt="Avatar" class="w-24 h-24 rounded-full border-2 border-purple-600 shadow" onerror="this.onerror=null; this.src='/uploads/default.png';">
+						<h1 class="text-3xl font-bold mb-4 text-center">Edit Profile</h1>
+						<div class="flex flex-col items-center mb-6">
+							<img id="editAvatar" src="/uploads/default.png" alt="Avatar"
+								class="w-24 h-24 rounded-full border-2 border-purple-600 shadow"
+								onerror="this.onerror=null; this.src='/uploads/default.png';">
 						</div>
 						<form id="editProfileForm" class="space-y-4" method="post" enctype="multipart/form-data">
 							<div>
 								<label for="editUsername" class="block mb-1 font-semibold">Edit Username:</label>
-								<input type="text" id="editUsername" name="username" class="w-full px-3 py-2 text-black rounded focus:outline-none" placeholder="New username" required>
+								<input type="text" id="editUsername" name="username"
+									class="w-full px-3 py-2 text-black rounded focus:outline-none"
+									placeholder="New username">
 							</div>
 							<div>
-							<label for="avatarFile" class="block mb-1 font-semibold">Upload Avatar:</label>
-							<input type="file" id="avatarFile" name="avatarFile" accept="image/*" class="w-full px-3 py-2 text-black rounded focus:outline-none">
+								<label for="avatarFile" class="block mb-1 font-semibold">Upload Avatar:</label>
+								<input type="file" id="avatarFile" name="avatarFile" accept="image/*"
+									class="w-full px-3 py-2 text-black rounded focus:outline-none">
 							</div>
 							<p id="editStatus" class="text-red-400"></p>
-							<button type="submit" class="w-full py-2 bg-green-500 hover:bg-green-600 text-black font-semibold rounded transition-colors">
-							Save
+							<button type="submit"
+								class="w-full py-2 bg-green-500 hover:bg-green-600 text-black font-semibold rounded transition-colors">
+								Save
 							</button>
 						</form>
 					</div>
 					<div class="bg-purple-500 p-6 rounded shadow">
 						<h2 class="text-xl font-bold mb-4 text-center">DANGER ZONE</h2>
 						<form id="deleteProfileForm" class="flex items-center justify-center">
-							<button type="button" id="deleteProfileBtn" class="w-full py-2 bg-red-500 hover:bg-red-600 text-black font-semibold rounded transition-colors">
-							Delete Profile
+							<button type="button" id="deleteProfileBtn"
+								class="w-full py-2 bg-red-500 hover:bg-red-600 text-black font-semibold rounded transition-colors">
+								Delete Profile
 							</button>
 						</form>
 					</div>
@@ -189,83 +260,151 @@
 				<script src="/editProfile.js"></script>
 			</div>
 		</section>
+		
+		<section id="search-view" class="view">
+			<div class="min-h-screen bg-purple-900 text-white flex items-center justify-center p-4">
+				<div class="max-w-2-lg w-3/4 space-y-8">
+					<div class="bg-purple-200 p-6 text-black rounded shadow">
+						<h1 class="text-3xl font-bold mb-4 text-center">User Search</h1>
+						<div>
+							<div>
+								<p id="searchstatus"></p>
+								<input id="userSearchbar">
+								<button type="button" id="userSearchBtn">Search</button>
+							</div>
+							<!-- User Profile and Stats -->
+							<div id="userview" class="flex flex-col items-center justify-center space-y-6 hidden">
+								<div class="relative flex-grow w-full">
+									<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
+									<div class="relative flex items-center space-x-4 bg-purple-600 rounded-lg p-6 h-full">
+										<img id="searchAvatar" src="/uploads/default.png" alt="User Avatar"
+											onerror="this.onerror=null; this.src='/uploads/default.png';"
+											class="w-16 h-16 rounded-full border-2 border-gray-300">
+										<div>
+											<h2 id="searchUsername" class="text-xl font-semibold text-white"></h2>
+											<p id="searchOnlinestatus" class="text-white"></p>
+										</div>
+										<div class="w-full"></div>
+										<!-- Game Stats -->
+										<div class="flex space-x-4 h-full ml-auto">
+											<div class="relative h-full">
+												<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">Games</p>
+													<p id="searchGames">0</p>
+												</div>
+											</div>
+											<div class="relative h-full">
+												<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">T-Wins</p>
+													<p id="searchtwins">0</p>
+												</div>
+											</div>
+											<div class="relative h-full">
+												<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">Wins</p>
+													<p id="searchwins">0</p>
+												</div>
+											</div>
+											<div class="relative h-full">
+												<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">Losses</p>
+													<p id="searchlosses">0</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div>
+									<h3 class="text-lg font-semibold">Match History</h3>
+									<ul id="searchMatchhistory" class="mt-2 space-y-2"></ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<script src="/searchUser.js"></script>
+			</div>
+		</section>
 	</main>
-		<section id="singleplayer-view" class="view flex flex-col items-center justify-center min-h-screen px-4">
-			<h1 class="text-4xl font-bold mb-4">Single Player Pong</h1>
-			<canvas id="pong" width="800" height="600" class="mb-4"></canvas>
-			<!-- You can add additional controls/buttons here -->
-			<button onclick="location.href='#account'" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">Back</button>
-		</section>
+
+	<section id="singleplayer-view" class="view flex flex-col items-center justify-center min-h-screen px-4">
+		<h1 class="text-4xl font-bold mb-4">Single Player Pong</h1>
+		<canvas id="pong" width="800" height="600" class="mb-4"></canvas>
+		<!-- You can add additional controls/buttons here -->
+		<button onclick="location.href='#account'"
+			class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">Back</button>
+	</section>
 
 
-		<!-- MULTIPLAYER VIEW -->
-		<section id="multiplayer-view" class="view flex items-center justify-center min-h-screen pt-16">
-			<!-- Multiplayer Form Container -->
-			<div id="multiplayerFormContainer" class="w-full max-w-md mb-6">
-				<h1 class="text-4xl font-bold mb-4 text-center">Multiplayer Pong</h1>
-				<form id="multiplayerForm" class="w-full max-w-md">
-					<div class="mb-4">
-						<label for="player1" class="block text-lg mb-2">Player 1 Name</label>
-						<input type="text" id="player1" name="player1" required class="w-full p-2 rounded text-black">
-					</div>
-					<div class="mb-4">
-						<label for="player2" class="block text-lg mb-2">Player 2 Name</label>
-						<input type="text" id="player2" name="player2" required class="w-full p-2 rounded text-black">
-					</div>
-					<button type="button" id="startMultiplayerGame"
-						class="w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors">
-						Start Multiplayer Game
-					</button>
-				</form>
-			</div>
-			<!-- Multiplayer Game Container (initially hidden) -->
-			<div id="multiplayerGameContainer" style="display: none;">
-				<canvas id="pongMulti" width="800" height="600" class="mb-4"></canvas>
-				<button onclick="location.href='#account'" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">
-					Back
+	<!-- MULTIPLAYER VIEW -->
+	<section id="multiplayer-view" class="view flex items-center justify-center min-h-screen pt-16">
+		<!-- Multiplayer Form Container -->
+		<div id="multiplayerFormContainer" class="w-full max-w-md mb-6">
+			<h1 class="text-4xl font-bold mb-4 text-center">Multiplayer Pong</h1>
+			<form id="multiplayerForm" class="w-full max-w-md">
+				<div class="mb-4">
+					<label for="player1" class="block text-lg mb-2">Player 1 Name</label>
+					<input type="text" id="player1" name="player1" required class="w-full p-2 rounded text-black">
+				</div>
+				<div class="mb-4">
+					<label for="player2" class="block text-lg mb-2">Player 2 Name</label>
+					<input type="text" id="player2" name="player2" required class="w-full p-2 rounded text-black">
+				</div>
+				<button type="button" id="startMultiplayerGame"
+					class="w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors">
+					Start Multiplayer Game
 				</button>
-			</div>
-		</section>
-<!-- Tournament Registration View -->
-<section id="tournament-registration-view"
-	class="view flex flex-col items-center justify-center min-h-screen pt-16 px-4">
-	<h1 class="text-3xl font-bold mb-4 text-center">Tournament Registration</h1>
-	<!-- User Search / Invite Interface -->
-	<div class="mb-4 w-full max-w-md">
-		<input id="user-search" type="text" placeholder="Search users to invite..." class="w-full p-2 border rounded">
-		<!-- In a real implementation, as you type you would show results and allow selections -->
-		<p class="text-sm mt-2 text-center">Type to search and select users</p>
-	</div>
-	<!-- Register Tournament Button -->
-	<button type="button" onclick="registerTournament()"
-		class="mt-2 w-full max-w-md px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">
-		Register Tournament
-	</button>
-</section>
+			</form>
+		</div>
+		<!-- Multiplayer Game Container (initially hidden) -->
+		<div id="multiplayerGameContainer" style="display: none;">
+			<canvas id="pongMulti" width="800" height="600" class="mb-4"></canvas>
+			<button onclick="location.href='#account'" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">
+				Back
+			</button>
+		</div>
+	</section>
+	<!-- Tournament Registration View -->
+	<section id="tournament-registration-view"
+		class="view flex flex-col items-center justify-center min-h-screen pt-16 px-4">
+		<h1 class="text-3xl font-bold mb-4 text-center">Tournament Registration</h1>
+		<!-- User Search / Invite Interface -->
+		<div class="mb-4 w-full max-w-md">
+			<input id="user-search" type="text" placeholder="Search users to invite..."
+				class="w-full p-2 border rounded">
+			<!-- In a real implementation, as you type you would show results and allow selections -->
+			<p class="text-sm mt-2 text-center">Type to search and select users</p>
+		</div>
+		<!-- Register Tournament Button -->
+		<button type="button" onclick="registerTournament()"
+			class="mt-2 w-full max-w-md px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">
+			Register Tournament
+		</button>
+	</section>
 
-<!-- Tournament Start View (initially hidden) -->
-<section id="tournament-start-view" class="view flex flex-col items-center justify-center min-h-screen pt-16 px-4"
-	style="display: none;">
-	<h1 class="text-3xl font-bold mb-4 text-center">Tournament Ready</h1>
-	<!-- Display the list of invited players -->
-	<div class="mb-4 w-full max-w-md">
-		<h2 class="text-xl font-semibold mb-2">Invited Players:</h2>
-		<ul id="registered-users" class="list-disc pl-5"></ul>
-	</div>
-	<!-- Start Tournament Button -->
-	<button type="button" onclick="startTournament()"
-		class="w-full max-w-md px-4 py-2 bg-green-600 rounded hover:bg-green-700">
-		Start Tournament Now
-	</button>
-</section>
+	<!-- Tournament Start View (initially hidden) -->
+	<section id="tournament-start-view" class="view flex flex-col items-center justify-center min-h-screen pt-16 px-4"
+		style="display: none;">
+		<h1 class="text-3xl font-bold mb-4 text-center">Tournament Ready</h1>
+		<!-- Display the list of invited players -->
+		<div class="mb-4 w-full max-w-md">
+			<h2 class="text-xl font-semibold mb-2">Invited Players:</h2>
+			<ul id="registered-users" class="list-disc pl-5"></ul>
+		</div>
+		<!-- Start Tournament Button -->
+		<button type="button" onclick="startTournament()"
+			class="w-full max-w-md px-4 py-2 bg-green-600 rounded hover:bg-green-700">
+			Start Tournament Now
+		</button>
+	</section>
 
-		<footer class="absolute bottom-0 left-0 w-full p-4 bg-purple-500 text-center">
-			<p class="text-sm text-purple-200">
-				&copy; 2025 Team SAFARI, Inc. All rights reserved.
-			</p>
-		</footer>
-		<!-- Basic SPA Routing Script -->
-		<script>
+	<footer class="absolute bottom-0 left-0 w-full p-4 bg-purple-500 text-center">
+		<p class="text-sm text-purple-200">
+			&copy; 2025 Team SAFARI, Inc. All rights reserved.
+		</p>
+	</footer>
+	<!-- Basic SPA Routing Script -->
+	<script>
 		function showView(viewId) {
 			document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
 			const view = document.getElementById(viewId);
@@ -277,7 +416,7 @@
 			const user = localStorage.getItem('username');
 			if (!user)
 				hash = 'index';
-			switch(hash) {
+			switch (hash) {
 				case 'account':
 					showView('account-view');
 					break;
@@ -286,6 +425,9 @@
 					break;
 				case 'editProfile':
 					showView('editProfile-view');
+					break;
+				case 'search':
+					showView('search-view');
 					break;
 				case 'singleplayer':
 					showView('singleplayer-view');
@@ -342,41 +484,42 @@
 			localStorage.setItem("multiplayerPlayer2", p2);
 			// startMultiGame();
 		}
-		</script>
-		<script src="multiplayer.js"></script>
-		<script src="singleplayer.js"></script>
-		<script src="tournament.js"></script>
-		<script>
-			    // Simulated registration call (replace with your actual fetch call)
-					function registerTournament() {
-						console.log("Register Tournament clicked");
+	</script>
+	<script src="multiplayer.js"></script>
+	<script src="singleplayer.js"></script>
+	<script src="tournament.js"></script>
+	<script>
+		// Simulated registration call (replace with your actual fetch call)
+		function registerTournament() {
+			console.log("Register Tournament clicked");
 
-						// Simulate backend call delay
-						setTimeout(() => {
-							// Simulated list of invited users; normally, this would be returned from your backend.
-							const registeredUsers = ['Alice', 'Bob', 'Charlie'];
+			// Simulate backend call delay
+			setTimeout(() => {
+				// Simulated list of invited users; normally, this would be returned from your backend.
+				const registeredUsers = ['Alice', 'Bob', 'Charlie'];
 
-							// Populate the list in the tournament start view.
-							const userListElement = document.getElementById('registered-users');
-							userListElement.innerHTML = ''; // clear previous entries if any
-							registeredUsers.forEach(user => {
-								const li = document.createElement('li');
-								li.textContent = user;
-								userListElement.appendChild(li);
-							});
+				// Populate the list in the tournament start view.
+				const userListElement = document.getElementById('registered-users');
+				userListElement.innerHTML = ''; // clear previous entries if any
+				registeredUsers.forEach(user => {
+					const li = document.createElement('li');
+					li.textContent = user;
+					userListElement.appendChild(li);
+				});
 
-							// Hide the registration view and show the start view.
-							document.getElementById('tournament-registration-view').style.display = 'none';
-							document.getElementById('tournament-start-view').style.display = 'flex';
-						}, 1000); // 1 second delay to simulate fetch call
-					}
+				// Hide the registration view and show the start view.
+				document.getElementById('tournament-registration-view').style.display = 'none';
+				document.getElementById('tournament-start-view').style.display = 'flex';
+			}, 1000); // 1 second delay to simulate fetch call
+		}
 
-					// Temporary function to simulate starting the tournament
-					function startTournament() {
-						console.log("Start Tournament Now clicked");
-						// You can navigate to a tournament game page or perform additional logic here.
-						alert("Tournament Started!");
-					}
-		</script>
-	</body>
+		// Temporary function to simulate starting the tournament
+		function startTournament() {
+			console.log("Start Tournament Now clicked");
+			// You can navigate to a tournament game page or perform additional logic here.
+			alert("Tournament Started!");
+		}
+	</script>
+</body>
+
 </html>
