@@ -98,11 +98,29 @@ async function getFriendlist(login: string) {
 					accepted = accepted + `<li class="flex justify-between items-center p-2 bg-purple-600 rounded-md">
 								<span><img src='/uploads/${(friendindex === 1) ? friend.user_id1 : friend.user_id2}.png' class="w-10 h-10 rounded-full border-2 border-gray-300" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
 								<span class="text-white p-2">${(friendindex === 1) ? friend.username1 : friend.username2}</span>
-								<span class="ml-auto text-sm text-white">${((friendindex === 1) ? friend.status1 : friend.status2) || "offline"}</span>
+								<span class="px-3 ml-auto text-sm text-white">${((friendindex === 1) ? friend.status1 : friend.status2) || "offline"}</span>
+								<button class="px-3 py-1 bg-red-500 text-white rounded-md cancel-btn" data-username="${friend.username2}">&times</button>
 								</li>`;
 				}
 			}
 			friendlist.innerHTML = accepted;
+			const cancelButtons = document.querySelectorAll('.cancel-btn');
+			cancelButtons.forEach(button => {
+				button.addEventListener('click', async (event) => {
+					const username = (event.target as HTMLElement).getAttribute('data-username');
+					if (!username) return;
+					try {
+						const response = await fetch(`/api/friend/${username}/delete`, { method: 'GET' });
+						if (response.ok) {
+							window.location.reload();
+						} else {
+							console.error("Error in route - GET /api/friend/:id/delete");
+						}
+					} catch (error) {
+						console.error("Error canceling friend request:", error);
+					}
+				});
+			});
 		} else {
 			friendlist.innerHTML = 'You are not logged in -> go to /google-login';
 		}
@@ -134,21 +152,24 @@ async function requestList(login: string) {
 						sent = sent + `<li class="flex justify-between items-center p-2 bg-purple-600 rounded-md">
 								<span><img src='/uploads/${friend.user_id2}.png' class="w-10 h-10 rounded-full border-2 border-gray-300" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
 								<span class="text-white p-2">${friend.username2}</span>
-								<span class="ml-auto text-sm text-white">waiting...</span>
+								<button class="ml-auto px-3 py-1 bg-red-500 text-white rounded-md cancel-btn" data-username="${friend.username2}">Delete</button>
+								<span class="px-3 text-sm text-white">waiting...</span>
 								</li>`;
 					} else {
 						pending = pending + `<li class="flex justify-between items-center p-2 bg-purple-600 rounded-md">
 								<span><img src='/uploads/${friend.user_id1}.png' class="w-10 h-10 rounded-full border-2 border-gray-300" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
 								<span class="text-white p-2">${friend.username1}</span>
-								<button class="ml-auto px-3 py-1 bg-purple-400 text-green-500 rounded-md accept-btn" data-username="${friend.username1}">accept</button>
+								<button class="ml-auto px-3 py-1 bg-green-500 text-white rounded-md accept-btn" data-username="${friend.username1}">Accept</button>
 								</li>`;
 					}
 				}
 			}
 			friendlist.innerHTML = pending + sent;
 
-			// Add event listeners for accept buttons
+			// Add event listeners for buttons
 			const acceptButtons = document.querySelectorAll('.accept-btn');
+			const cancelButtons = document.querySelectorAll('.cancel-btn');
+
 			acceptButtons.forEach(button => {
 				button.addEventListener('click', async (event) => {
 					const username = (event.target as HTMLElement).getAttribute('data-username');
@@ -166,6 +187,23 @@ async function requestList(login: string) {
 						}
 					} catch (error) {
 						console.error("Error accepting friend request:", error);
+					}
+				});
+			});
+
+			cancelButtons.forEach(button => {
+				button.addEventListener('click', async (event) => {
+					const username = (event.target as HTMLElement).getAttribute('data-username');
+					if (!username) return;
+					try {
+						const response = await fetch(`/api/friend/${username}/delete`, { method: 'GET' });
+						if (response.ok) {
+							window.location.reload();
+						} else {
+							console.error("Error in route - GET /api/friend/:id/delete");
+						}
+					} catch (error) {
+						console.error("Error canceling friend request:", error);
 					}
 				});
 			});
