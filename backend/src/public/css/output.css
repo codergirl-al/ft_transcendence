@@ -1,4 +1,4 @@
-/*! tailwindcss v4.0.14 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.0.17 | MIT License | https://tailwindcss.com */
 .\@container {
   container-type: inline-size;
 }
@@ -56,11 +56,17 @@
 .sticky {
   position: sticky;
 }
+.top-full {
+  top: 100%;
+}
 .isolate {
   isolation: isolate;
 }
 .isolation-auto {
   isolation: auto;
+}
+.z-\[1000\] {
+  z-index: 1000;
 }
 .z-auto {
   z-index: auto;
