@@ -99,13 +99,13 @@
 				<footer class="p-4 bg-purple-500 text-center">
 					<p class="text-sm text-purple-200">&copy; 2025 Team SAFARI, Inc. All rights reserved.</p>
 				</footer>
-				<!-- User Stats Modal (placeholders; update via separate script if needed) -->
+				<!-- User Stats Modal -->
 				<div id="userStatsModal"
 					class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
 					<div class="bg-purple-200 text-black w-3/4 p-6 rounded relative shadow-lg">
 						<button id="closeModalBtn"
 							class="absolute top-2 right-2 text-2xl font-bold text-black hover:text-gray-600">&times;</button>
-						<h2 class="text-xl font-bold mb-6 text-black tracking-wider text-center" id="userStatsUsername">
+						<h2 class="text-xl font-bold mb-6 text-black tracking-wider text-center">
 							User Stats</h2>
 						<!-- User Profile and Game Stats -->
 						<div class="flex items-center space-x-6">
@@ -124,23 +124,26 @@
 									<!-- Game Stats -->
 									<div class="flex space-x-4 h-full ml-auto">
 										<div class="relative h-full">
-											<div
-												class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
-												<p class="font-bold">Games</p>
+											<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+												<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">Games</p>
 												<p id="totalGames">0</p>
 											</div>
 										</div>
 										<div class="relative h-full">
-											<div
-												class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
-												<p class="font-bold">Wins</p>
+											<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+												<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">T-Wins</p>
+												<p id="tournamentwins">0</p>
+											</div>
+										</div>
+										<div class="relative h-full">
+											<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+												<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">Wins</p>
 												<p id="wins">0</p>
 											</div>
 										</div>
 										<div class="relative h-full">
-											<div
-												class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
-												<p class="font-bold">Losses</p>
+											<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+												<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">Losses</p>
 												<p id="losses">0</p>
 											</div>
 										</div>

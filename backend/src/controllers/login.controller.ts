@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { dbLogger, authLogger } from "../conf/logger";
 import { sendResponse } from "./root.controller";
-import { RequestParams, TokenData, UserData, UserRequestBody } from "../types/types";
+import { RequestParams, TokenData, UserData, UserRequestBody, UserStats } from "../types/types";
 import util from 'util';
 import fs from 'fs';
 import { pipeline } from 'stream/promises';
@@ -30,6 +30,24 @@ export async function showUser(request: FastifyRequest, reply: FastifyReply) {
 
 	dbLogger.info(`select users where username = ${id}`);
 	return sendResponse(reply, 200, user);
+}
+
+// GET /api/user/:id/stats - Show data of a user
+export async function userStats(request: FastifyRequest, reply: FastifyReply) {
+	const { id } = request.params as RequestParams;
+	const { db } = request.server;
+	const user = db
+		.prepare('SELECT * FROM users WHERE username = ?')
+		.get(id) as UserData | undefined;
+	if (!user)
+		return sendResponse(reply, 404, undefined, "User not found");
+	
+	const stats = db.prepare("SELECT * FROM user_stats WHERE user_id = ?").get(user.id) as UserStats | undefined;
+	if (!stats)
+		return sendResponse(reply, 404, undefined, "User stats not found");
+
+	dbLogger.info(`select user_stats where username = ${id}`);
+	return sendResponse(reply, 200, stats);
 }
 
 // GET /api/user - Show data of user
@@ -84,7 +102,10 @@ export async function newUser(request: FastifyRequest, reply: FastifyReply) {
 		return sendResponse(reply, 400, undefined, "Email already registered");
 
 	const insertStatement = db.prepare("INSERT INTO users (username, email) VALUES (?, ?)");
-	insertStatement.run(username, email);
+	const info = insertStatement.run(username, email);
+	const insertstats = db.prepare("INSERT INTO user_stats (user_id) VALUES (?)");
+	insertstats.run(info.lastInsertRowid);
+
 	authLogger.info(`Created new user ${username}`);
 	dbLogger.info(`insert into users username = ${username}`);
 	return sendResponse(reply, 200);

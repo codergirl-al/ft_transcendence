@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	if (!login || login.length < 1)
 		return;
 	gamestats(login);
+	matches(login);
 	getFriendlist(login);
 	requestList(login);
 });
@@ -176,7 +177,7 @@ async function requestList(login: string) {
 	}
 }
 
-async function gamestats(login: string) {
+async function matches(login: string) {
 	const matchhistory = document.getElementById('matchhistory');
 
 	if (!matchhistory)
@@ -201,5 +202,35 @@ async function gamestats(login: string) {
 		matchhistory.innerHTML = content || "<p>No matches yet</p>";
 	} else {
 		matchhistory.innerHTML = 'Log in to see your past games';
+	}
+}
+
+async function gamestats(login: string) {
+	const games = document.getElementById('totalGames');
+	const tourn = document.getElementById('tournamentwins');
+	const wins = document.getElementById('wins');
+	const losses = document.getElementById('losses');
+
+	if (!games || !tourn || !wins || !losses)
+		return;
+	const response = await fetch(`/api/user/${login}/stats`, { method: 'GET' });
+	if (response.status == 404) {
+		console.error("User not found");
+		return;
+	} else if (!response.ok) {
+		console.error("Error in route - GET /api/game");
+		return;
+	}
+	const data = await response.json();
+	if (data.success) {
+		games.innerText = `${data.data.total_games}`;
+		tourn.innerText = `${data.data.tour_wins}`;
+		wins.innerText = `${data.data.game_wins}`;
+		losses.innerText = `${data.data.losses}`;
+	} else {
+		games.innerText = '0';
+		tourn.innerText = '0';
+		wins.innerText = '0';
+		losses.innerText = '0';
 	}
 }

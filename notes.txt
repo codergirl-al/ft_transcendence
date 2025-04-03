@@ -20,6 +20,5 @@ unimplemented:
 > ...
 
 -- todo --
-> friend requests frontend
-> user search and pages
-> user stats page
+> user search page
+> public user stats page

@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { newUser, showUser, editUser, deleteUser, logout, myUser, allUsers } from "../controllers/login.controller";
+import { newUser, showUser, editUser, deleteUser, logout, myUser, userStats, allUsers } from "../controllers/login.controller";
 import { newGame, showGame, showAllGames, showMyGames } from "../controllers/game.controller";
 import { showAllT, newT, showT, winT } from "../controllers/tournament.controller";
 import { newFriend, getFriend, myFriends, deleteFriend } from "../controllers/friends.controller";
@@ -37,6 +37,7 @@ async function userRoutes(userRoutes: FastifyInstance) {
 	}, newUser);
 	userRoutes.get("/", { preValidation: userRoutes.authenticate }, myUser); // get data of user
 	userRoutes.get("/:id", { schema: { params: userParamSchema } }, showUser); // get data of user
+	userRoutes.get("/:id/stats", { schema: { params: userParamSchema } }, userStats); // get data of user
 	userRoutes.get("/all", allUsers); // get data of user
 	userRoutes.post("/:id", { // update profile
 		preValidation: [multipartRequest, userRoutes.authenticate],
