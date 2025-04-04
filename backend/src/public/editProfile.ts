@@ -28,9 +28,10 @@ if (editForm) {
 		event.preventDefault();
 		const formData = new FormData(this);
 		console.log("Updated username:", formData.get('username'));
-
-		// Check if the username is unchanged.
-		if (formData.get('username') === currentUsername) {
+		const invalid = [currentUsername, 'all', 'delete', 'logout'];
+		const username = formData.get('username');
+		// Check if the username is unchanged or wrong.
+		if (invalid.find(x => x === username)) {
 			const status = document.getElementById('editStatus');
 			if (status)
 				status.textContent = 'No changes detected. Profile not updated.';

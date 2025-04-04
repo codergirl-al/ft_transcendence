@@ -17,8 +17,6 @@ ready:
 > play a local tournament
 
 -- todo --
-> searching user 'delete' deletes profile
-
 > style userpages search bar (with user list)
 > center restart game text
 > make user search bars fetch users

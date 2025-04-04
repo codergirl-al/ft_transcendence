@@ -22,6 +22,11 @@ function newFriend() {
 			statustext.innerHTML = "No username entered";
 			return;
 		}
+		const invalid = ['all', 'delete', 'logout'];
+		if (invalid.find(x => x === username)) {
+			if (statustext)
+				statustext.textContent = 'User not found';
+		}
 		try {
 			const response = await fetch('/api/friend', {
 				method: 'POST',

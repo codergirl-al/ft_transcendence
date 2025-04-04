@@ -16,6 +16,9 @@ function searchUser() {
 		const username = usersearch.value.trim();
 		if (!username)
 			throw Error("No username given");
+		const invalid = ['all', 'delete', 'logout'];
+		if (invalid.find(x => x === username))
+			throw Error("invalid username");
 		try {
 			const response = await fetch(`/api/user/${username}`, {method: 'GET'});
 			if (!response.ok) {

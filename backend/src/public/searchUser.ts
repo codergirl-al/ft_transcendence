@@ -14,7 +14,8 @@ function searchbar() {
 	if (!search || !btn || !userview || !status || !username || !avatar || !onlinestatus)
 		return ;
 	btn.addEventListener('click', async function () {
-		if (search.value.length < 3) {
+		const invalid = ['all', 'delete', 'logout'];
+		if (search.value.length < 3 || invalid.find(x => x === search.value)) {
 			status.innerText = "User not found";
 			return ;
 		}
