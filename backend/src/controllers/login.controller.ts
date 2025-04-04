@@ -101,6 +101,7 @@ export async function newUser(request: FastifyRequest, reply: FastifyReply) {
 	const insertstats = db.prepare("INSERT INTO user_stats (user_id) VALUES (?)");
 	insertstats.run(info.lastInsertRowid);
 
+	copyAvatar(info.lastInsertRowid);
 	authLogger.info(`Created new user ${username}`);
 	return sendResponse(reply, 200);
 }
@@ -214,4 +215,11 @@ export async function logout(request: FastifyRequest, reply: FastifyReply) {
 	reply.clearCookie('oauth2-redirect-state');
 	authLogger.info(`User ${user.email} logged out`);
 	return sendResponse(reply, 200);
+}
+
+function copyAvatar(id: number | bigint) {
+	const def_avatar = `/app/dist/public/uploads/default.png`;
+	const copy = `/app/dist/public/uploads/${id}.png`;
+
+	fs.copyFile(def_avatar, copy, (err) => { if (err) throw err; });
 }

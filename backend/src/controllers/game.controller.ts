@@ -112,6 +112,5 @@ export async function showUserGames(request: FastifyRequest, reply: FastifyReply
 		LEFT JOIN users AS user1 ON games.user_id1 = user1.id
 		LEFT JOIN users AS user2 ON games.user_id2 = user2.id
 		WHERE games.user_id1 = ? OR games.user_id2 = ?`).all(user.id, user.id) as GameData[];
-	console.log(game);
 	return sendResponse(reply, 200, game);
 }

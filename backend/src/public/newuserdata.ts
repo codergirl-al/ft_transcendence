@@ -97,7 +97,7 @@ async function getFriendlist(login: string) {
 				let friendindex = (friend.username1 === login) ? 2 : 1;
 				if (friend.status === 'accepted') {
 					accepted = accepted + `<li class="flex justify-between items-center p-2 bg-purple-600 rounded-md">
-								<span><img src='/uploads/${(friendindex === 1) ? friend.user_id1 : friend.user_id2}.png' class="w-10 h-10 rounded-full border-2 border-gray-300" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
+								<span><img src='/uploads/${(friendindex === 1) ? friend.user_id1 : friend.user_id2}.png' class="w-10 h-10 rounded-full border-2 border-purple-200" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
 								<span class="text-white p-2">${(friendindex === 1) ? friend.username1 : friend.username2}</span>
 								<span class="px-3 ml-auto text-sm text-white">${((friendindex === 1) ? friend.status1 : friend.status2) || "offline"}</span>
 								<button class="px-3 py-1 bg-red-500 text-white rounded-md cancel-btn" data-username="${friend.username2}">&times</button>
@@ -151,14 +151,14 @@ async function requestList(login: string) {
 				if (friend.status === 'pending') {
 					if (friend.username1 === login) {
 						sent = sent + `<li class="flex justify-between items-center p-2 bg-purple-600 rounded-md">
-								<span><img src='/uploads/${friend.user_id2}.png' class="w-10 h-10 rounded-full border-2 border-gray-300" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
+								<span><img src='/uploads/${friend.user_id2}.png' class="w-10 h-10 rounded-full border-2 border-purple-200" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
 								<span class="text-white p-2">${friend.username2}</span>
 								<button class="ml-auto px-3 py-1 bg-red-500 text-white rounded-md cancel-btn" data-username="${friend.username2}">Delete</button>
 								<span class="px-3 text-sm text-white">waiting...</span>
 								</li>`;
 					} else {
 						pending = pending + `<li class="flex justify-between items-center p-2 bg-purple-600 rounded-md">
-								<span><img src='/uploads/${friend.user_id1}.png' class="w-10 h-10 rounded-full border-2 border-gray-300" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
+								<span><img src='/uploads/${friend.user_id1}.png' class="w-10 h-10 rounded-full border-2 border-purple-200" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
 								<span class="text-white p-2">${friend.username1}</span>
 								<button class="ml-auto px-3 py-1 bg-green-500 text-white rounded-md accept-btn" data-username="${friend.username1}">Accept</button>
 								</li>`;

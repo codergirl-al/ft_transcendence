@@ -24,8 +24,8 @@ if (createProfile)
 					status.textContent = data.message || 'Error creating profile';
 			} else {
 				window.location.hash = '#account';
-				window.location.reload();
 				showView('account-view');
+				window.location.reload();
 			}
 		} catch (error) {
 			console.error('Error creating profile:', error);

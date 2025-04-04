@@ -17,17 +17,12 @@ ready:
 > play a local tournament
 
 -- todo --
-> pause singleplayer game by default
-> make user search bars fetch users
-> center restart game text
-> style userpages search bar (with user list)
-> match history width on search page
-> search page avatar error and style wrong
 > search page swap error messages
+> editProfile default username set to empty
+
+> style userpages search bar (with user list)
+> center restart game text
+> make user search bars fetch users
 > multiplayer game starts on end of game?
 > multiplayer game screen smaller than single
-> editProfile default username set to empty
-> avatar not uniform size
-> exclude usernotfound from 'all' user list
-
 > test tournament
