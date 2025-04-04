@@ -181,11 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
     canvas.height / 2 + 10
    );
    ctx.font = "24px Arial";
-   ctx.fillText(
-    "Use the buttons below to restart or pause",
-    canvas.width / 2 - 150,
-    canvas.height / 2 + 50
-   );
   }
  }
 
