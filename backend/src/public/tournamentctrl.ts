@@ -555,28 +555,13 @@ if (backTournamentBtn) {
 
 // ====================== Tournament Registration ======================
 
-interface UsersResponse {
-  data: string[];
-}
 
-let allUsersList: UsersResponse = { data: [] };
 let selectedPlayers: string[] = [];
-
-// Fetch all users.
-async function fetchAllUsers(): Promise<void> {
-  try {
-    const response = await fetch("/api/user/all");
-    if (!response.ok) throw new Error("Network response was not ok");
-    allUsersList = await response.json();
-  } catch (error) {
-    console.error("Error fetching users:", error);
-  }
-}
-fetchAllUsers();
+const allUsersList: PlayerResponse = fetchAllPlayers();
 
 const userSearchInput = document.getElementById("user-search") as HTMLInputElement;
 userSearchInput.addEventListener("input", () => {
-  const query = userSearchInput.value.toLowerCase();
+	const query = userSearchInput.value.toLowerCase();
   if (query.length < 2) {
     searchResultsContainer!.style.display = "none";
     searchResultsContainer!.innerHTML = "";
@@ -585,7 +570,7 @@ userSearchInput.addEventListener("input", () => {
   const filteredUsers: string[] = allUsersList.data.filter((username) =>
     username.toLowerCase().includes(query)
   );
-  displaySearchResults(filteredUsers);
+  displaySearchResults(filteredUsers, searchResultsContainer!);
 });
 
 const userSearchDiv = document.getElementById("user-search") as HTMLElement;
@@ -596,10 +581,10 @@ if (!searchResultsContainer) {
   userSearchDiv.appendChild(searchResultsContainer);
 }
 
-function displaySearchResults(users: string[]): void {
-  searchResultsContainer!.innerHTML = "";
+function displaySearchResults(users: string[], container: HTMLDivElement): void {
+	container.innerHTML = "";
   if (users.length === 0) {
-    searchResultsContainer!.style.display = "none";
+    container.style.display = "none";
     return;
   }
   users.forEach((username) => {
@@ -607,9 +592,9 @@ function displaySearchResults(users: string[]): void {
     div.textContent = username;
     div.className = "search-result-item";
     div.onclick = () => selectUser(username);
-    searchResultsContainer!.appendChild(div);
+    container.appendChild(div);
   });
-  searchResultsContainer!.style.display = "block";
+  container.style.display = "block";
 }
 
 function selectUser(username: string): void {
