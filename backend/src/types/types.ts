@@ -24,6 +24,15 @@ export interface UserData {
 	email?: string;
 }
 
+// layout of user_stats table
+export interface UserStats {
+	user_id: Number;
+	total_games: Number;
+	tour_wins: Number;
+	game_wins: Number;
+	losses: Number;
+}
+
 // layout of friends table
 export interface FriendData {
 	id: Number;

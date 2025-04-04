@@ -1,204 +1,348 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-	<title>ft_transcendence</title>
-	<!-- <link href="../../public/css/output.css" rel="stylesheet"> -->
-	<!-- <script type="module" src="/app.js"></script> -->
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css">
-	<link rel="stylesheet" href="/css/output.css">
-	<style>
-		.view { display: none; }
-		.active { display: block; }
-	</style>
-</head>
-<body class="relative bg-purple-900 text-white">
-	<main class="flex-grow">
-		<!-- INDEX VIEW -->
-		<section id="index-view" class="view active min-h-screen flex flex-col items-center justify-center">
-			</div>
-			<div class="flex items-center justify-center min-h-screen">
-				<div class="text-center">
-					<h1 class="text-6xl font-black  tracking-wide">
-						WELCOME TO	P<span class="inline-block align-middle">🏓</span> NG
-					</h1>
-					<div class="flex flex-col items-center justify-center gap-y-4 mt-10 w-full">
-					<li class= "relative block">
-						<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-						<a onclick="location.href='/google-login';" class="relative block w-full py-3 px-6 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
-							Login to Account
-						</a>
-					</li>
-					
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>ft_transcendence</title>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css">
+		<!-- <link rel="stylesheet" href="/css/output.css"> -->
+		<style>
+			.view {
+				display: none;
+			}
+
+			.active {
+				display: block;
+			}
+		</style>
+	</head>
+	<body class="relative bg-purple-900 text-white">
+		<main class="flex-grow">
+			<!-- INDEX VIEW -->
+			<section id="index-view" class="view active min-h-screen flex flex-col items-center justify-center">
 				</div>
-			</div>
-		</section>
-		<!-- ACCOUNT VIEW -->
-		<section id="account-view" class="view">
-			<div class="min-h-screen bg-purple-900 text-white flex flex-col">
-				<header class="p-4 bg-purple-500 flex justify-between items-center">
-					<div class="flex items-center space-x-3">
-						<img id="userAvatar" alt="User Avatar" class="w-10 h-10 rounded-full border-2 border-purple-600 shadow" onerror="this.onerror=null; this.src='/uploads/default.png';">
-						<div>
-							<p id="usernameDisplay" class="font-semibold cursor-pointer"></p>
-							<p id="userEmail" class="text-sm text-purple-200"></p>
+				<div class="flex items-center justify-center min-h-screen">
+					<div class="text-center">
+						<h1 class="text-6xl font-black  tracking-wide">
+							WELCOME TO P<span class="inline-block align-middle">🏓</span> NG
+						</h1>
+						<div class="flex flex-col items-center justify-center gap-y-4 mt-10 w-full">
+							<li class="relative block">
+								<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
+								<a onclick="location.href='/google-login';"
+									class="relative block w-full py-3 px-6 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
+									Login to Account
+								</a>
+							</li>
+
 						</div>
 					</div>
-					<script src="/loadUserData.js"></script>
-					<nav class="space-x-4">
-						<a href="#editProfile" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Edit Profile</a>
-						<a id="logoutLink" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Logout</a>
-						<script src="/logoutLink.js"></script>
-					</nav>
-				</header>
-				<main class="flex-grow flex flex-col items-center justify-center text-center px-4">
-					<h1 class="text-6xl font-extrabold mb-8 flex items-center space-x-2">
-						<span>PONG</span>
-						<span class="text-4xl transform rotate-12">🏓</span>
-					</h1>
-					<div class="flex flex-col space-y-8 w-full max-w-md">
-						<div class="relative">
-							<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-							<a href="#singleplayer" id="singlePlayerBtn" class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
-								SINGLE PLAYER
-							</a>
-						</div>
-						<div class="relative">
-							<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-							<a href="#multiplayer" id="multiPlayerBtn" class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
-								MULTI PLAYER
-							</a>
-						</div>
-						<div class="relative">
-							<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-							<a href="#tournament" class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
-								TOURNAMENT
-							</a>
-						</div>
-					</div>
-				</main>
-				<footer class="p-4 bg-purple-500 text-center">
-					<p class="text-sm text-purple-200">&copy; 2025 Team SAFARI, Inc. All rights reserved.</p>
-				</footer>
-				<!-- User Stats Modal (placeholders; update via separate script if needed) -->
-				<div id="userStatsModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-					<div class="bg-purple-200 text-black w-1/2 p-6 rounded relative shadow-lg">
-						<button id="closeModalBtn" class="absolute top-2 right-2 text-2xl font-bold text-black hover:text-gray-600">&times;</button>
-						<h2 class="text-xl font-bold mb-6 text-black tracking-wider text-center" id="userStatsUsername">User Stats</h2>
-						<div class="space-y-4">
-							<div class="relative">
-								<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-								<div class="relative bg-purple-600 text-white p-3 rounded text-center">
-									<p class="font-bold">Total Games</p>
-									<p id="totalGames">0</p>
-								</div>
-							</div>
-							<div class="relative">
-								<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-								<div class="relative bg-purple-600 text-white p-3 rounded text-center">
-									<p class="font-bold">Wins</p>
-									<p id="wins">0</p>
-								</div>
-							</div>
-							<div class="relative">
-								<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-								<div class="relative bg-purple-600 text-white p-3 rounded text-center">
-									<p class="font-bold">Losses</p>
-									<p id="losses">0</p>
-								</div>
-							</div>
+			</section>
+			<!-- ACCOUNT VIEW -->
+			<section id="account-view" class="view">
+				<div class="min-h-screen bg-purple-900 text-white flex flex-col">
+					<header class="p-4 bg-purple-500 flex justify-between items-center">
+						<div class="flex items-center space-x-3">
+							<img id="userAvatar" alt="User Avatar"
+								class="w-10 h-10 rounded-full border-2 border-purple-600 shadow"
+								onerror="this.onerror=null; this.src='/uploads/default.png';">
 							<div>
-								<form id="friendrequest" class="w-full max-w-md">
-									<div class="mb-4">
-										<label for="friend" class="block text-lg mb-2">Add a friend:</label>
-										<input type="text" id="friend" name="friend" required class="w-full p-2 rounded text-black">
+								<p id="usernameDisplay" class="font-semibold cursor-pointer"></p>
+								<p id="userEmail" class="text-sm text-purple-200"></p>
+							</div>
+						</div>
+						<script src="/loadUserData.js"></script>
+						<nav class="space-x-4">
+							<a href="#search"
+								class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Search</a>
+							<a href="#editProfile"
+								class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Edit
+								Profile</a>
+							<a id="logoutLink"
+								class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Logout</a>
+							<script src="/logoutLink.js"></script>
+						</nav>
+					</header>
+					<main class="flex-grow flex flex-col items-center justify-center text-center px-4">
+						<h1 class="text-6xl font-extrabold mb-8 flex items-center space-x-2">
+							<span>PONG</span>
+							<span class="text-4xl transform rotate-12">🏓</span>
+						</h1>
+						<div class="flex flex-col space-y-8 w-full max-w-md">
+							<div class="relative">
+								<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
+								<a href="#singleplayer" id="singlePlayerBtn"
+									class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
+									SINGLE PLAYER
+								</a>
+							</div>
+							<div class="relative">
+								<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
+								<a href="#multiplayer" id="multiPlayerBtn"
+									class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
+									MULTI PLAYER
+								</a>
+							</div>
+							<div class="relative">
+								<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
+								<a href="#tournament"
+									class="relative block w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors text-center">
+									TOURNAMENT
+								</a>
+							</div>
+						</div>
+					</main>
+					<footer class="p-4 bg-purple-500 text-center">
+						<p class="text-sm text-purple-200">&copy; 2025 Team SAFARI, Inc. All rights reserved.</p>
+					</footer>
+					<!-- User Stats Modal -->
+					<div id="userStatsModal"
+						class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+						<div class="bg-purple-200 text-black w-3/4 p-6 rounded relative shadow-lg">
+							<button id="closeModalBtn"
+								class="absolute top-2 right-2 text-2xl font-bold text-black hover:text-gray-600">&times;</button>
+							<h2 class="text-xl font-bold mb-6 text-black tracking-wider text-center">
+								User Stats</h2>
+							<!-- User Profile and Game Stats -->
+							<div class="flex items-center space-x-6">
+								<!-- User Profile -->
+								<div class="relative flex-grow">
+									<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
+									<div class="relative flex items-center space-x-4 bg-purple-600 rounded-lg p-6 h-full">
+										<img id="myAvatar" src="/uploads/default.png" alt="User Avatar"
+											onerror="this.onerror=null; this.src='/uploads/default.png';"
+											class="w-16 h-16 rounded-full border-2 border-gray-300">
+										<div>
+											<h2 id="myUsername" class="text-xl font-semibold text-white"></h2>
+											<p id="myOnlinestatus" class="text-white"></p>
+										</div>
+										<div class="w-full"></div>
+										<!-- Game Stats -->
+										<div class="flex space-x-4 h-full ml-auto">
+											<div class="relative h-full">
+												<div
+													class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">
+														Games</p>
+													<p id="totalGames">0</p>
+												</div>
+											</div>
+											<div class="relative h-full">
+												<div
+													class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">
+														T-Wins</p>
+													<p id="tournamentwins">0</p>
+												</div>
+											</div>
+											<div class="relative h-full">
+												<div
+													class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">Wins
+													</p>
+													<p id="wins">0</p>
+												</div>
+											</div>
+											<div class="relative h-full">
+												<div
+													class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">
+														Losses</p>
+													<p id="losses">0</p>
+												</div>
+											</div>
+										</div>
 									</div>
-									<button type="button" id="friendrequestbtn"
-										class="w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors">
-										Send friend request
-									</button>
-								</form>
+								</div>
+							</div>
+							<!-- Two-Column Layout -->
+							<div class="mt-6 grid grid-cols-2 gap-6">
+								<!-- Left Column -->
+								<div class="space-y-4">
+									<!-- Friends List -->
+									<div class="space-y-4">
+										<h3 class="text-lg font-semibold">Friends</h3>
+										<ul id="friendlist" class="mt-2 space-y-2"></ul>
+									</div>
+									<!-- Friend Requests -->
+									<div class="mt-6">
+										<h3 class="text-lg font-semibold">Friend Requests</h3>
+										<form>
+											<div class="flex space-x-2">
+												<input id="newFriendBar" type="text"
+													class="flex-grow px-3 py-1 border rounded-md">
+												<button id="newFriendBtn" type="button"
+													class="px-3 py-1 bg-purple-600 text-white rounded-md">Send</button>
+											</div>
+											<p id="statustext" class="mt-2">search for a user...</p>
+										</form>
+										<div id="requestlist" class="mt-2 space-y-2"></div>
+									</div>
+								</div>
+								<!-- Match History -->
+								<div>
+									<h3 class="text-lg font-semibold">Match History</h3>
+									<ul id="matchhistory" class="mt-2 space-y-2"></ul>
+								</div>
 							</div>
 						</div>
 					</div>
+					<script src="/account.js"></script>
+					<script src="/newuserdata.js"></script>
 				</div>
-				<script src="/account.js"></script>
-			</div>
-		</section>
-
-		<!-- CREATE PROFILE VIEW -->
-		<section id="createProfile-view" class="view">
-			<div class="min-h-screen bg-purple-900 text-white flex items-center justify-center">
-				<div class="max-w-md w-full bg-purple-800 p-6 rounded shadow">
-					<h1 class="text-3xl font-bold mb-4 text-center">Create New Profile</h1>
-					<div class="text-center mb-6">
-						<p class="mb-2">Hello!</p>
-						<img src="/uploads/default.png" alt="Avatar" class="mx-auto w-20 h-20 rounded-full border-2 border-purple-600 shadow">
-					</div>
-					<form id="createProfileForm" class="space-y-4">
-						<div>
-							<label for="username" class="block mb-1 font-semibold">Choose a Username</label>
-							<input type="text" id="username" name="username" class="w-full px-3 py-2 text-black rounded focus:outline-none" placeholder="Enter your username" required>
+			</section>
+			<!-- CREATE PROFILE VIEW -->
+			<section id="createProfile-view" class="view">
+				<div class="min-h-screen bg-purple-900 text-white flex items-center justify-center">
+					<div class="max-w-md w-full bg-purple-800 p-6 rounded shadow">
+						<h1 class="text-3xl font-bold mb-4 text-center">Create New Profile</h1>
+						<div class="text-center mb-6">
+							<p class="mb-2">Hello!</p>
+							<img src="/uploads/default.png" alt="Avatar"
+								class="mx-auto w-20 h-20 rounded-full border-2 border-purple-600 shadow">
 						</div>
-						<p id="createStatus" class="text-red-400"></p>
-						<button type="submit" class="w-full py-2 bg-green-500 hover:bg-green-600 text-black font-semibold rounded transition-colors">
-							Create
-						</button>
-					</form>
-					<script src="/createProfile.js"></script>
+						<form id="createProfileForm" class="space-y-4">
+							<div>
+								<label for="username" class="block mb-1 font-semibold">Choose a Username</label>
+								<input type="text" id="username" name="username"
+									class="w-full px-3 py-2 text-black rounded focus:outline-none"
+									placeholder="Enter your username" required>
+							</div>
+							<p id="createStatus" class="text-red-400"></p>
+							<button type="submit"
+								class="w-full py-2 bg-green-500 hover:bg-green-600 text-black font-semibold rounded transition-colors">
+								Create
+							</button>
+						</form>
+						<script src="/createProfile.js"></script>
+					</div>
 				</div>
-			</div>
-		</section>
-
-		<!-- EDIT PROFILE VIEW -->
-		<section id="editProfile-view" class="view">
+			</section>
+			<!-- EDIT PROFILE VIEW -->
+			<section id="editProfile-view" class="view">
+				<div class="min-h-screen bg-purple-900 text-white flex items-center justify-center p-4">
+					<div class="max-w-lg w-full space-y-8">
+						<div class="bg-purple-500 p-6 rounded shadow">
+							<h1 class="text-3xl font-bold mb-4 text-center">Edit Profile</h1>
+							<div class="flex flex-col items-center mb-6">
+								<img id="editAvatar" src="/uploads/default.png" alt="Avatar"
+									class="w-24 h-24 rounded-full border-2 border-purple-600 shadow"
+									onerror="this.onerror=null; this.src='/uploads/default.png';">
+							</div>
+							<form id="editProfileForm" class="space-y-4" method="post" enctype="multipart/form-data">
+								<div>
+									<label for="editUsername" class="block mb-1 font-semibold">Edit Username:</label>
+									<input type="text" id="editUsername" name="username"
+										class="w-full px-3 py-2 text-black rounded focus:outline-none"
+										placeholder="New username">
+								</div>
+								<div>
+									<label for="avatarFile" class="block mb-1 font-semibold">Upload Avatar:</label>
+									<input type="file" id="avatarFile" name="avatarFile" accept="image/*"
+										class="w-full px-3 py-2 text-black rounded focus:outline-none">
+								</div>
+								<p id="editStatus" class="text-red-400"></p>
+								<button type="submit"
+									class="w-full py-2 bg-green-500 hover:bg-green-600 text-black font-semibold rounded transition-colors">
+									Save
+								</button>
+							</form>
+						</div>
+						<div class="bg-purple-500 p-6 rounded shadow">
+							<h2 class="text-xl font-bold mb-4 text-center">DANGER ZONE</h2>
+							<form id="deleteProfileForm" class="flex items-center justify-center">
+								<button type="button" id="deleteProfileBtn"
+									class="w-full py-2 bg-red-500 hover:bg-red-600 text-black font-semibold rounded transition-colors">
+									Delete Profile
+								</button>
+							</form>
+						</div>
+					</div>
+					<script src="/editProfile.js"></script>
+				</div>
+			</section>
+		</main>
+		<section id="search-view" class="view">
 			<div class="min-h-screen bg-purple-900 text-white flex items-center justify-center p-4">
-				<div class="max-w-lg w-full space-y-8">
-					<div class="bg-purple-500 p-6 rounded shadow">
-					<h1 class="text-3xl font-bold mb-4 text-center">Edit Profile</h1>
-					<div class="flex flex-col items-center mb-6">
-						<img id="editAvatar" src="/uploads/default.png" alt="Avatar" class="w-24 h-24 rounded-full border-2 border-purple-600 shadow" onerror="this.onerror=null; this.src='/uploads/default.png';">
+				<div class="max-w-2-lg w-3/4 space-y-8">
+					<div class="bg-purple-200 p-6 text-black rounded shadow">
+						<h1 class="text-3xl font-bold mb-4 text-center">User Search</h1>
+						<div>
+							<div>
+								<p id="searchstatus"></p>
+								<input id="userSearchbar">
+								<button type="button" id="userSearchBtn">Search</button>
+							</div>
+							<!-- User Profile and Stats -->
+							<div id="userview" class="flex flex-col items-center justify-center space-y-6 hidden">
+								<div class="relative flex-grow w-full">
+									<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
+									<div class="relative flex items-center space-x-4 bg-purple-600 rounded-lg p-6 h-full">
+										<img id="searchAvatar" src="/uploads/default.png" alt="User Avatar"
+											onerror="this.onerror=null; this.src='/uploads/default.png';"
+											class="w-16 h-16 rounded-full border-2 border-gray-300">
+										<div>
+											<h2 id="searchUsername" class="text-xl font-semibold text-white"></h2>
+											<p id="searchOnlinestatus" class="text-white"></p>
+										</div>
+										<div class="w-full"></div>
+										<!-- Game Stats -->
+										<div class="flex space-x-4 h-full ml-auto">
+											<div class="relative h-full">
+												<div
+													class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">
+														Games</p>
+													<p id="searchGames">0</p>
+												</div>
+											</div>
+											<div class="relative h-full">
+												<div
+													class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">
+														T-Wins</p>
+													<p id="searchtwins">0</p>
+												</div>
+											</div>
+											<div class="relative h-full">
+												<div
+													class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">Wins
+													</p>
+													<p id="searchwins">0</p>
+												</div>
+											</div>
+											<div class="relative h-full">
+												<div
+													class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
+													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">
+														Losses</p>
+													<p id="searchlosses">0</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div>
+									<h3 class="text-lg font-semibold">Match History</h3>
+									<ul id="searchMatchhistory" class="mt-2 space-y-2"></ul>
+								</div>
+							</div>
 						</div>
-						<form id="editProfileForm" class="space-y-4" method="post" enctype="multipart/form-data">
-							<div>
-								<label for="editUsername" class="block mb-1 font-semibold">Edit Username:</label>
-								<input type="text" id="editUsername" name="username" class="w-full px-3 py-2 text-black rounded focus:outline-none" placeholder="New username">
-							</div>
-							<div>
-							<label for="avatarFile" class="block mb-1 font-semibold">Upload Avatar:</label>
-							<input type="file" id="avatarFile" name="avatarFile" accept="image/*" class="w-full px-3 py-2 text-black rounded focus:outline-none">
-							</div>
-							<p id="editStatus" class="text-red-400"></p>
-							<button type="submit" class="w-full py-2 bg-green-500 hover:bg-green-600 text-black font-semibold rounded transition-colors">
-							Save
-							</button>
-						</form>
-					</div>
-					<div class="bg-purple-500 p-6 rounded shadow">
-						<h2 class="text-xl font-bold mb-4 text-center">DANGER ZONE</h2>
-						<form id="deleteProfileForm" class="flex items-center justify-center">
-							<button type="button" id="deleteProfileBtn" class="w-full py-2 bg-red-500 hover:bg-red-600 text-black font-semibold rounded transition-colors">
-							Delete Profile
-							</button>
-						</form>
 					</div>
 				</div>
-				<script src="/editProfile.js"></script>
+				<script src="/searchUser.js"></script>
 			</div>
 		</section>
-	</main>
 		<section id="singleplayer-view" class="view flex flex-col items-center justify-center min-h-screen px-4">
 			<h1 class="text-4xl font-bold mb-4">Single Player Pong</h1>
 			<canvas id="pong" width="800" height="600" class="mb-4"></canvas>
-			<!-- You can add additional controls/buttons here -->
 			<button onclick="location.href='#account'" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">Back</button>
 			<button id="pause-btn" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">Pause</button>
 			<button id="restart-btn" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">Restart</button>
 			<script src="singleplayer.js"></script>
 		</section>
-
 		<!-- MULTIPLAYER VIEW -->
 		<section id="multiplayer-view" class="view flex items-center justify-center min-h-screen pt-16">
 			<!-- Multiplayer Form Container -->
@@ -212,7 +356,8 @@
 						<input id="player2" type="text" placeholder="Search a user to invite..."
 							class="w-full p-2 border rounded text-black mx-auto sm:max-w-sm md:max-w-md">
 						<div id="search-results-multiplayer"
-							class="absolute top-full left-0 right-0 bg-white border mt-1 text-black hidden z-[1000] w-full mx-auto sm:max-w-sm md:max-w-md"></div>
+							class="absolute top-full left-0 right-0 bg-white border mt-1 text-black hidden z-[1000] w-full mx-auto sm:max-w-sm md:max-w-md">
+						</div>
 					</div>
 					<button type="button" id="startMultiplayerGame"
 						class="w-full py-3 text-xl bg-purple-600 rounded hover:bg-purple-700 transition-colors">
@@ -226,59 +371,60 @@
 				<h1 class="text-4xl font-bold mb-10 text-center">Multiplayer Pong</h1>
 				<canvas id="pongMulti" width="800" height="600" class="mb-4 w-full max-w-lg"></canvas>
 				<div class="flex items-center justify-center gap-4 w-full max-w-md">
-					<button onclick="location.href='#account'" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700 text-white">Back</button>
-					<button id="pause-btn-multi" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700 text-white">Pause</button>
-					<button id="restart-btn-multi" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700 text-white">Restart</button>
+					<button onclick="location.href='#account'"
+						class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700 text-white">Back</button>
+					<button id="pause-btn-multi"
+						class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700 text-white">Pause</button>
+					<button id="restart-btn-multi"
+						class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700 text-white">Restart</button>
 				</div>
 			</div>
 			<script src="multiplayer.js"></script>
 		</section>
-<section id="tournament-registration-view"
-	class="view container mx-auto flex flex-col items-center justify-center min-h-screen pt-16 px-4 text-center">
-	<div class="justify-center">
-		<h1 class="text-3xl font-bold mt-4 mb-4">Tournament Registration</h1>
-		<div class="mt-6 mb-10 relative">
-			<input id="user-search" type="text" placeholder="Search users to invite..."
-				class="w-full p-2 border rounded text-black mx-auto sm:max-w-sm md:max-w-md">
-			<div id="search-results"
-				class="absolute top-full left-0 right-0 bg-white border mt-1 text-black hidden z-[1000] w-full mx-auto sm:max-w-sm md:max-w-md">
+		<!-- Tournament Registration View -->
+		<section id="tournament-registration-view"
+			class="view container mx-auto flex flex-col items-center justify-center min-h-screen pt-16 px-4 text-center">
+			<div class="justify-center">
+				<h1 class="text-3xl font-bold mt-4 mb-4">Tournament Registration</h1>
+				<div class="mt-6 mb-10 relative">
+					<input id="user-search" type="text" placeholder="Search users to invite..."
+						class="w-full p-2 border rounded text-black mx-auto sm:max-w-sm md:max-w-md">
+					<div id="search-results"
+						class="absolute top-full left-0 right-0 bg-white border mt-1 text-black hidden z-[1000] w-full mx-auto sm:max-w-sm md:max-w-md">
+					</div>
+				</div>
+				<div class="mb-6">
+					<h2 class="text-xl font-semibold mb-2">Selected Players:</h2>
+					<ul id="selected-users" class="list-none flex flex-wrap justify-center gap-2"></ul>
+				</div>
+				<button type="button" onclick="registerTournament()"
+					class="mt-2 w-full px-4 py-2 bg-green-500 rounded hover:bg-green-600 sm:max-w-sm md:max-w-md">
+					Register Tournament
+				</button>
 			</div>
-		</div>
-		<div class="mb-6">
-			<h2 class="text-xl font-semibold mb-2">Selected Players:</h2>
-			<ul id="selected-users" class="list-none flex flex-wrap justify-center gap-2"></ul>
-		</div>
-		<button type="button" onclick="registerTournament()"
-			class="mt-2 w-full px-4 py-2 bg-green-500 rounded hover:bg-green-600 sm:max-w-sm md:max-w-md">
-			Register Tournament
-		</button>
-	</div>
-</section>
-
-<!-- Tournament Game View -->
-<section id="tournament-game-view" class="view flex flex-col items-center justify-center min-h-screen pt-16 px-4"
-	style="display: none;">
-	<h1 class="text-3xl font-bold mb-4 text-center">Tournament Games</h1>
-	<!-- Container for match schedule and current match info -->
-	<div id="match-schedule" class="mb-4 w-full max-w-md"></div>
-	<div id="current-match-info" class="mb-4 w-full max-w-md"></div>
-	<!-- Pong game canvas for playing matches -->
-	<canvas id="pongTournament" width="800" height="600" class="mb-4 w-full max-w-lg"></canvas>
-	<!-- Control buttons -->
-	<div class="flex flex-col gap-4 w-full max-w-md">
-		<button id="start-tournament-btn" class="w-full px-4 py-2 bg-green-600 rounded hover:bg-green-700">
-			Start Tournament
-		</button>
-		<div class="flex gap-4 justify-center">
-			<button id="pause-btn-tournament" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700 text-white">
-				Pause
-			</button>
-			<button id="back-btn-tournament" class="px-4 py-2 bg-red-600 rounded hover:bg-red-700 text-white">
-				Back
-			</button>
-		</div>
-	</div>
-</section>
+		</section>
+		<!-- Tournament Game View -->
+		<section id="tournament-game-view" class="view flex flex-col items-center justify-center min-h-screen pt-16 px-4"
+			style="display: none;">
+			<h1 class="text-3xl font-bold mb-4 text-center">Tournament Games</h1>
+			<div id="match-schedule" class="mb-4 w-full max-w-md"></div>
+			<div id="current-match-info" class="mb-4 w-full max-w-md"></div>
+			<canvas id="pongTournament" width="800" height="600" class="mb-4 w-full max-w-lg"></canvas>
+			<div class="flex flex-col gap-4 w-full max-w-md">
+				<button id="start-tournament-btn" class="w-full px-4 py-2 bg-green-600 rounded hover:bg-green-700">
+					Start Tournament
+				</button>
+				<div class="flex gap-4 justify-center">
+					<button id="pause-btn-tournament"
+						class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700 text-white">
+						Pause
+					</button>
+					<button id="back-btn-tournament" class="px-4 py-2 bg-red-600 rounded hover:bg-red-700 text-white">
+						Back
+					</button>
+				</div>
+			</div>
+		</section>
 		<footer class="absolute bottom-0 left-0 w-full p-4 bg-purple-500 text-center">
 			<p class="text-sm text-purple-200">
 				&copy; 2025 Team SAFARI, Inc. All rights reserved.
@@ -286,47 +432,52 @@
 		</footer>
 		<!-- Basic SPA Routing Script -->
 		<script>
-		function showView(viewId) {
-			document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
-			const view = document.getElementById(viewId);
-			if (view) view.classList.add('active');
-		}
-
-		function route() {
-			let hash = window.location.hash.slice(1);
-			switch(hash) {
-				case 'account':
-					showView('account-view');
-					break;
-				case 'createProfile':
-					showView('createProfile-view');
-					break;
-				case 'editProfile':
-					showView('editProfile-view');
-					break;
-				case 'singleplayer':
-					showView('singleplayer-view');
-					break;
-				case 'multiplayer':
-					showView('multiplayer-view');
-					break;
-				case 'tournament-start':
-					showView('tournament-start-view');
-					break;
-				case 'tournament':
-					showView('tournament-registration-view');
-					break;
-				case 'index':
-				default:
-					showView('index-view');
-					break;
+			function showView(viewId) {
+				document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+				const view = document.getElementById(viewId);
+				if (view) view.classList.add('active');
 			}
-		}
-
-		window.addEventListener('hashchange', route);
-		route();
+			function route() {
+				let hash = window.location.hash.slice(1);
+				const user = localStorage.getItem('username');
+				if (!user)
+					hash = 'index';
+				switch (hash) {
+					case 'account':
+						showView('account-view');
+						break;
+					case 'createProfile':
+						showView('createProfile-view');
+						break;
+					case 'editProfile':
+						showView('editProfile-view');
+						break;
+					case 'search':
+						showView('search-view');
+						break;
+					case 'singleplayer':
+						showView('singleplayer-view');
+						break;
+					case 'multiplayer':
+						showView('multiplayer-view');
+						break;
+					case 'tournament-start':
+						showView('tournament-start-view');
+						break;
+					case 'tournament':
+						showView('tournament-registration-view');
+						break;
+					case 'index':
+						showView('index-view');
+						break;
+					default:
+						showView('account-view');
+						break;
+				}
+			}
+			window.addEventListener('hashchange', route);
+			route();
 		</script>
 		<script src="tournamentctrl.js"></script>
-		</script>
 	</body>
 </html>

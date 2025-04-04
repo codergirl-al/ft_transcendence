@@ -1,10 +1,10 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { dbLogger, authLogger } from "../conf/logger";
 import { sendResponse } from "./root.controller";
-import { RequestParams, TokenData, UserData, UserRequestBody } from "../types/types";
-import fs from 'fs';
+import { RequestParams, TokenData, UserData, UserRequestBody, UserStats } from "../types/types";
 import util from 'util';
-import { pipeline, PassThrough } from 'stream';
+import fs from 'fs';
+import { pipeline } from 'stream/promises';
 
 const pump = util.promisify(pipeline)
 
@@ -23,13 +23,31 @@ export async function showUser(request: FastifyRequest, reply: FastifyReply) {
 	const { id } = request.params as RequestParams;
 	const { db } = request.server;
 	const user = db
-		.prepare('SELECT username, email FROM users WHERE username = ?')
+		.prepare('SELECT * FROM users WHERE username = ?')
 		.get(id) as UserData | undefined;
 	if (!user)
 		return sendResponse(reply, 404, undefined, "User not found");
 
 	dbLogger.info(`select users where username = ${id}`);
 	return sendResponse(reply, 200, user);
+}
+
+// GET /api/user/:id/stats - Show data of a user
+export async function userStats(request: FastifyRequest, reply: FastifyReply) {
+	const { id } = request.params as RequestParams;
+	const { db } = request.server;
+	const user = db
+		.prepare('SELECT * FROM users WHERE username = ?')
+		.get(id) as UserData | undefined;
+	if (!user)
+		return sendResponse(reply, 404, undefined, "User not found");
+	
+	const stats = db.prepare("SELECT * FROM user_stats WHERE user_id = ?").get(user.id) as UserStats | undefined;
+	if (!stats)
+		return sendResponse(reply, 404, undefined, "User stats not found");
+
+	dbLogger.info(`select user_stats where username = ${id}`);
+	return sendResponse(reply, 200, stats);
 }
 
 // GET /api/user - Show data of user
@@ -83,8 +101,11 @@ export async function newUser(request: FastifyRequest, reply: FastifyReply) {
 	if (emailExists)
 		return sendResponse(reply, 400, undefined, "Email already registered");
 
-	const insertStatement = db.prepare("INSERT INTO users (username, email) VALUES (?, ?)");
-	insertStatement.run(username, email);
+	const insertStatement = db.prepare("INSERT INTO users (username, email, status) VALUES (?, ?, 'online')");
+	const info = insertStatement.run(username, email);
+	const insertstats = db.prepare("INSERT INTO user_stats (user_id) VALUES (?)");
+	insertstats.run(info.lastInsertRowid);
+
 	authLogger.info(`Created new user ${username}`);
 	dbLogger.info(`insert into users username = ${username}`);
 	return sendResponse(reply, 200);
@@ -107,41 +128,21 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 		return sendResponse(reply, 401, undefined, "Unauthorized");
 	}
 
+	const filename = '/app/dist/public/uploads/' + user.id + '.png';
 	const data = request.parts();
 	for await (const part of data) {
 		if (part.type == 'field' && part.fieldname == 'username') {
 			username = part.value as string;
-		} else if (part.type == 'file') {
-			const filename = '/app/dist/public/uploads/' + user.id + '.png';
-
-			const passThrough = new PassThrough();
-			let fileSize = 0;
-			part.file.on('data', chunk => {
-				fileSize += chunk.length;
-			});
-			part.file.pipe(passThrough);
-
-			await new Promise<void>((resolve, reject) => {
-				part.file.on('end', () => {
-					if (fileSize > 0) {
-						pump(passThrough, fs.createWriteStream(filename, { flags: 'w' }))
-							.then(resolve)
-							.catch(reject);
-					} else {
-						resolve();
-					}
-				});
-				part.file.on('error', reject);
-			});
+		} else if (part.type == 'file' && part.filename) {
+			const writeStream = fs.createWriteStream(filename, { flags: 'w' });
+			await pipeline(part.file, writeStream);
 		}
 	}
-	
-	const taken = db
-		.prepare('SELECT username FROM users WHERE username = ?')
-		.get(username) as UserData | undefined;
-	if (taken) return reply.redirect(`/api/user/${id}/edit`);
 
 	if (username) {
+		const taken = db.prepare('SELECT username FROM users WHERE username = ?')
+			.get(username) as UserData | undefined;
+		if (taken) return sendResponse(reply, 400, undefined, "username already taken");
 		const updateStatement = db.prepare('UPDATE users SET username = ? WHERE username = ?');
 		updateStatement.run(username, id);
 	}
@@ -195,93 +196,30 @@ export async function callback(request: FastifyRequest, reply: FastifyReply) {
 	}
 
 	const user = db.prepare("SELECT * FROM users WHERE email = ?").get(userInfo.email) as UserData | undefined;
+	if (user) {
+		db.prepare("UPDATE users SET status = 'online', last_online = datetime('now') WHERE email = ?").run(userInfo.email);
+	}
+	
 	const jwtPayload = { email: userInfo.email, role: "user" };
 	const jwtToken = fastify.jwt.sign(jwtPayload);
-
 	reply.setCookie("auth_token", jwtToken, {
 		httpOnly: true,
 		secure: process.env.FASTIFY_NODE_ENV === 'production',
 		path: '/',
-		sameSite: 'lax' });
-	// return sendResponse(reply, 200, jwtToken);
+		sameSite: 'lax'
+	});
 	return reply.redirect("/#account");
 }
 
+
 // GET /api/user/logout - Logout and clear cookie
 export async function logout(request: FastifyRequest, reply: FastifyReply) {
+	const { db } = request.server;
 	const user = request.user as TokenData;
+	if (user)
+		db.prepare("UPDATE users SET status = 'offline', last_online = datetime('now') WHERE email = ?").run(user.email);
 	reply.clearCookie('auth_token');
-	// reply.clearCookie('oauth2-redirect-state');
+	reply.clearCookie('oauth2-redirect-state');
 	authLogger.info(`User ${user.email} logged out`);
 	return sendResponse(reply, 200);
 }
-
-// ---------------------------------------------------------------------------------------------------
-
-// // TEST		GET /test/editUser/:name - Form to edit user
-// export async function editUserForm(request: FastifyRequest, reply: FastifyReply) {
-// 	const { db } = request.server;
-// 	const { id } = request.params as RequestParams;
-// 	const userInfo = request.user as TokenData;
-
-// 	const user = db
-// 		.prepare('SELECT * FROM users WHERE username = ?')
-// 		.get(id) as UserData | undefined;
-// 	if (!user)
-// 		return sendResponse(reply, 404, undefined, "User not found");
-
-// 	const allowed = db
-// 		.prepare('SELECT username FROM users WHERE email = ?')
-// 		.get(userInfo.email) as UserData | undefined;
-// 	if (!allowed) {
-// 		return reply.redirect("/test/newUser");
-// 	} else if (id !== allowed.username) {
-// 		authLogger.warn(`Attempt to request update of user data of ${name} by ${userInfo.email}`);
-// 		return sendResponse(reply, 401, undefined, "Unauthorized");
-// 	}
-// 	return sendResponse(reply, 404, undefined, "tmp");
-// }
-
-// // TEST		GET /test/newUser - Form to create a new user
-// export async function newUserForm(request: FastifyRequest, reply: FastifyReply) {
-// 	const { db } = request.server;
-// 	const userInfo = request.user as TokenData;
-// 	const user = db
-// 		.prepare('SELECT username FROM users WHERE email = ?')
-// 		.get(userInfo.email) as UserData | undefined;
-
-// 	if (user)
-// 		return sendResponse(reply, 400, undefined, "User already registered");
-// 	return sendResponse(reply, 404, undefined, "tmp");
-// }
-
-// // TEST		GET /test/currentuser/ - Check logged-in user and redirect accordingly
-// export async function loggedinUser(request: FastifyRequest, reply: FastifyReply) {
-// 	const { db } = request.server;
-// 	const userInfo = request.user as TokenData;
-// 	const user = db
-// 		.prepare('SELECT username FROM users WHERE email = ?')
-// 		.get(userInfo.email) as UserData | undefined;
-// 	if (!user)
-// 		return reply.redirect("/test/newUser");
-// 	return reply.redirect(`/api/user/${user.username}`);
-// }
-
-// // TEST		GET /test/dashboard - Render the account dashboard
-// export async function accountDashboard(request: FastifyRequest, reply: FastifyReply) {
-// 	const userInfo = request.user as TokenData;
-// 	const { db } = request.server;
-// 	const user = db
-// 		.prepare('SELECT * FROM users WHERE email = ?')
-// 		.get(userInfo.email) as UserData | undefined;
-// 	if (!user)
-// 		return reply.redirect('/test/newUser');
-
-// 	const stats = db
-// 		.prepare("SELECT total_games, wins, losses FROM user_stats WHERE user_id = ?")
-// 		.get(user.id) || { total_games: 0, wins: 0, losses: 0 };
-
-// 	// Pass the user and stats data to the view.
-// 	// return reply.view("account.ejs", { title: "Account Dashboard", user, stats });
-// 	return reply.redirect("/#account");
-// }

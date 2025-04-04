@@ -1,6 +1,6 @@
 // Global variable to store the current username for updating the profile.
 let currentUsername = null as any;
-  
+
 // Load current user data into the edit form.
 async function loadEditProfileData() {
 	try {
@@ -19,7 +19,7 @@ async function loadEditProfileData() {
 		}
 	} catch (error) {
 		console.error('Error fetching user data for edit:', error);
-		}
+	}
 }
 loadEditProfileData();
 
@@ -27,11 +27,11 @@ loadEditProfileData();
 
 const editForm = document.getElementById('editProfileForm') as HTMLFormElement | null;
 if (editForm) {
-	editForm.addEventListener('submit', async function(event) {
+	editForm.addEventListener('submit', async function (event) {
 		event.preventDefault();
 		const formData = new FormData(this);
 		console.log("Updated username:", formData.get('username'));
-		
+
 		// Check if the username is unchanged.
 		if (formData.get('username') === currentUsername) {
 			const status = document.getElementById('editStatus');
@@ -71,22 +71,21 @@ if (editForm) {
 
 // Handle delete profile button click.
 const deleteProfile = document.getElementById('deleteProfileBtn');
-if (deleteProfile)
-{
-	deleteProfile.addEventListener('click', async function() {
-			if (confirm("Are you sure you want to delete your profile? This action cannot be undone.")) {
-		try {
-			const response = await fetch('/api/user/delete', { method: 'GET' });
-			if (response.ok) {
-			window.location.hash = '#index';
-			showView("index-view");
-			// window.location.reload();
-			} else {
-			alert("Error deleting profile");
+if (deleteProfile) {
+	deleteProfile.addEventListener('click', async function () {
+		if (confirm("Are you sure you want to delete your profile? This action cannot be undone.")) {
+			try {
+				const response = await fetch('/api/user/delete', { method: 'GET' });
+				if (response.ok) {
+					window.location.hash = '#index';
+					showView("index-view");
+					// window.location.reload();
+				} else {
+					alert("Error deleting profile");
+				}
+			} catch (error) {
+				console.error('Error deleting profile:', error);
 			}
-		} catch (error) {
-			console.error('Error deleting profile:', error);
-		}
 		}
 	});
 }

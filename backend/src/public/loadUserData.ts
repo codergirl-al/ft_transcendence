@@ -26,6 +26,7 @@ async function loadUserData() {
 			showView('index-view');
 			return;
 		}
+		localStorage.setItem('username', data.data.username);
 		// Populate header with user data
 		const username = document.getElementById("usernameDisplay") as HTMLElement | null;
 		if (username) {

@@ -16,7 +16,8 @@ async function dbConnector(fastify: FastifyInstance) {
 		id INTEGER PRIMARY KEY,
 		username TEXT UNIQUE NOT NULL,
 		email TEXT UNIQUE NOT NULL,
-		status TEXT CHECK(status IN ('offline', 'online'))
+		status TEXT CHECK(status IN ('offline', 'online')),
+		last_online DATETIME DEFAULT NULL
 		);
 	`);
 
@@ -68,6 +69,8 @@ async function dbConnector(fastify: FastifyInstance) {
 		FOREIGN KEY (winner_id) REFERENCES users(id) ON DELETE SET DEFAULT
 		);
 	`);
+	
+	
 
 	// // link games to a tournament
 	// db.exec(`
