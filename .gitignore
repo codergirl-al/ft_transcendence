@@ -8,3 +8,4 @@ certs
 vault/root-token.txt
 vault/unseal-key.txt
 token/
+nginx/crt
