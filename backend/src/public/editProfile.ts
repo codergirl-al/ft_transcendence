@@ -75,6 +75,7 @@ if (deleteProfile) {
 			try {
 				const response = await fetch('/api/user/delete', { method: 'GET' });
 				if (response.ok) {
+					localStorage.removeItem('username');
 					window.location.hash = '#index';
 					showView("index-view");
 					// window.location.reload();

@@ -1,42 +1,88 @@
 document.addEventListener("DOMContentLoaded", async () => {
-	searchbar();
+	await searchbar();
 });
 
-function searchbar() {
+async function searchbar() {
 	const userview = document.getElementById('userview');
-	const status = document.getElementById('searchstatus');
+	const username = document.getElementById('searchUsername');
+	const avatar = document.getElementById('searchAvatar') as HTMLImageElement;
+	const onlinestatus = document.getElementById('searchOnlinestatus');
+	// searchbar
 	const search = document.getElementById('userSearchbar') as HTMLInputElement;
-	const btn = document.getElementById('userSearchBtn') as HTMLButtonElement;
+	const searchresults = document.getElementById("search-results") as HTMLDivElement | null;
+	const status = document.getElementById('searchstatus');
+	// const btn = document.getElementById('userSearchBtn') as HTMLButtonElement;
+	const allusers = await fetchAllPlayers();
+
+	if (!search || !userview || !status || !username || !avatar || !onlinestatus || !searchresults) {
+		return ;
+	}
+
+	search.addEventListener("input", () => {
+		const query = search.value.toLowerCase();
+		if (query.length < 2) {
+			searchresults.style.display = "none";
+			searchresults.innerHTML = "";
+			return;
+		}
+		const filteredUsers: string[] = allusers.data.filter((username) =>
+			username.toLowerCase().includes(query)
+		);
+		displaySearchNames(filteredUsers, searchresults);
+	});
+
+	// btn.addEventListener('click', async function () {
+	// 	const invalid = ['all', 'delete', 'logout'];
+	// 	if (search.value.length < 3 || invalid.find(x => x === search.value)) {
+	// 		status.innerText = "User not found";
+	// 		return ;
+	// 	}
+	// 	await displayUser(search.value);
+	// });
+}
+
+function displaySearchNames(users: string[], container: HTMLDivElement): void {
+	container.innerHTML = "";
+	if (users.length === 0) {
+		container.style.display = "none";
+		return;
+	}
+	users.forEach((username) => {
+		const div = document.createElement("div");
+		div.textContent = username;
+		div.className = "search-result-item";
+		div.onclick = () => displayUser(username);
+		container.appendChild(div);
+	});
+	container.style.display = "block";
+}
+
+async function displayUser(user: string) {
+	const userview = document.getElementById('userview');
 	const username = document.getElementById('searchUsername');
 	const avatar = document.getElementById('searchAvatar') as HTMLImageElement;
 	const onlinestatus = document.getElementById('searchOnlinestatus');
 
-	if (!search || !btn || !userview || !status || !username || !avatar || !onlinestatus)
+	if (!userview || !username || !avatar || !onlinestatus)
 		return ;
-	btn.addEventListener('click', async function () {
-		const invalid = ['all', 'delete', 'logout'];
-		if (search.value.length < 3 || invalid.find(x => x === search.value)) {
-			status.innerText = "User not found";
-			return ;
-		}
-		const response = await fetch(`/api/user/${search.value}`, {method: 'GET'});
-		if (response.status == 404) {
-			console.error("User not found");
-			return;
-		} else if (!response.ok) {
-			console.error("Error in route - GET /api/game");
-			return;
-		}
-		const data = await response.json();
-		if (data.success) {
-			username.innerHTML = data.data.username;
-			onlinestatus.innerHTML = data.data.status;
-			avatar.src = `/uploads/${data.data.id}.png`;
-			await searchgamestats(data.data.username);
-			await searchmatches(data.data.username);
-			userview.classList.remove("hidden");
-		}
-	});
+
+	const response = await fetch(`/api/user/${user}`, {method: 'GET'});
+	if (response.status == 404) {
+		console.error("User not found");
+		return;
+	} else if (!response.ok) {
+		console.error("Error in route - GET /api/game");
+		return;
+	}
+	const data = await response.json();
+	if (data.success) {
+		username.innerHTML = data.data.username;
+		onlinestatus.innerHTML = data.data.status;
+		avatar.src = `/uploads/${data.data.id}.png`;
+		await searchgamestats(data.data.username);
+		await searchmatches(data.data.username);
+		userview.classList.remove("hidden");
+	}
 }
 
 async function searchmatches(login: string) {

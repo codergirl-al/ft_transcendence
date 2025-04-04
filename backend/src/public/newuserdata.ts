@@ -1,6 +1,6 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
-	newFriend();
+	friendSearch();
 	const login = await getmyUser();
 	if (!login || login.length < 1)
 		return;
@@ -10,47 +10,82 @@ document.addEventListener("DOMContentLoaded", async () => {
 	requestList(login);
 });
 
-function newFriend() {
-	const newFriendBtn = document.getElementById('newFriendBtn');
+async function friendSearch() {
+	// const newFriendBtn = document.getElementById('newFriendBtn');
 	const statustext = document.getElementById('statustext');
-	const newFriendBar = document.getElementById('newFriendBar') as HTMLInputElement | null;
-	if (!newFriendBtn || !newFriendBar || !statustext)
-		return;
-	newFriendBtn.addEventListener('click', async () => {
-		const username = newFriendBar.value.trim();
-		if (!username) {
-			statustext.innerHTML = "No username entered";
+	const search = document.getElementById('newFriendBar') as HTMLInputElement | null;
+	const searchresults = document.getElementById("friendsearch-results") as HTMLDivElement | null;
+	const allusers = await fetchAllPlayers();
+
+	if (!search || !searchresults || !statustext)
+		return ;
+	search.addEventListener("input", () => {
+		const query = search.value.toLowerCase();
+		if (query.length < 2) {
+			searchresults.style.display = "none";
+			searchresults.innerHTML = "";
 			return;
 		}
-		const invalid = ['all', 'delete', 'logout'];
-		if (invalid.find(x => x === username)) {
-			if (statustext)
-				statustext.textContent = 'User not found';
+		const filteredUsers: string[] = allusers.data.filter((username) =>
+			username.toLowerCase().includes(query)
+		);
+		// same as displaySearchNames(filteredUsers, searchresults) ->
+		searchresults.innerHTML = "";
+		if (filteredUsers.length === 0) {
+			searchresults.style.display = "none";
+			return;
 		}
-		try {
-			const response = await fetch('/api/friend', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ username })
-			});
-			if (!response.ok) {
-				console.error("Error in route - POST /api/friend");
-			}
-			const data = await response.json();
-			if (data.success) {
-				statustext.innerHTML = 'friend request sent';
-				window.location.reload();
-			} else if (data.status === 401) {
-				statustext.innerHTML = 'log in to make friends :)';
-			} else if (data.status === 404) {
-				statustext.innerHTML = 'user not found';
-			} else {
-				statustext.innerHTML = `couldn't send request`;
-			}
-		} catch (error) {
-			console.error(error);
-		}
+		filteredUsers.forEach((username) => {
+			const div = document.createElement("div");
+			div.textContent = username;
+			div.className = "search-result-item";
+			div.onclick = () => newFriend(username, statustext);
+			searchresults.appendChild(div);
+		});
+		searchresults.style.display = "block";
 	});
+
+	// if (!newFriendBtn)
+	// 	return ;
+	// newFriendBtn.addEventListener('click', async () => {
+	// 	const username = search.value.trim();
+	// 	if (!username) {
+	// 		statustext.innerHTML = "No username entered";
+	// 		return;
+	// 	}
+	// 	const invalid = ['all', 'delete', 'logout'];
+	// 	if (invalid.find(x => x === username)) {
+	// 		statustext.textContent = 'User not found';
+	// 		return ;
+	// 	}
+	// 	await newFriend(username, statustext);
+	// });
+}
+
+async function newFriend(username: string, statusblock: HTMLElement) {
+	try {
+		const response = await fetch('/api/friend', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ username })
+		});
+		if (!response.ok) {
+			console.error("Error in route - POST /api/friend");
+		}
+		const data = await response.json();
+		if (data.success) {
+			statusblock.innerHTML = 'friend request sent';
+			window.location.reload();
+		} else if (data.status === 401) {
+			statusblock.innerHTML = 'log in to make friends :)';
+		} else if (data.status === 404) {
+			statusblock.innerHTML = 'user not found';
+		} else {
+			statusblock.innerHTML = `couldn't send request`;
+		}
+	} catch (error) {
+		console.error(error);
+	}
 }
 
 async function getmyUser() {

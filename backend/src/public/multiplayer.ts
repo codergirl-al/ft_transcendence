@@ -275,19 +275,21 @@ interface PlayerResponse {
   data: string[];
 }
 
-let allPlayersList: PlayerResponse = { data: [] };
 let selectedPlrs: string[] = [];
 
-async function fetchAllPlayers(): Promise<void> {
+async function fetchAllPlayers(): Promise<PlayerResponse> {
+	let playerlist: PlayerResponse = { data: [] };
   try {
     const response = await fetch("/api/user/all");
     if (!response.ok) throw new Error("Network response was not ok");
-    allPlayersList = await response.json();
+    playerlist = await response.json();
   } catch (error) {
     console.error("Error fetching users:", error);
   }
+  return playerlist;
 }
-fetchAllPlayers();
+
+const allPlayersList = fetchAllPlayers();
 
 const playerSearchInput = document.getElementById("player2") as HTMLInputElement;
 

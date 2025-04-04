@@ -161,13 +161,14 @@
 									<div class="mt-6">
 										<h3 class="text-lg font-semibold">Friend Requests</h3>
 										<form>
-											<div class="flex space-x-2">
-												<input id="newFriendBar" type="text"
-													class="flex-grow px-3 py-1 border rounded-md">
-												<button id="newFriendBtn" type="button"
-													class="px-3 py-1 bg-purple-600 text-white rounded-md">Send</button>
-											</div>
 											<p id="statustext" class="mt-2">search for a user...</p>
+											<div class="flex space-x-2 mt-6 mb-10 relative">
+												<input id="newFriendBar" type="text" placeholder="friend"
+													class="flex-grow px-3 py-1 border rounded-md">
+												<div id="friendsearch-results" class="absolute top-full left-0 right-0 bg-white border mt-1 text-black hidden z-[1000] w-full mx-auto sm:max-w-sm md:max-w-md"></div>
+												<!-- <button id="newFriendBtn" type="button"
+													class="px-3 py-1 bg-purple-600 text-white rounded-md">Send</button> -->
+											</div>
 										</form>
 										<div id="requestlist" class="mt-2 space-y-2"></div>
 									</div>
@@ -259,12 +260,16 @@
 			<div class="min-h-screen bg-purple-900 text-white flex items-center justify-center p-4">
 				<div class="max-w-2-lg w-3/4 space-y-8">
 					<div class="bg-purple-200 p-6 text-black rounded shadow">
-						<h1 class="text-3xl font-bold mb-4 text-center">User Search</h1>
+						<div class="relative flex flex-row items-center justify-center">
+							<button onclick="location.href='#account'" class="absolute left-0 left-0 px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">Back</button>
+							<h1 class="text-3xl font-bold mb-4 text-center">User Search</h1>
+						</div>
 						<div>
-							<div>
+							<div class="mt-6 mb-10 relative">
 								<p id="searchstatus"></p>
-								<input id="userSearchbar">
-								<button type="button" id="userSearchBtn">Search</button>
+								<input id="userSearchbar" class="w-full p-2 border rounded text-black mx-auto sm:max-w-sm md:max-w-md">
+								<div id="search-results" class="absolute top-full left-0 right-0 bg-white border mt-1 text-black hidden z-[1000] w-full mx-auto sm:max-w-sm md:max-w-md"></div>
+								<!-- <button type="button" id="userSearchBtn">Search</button> -->
 							</div>
 							<!-- User Profile and Stats -->
 							<div id="userview" class="flex flex-col items-center justify-center space-y-6 hidden">
