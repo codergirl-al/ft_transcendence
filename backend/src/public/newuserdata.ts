@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", async () => {
 	newFriend();
 	const login = await getmyUser();
@@ -20,6 +21,11 @@ function newFriend() {
 		if (!username) {
 			statustext.innerHTML = "No username entered";
 			return;
+		}
+		const invalid = ['all', 'delete', 'logout'];
+		if (invalid.find(x => x === username)) {
+			if (statustext)
+				statustext.textContent = 'User not found';
 		}
 		try {
 			const response = await fetch('/api/friend', {
@@ -96,7 +102,7 @@ async function getFriendlist(login: string) {
 				let friendindex = (friend.username1 === login) ? 2 : 1;
 				if (friend.status === 'accepted') {
 					accepted = accepted + `<li class="flex justify-between items-center p-2 bg-purple-600 rounded-md">
-								<span><img src='/uploads/${(friendindex === 1) ? friend.user_id1 : friend.user_id2}.png' class="w-10 h-10 rounded-full border-2 border-gray-300" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
+								<span><img src='/uploads/${(friendindex === 1) ? friend.user_id1 : friend.user_id2}.png' class="w-10 h-10 rounded-full border-2 border-purple-200" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
 								<span class="text-white p-2">${(friendindex === 1) ? friend.username1 : friend.username2}</span>
 								<span class="px-3 ml-auto text-sm text-white">${((friendindex === 1) ? friend.status1 : friend.status2) || "offline"}</span>
 								<button class="px-3 py-1 bg-red-500 text-white rounded-md cancel-btn" data-username="${friend.username2}">&times</button>
@@ -150,16 +156,17 @@ async function requestList(login: string) {
 				if (friend.status === 'pending') {
 					if (friend.username1 === login) {
 						sent = sent + `<li class="flex justify-between items-center p-2 bg-purple-600 rounded-md">
-								<span><img src='/uploads/${friend.user_id2}.png' class="w-10 h-10 rounded-full border-2 border-gray-300" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
+								<span><img src='/uploads/${friend.user_id2}.png' class="w-10 h-10 rounded-full border-2 border-purple-200" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
 								<span class="text-white p-2">${friend.username2}</span>
 								<button class="ml-auto px-3 py-1 bg-red-500 text-white rounded-md cancel-btn" data-username="${friend.username2}">Delete</button>
 								<span class="px-3 text-sm text-white">waiting...</span>
 								</li>`;
 					} else {
 						pending = pending + `<li class="flex justify-between items-center p-2 bg-purple-600 rounded-md">
-								<span><img src='/uploads/${friend.user_id1}.png' class="w-10 h-10 rounded-full border-2 border-gray-300" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
+								<span><img src='/uploads/${friend.user_id1}.png' class="w-10 h-10 rounded-full border-2 border-purple-200" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
 								<span class="text-white p-2">${friend.username1}</span>
 								<button class="ml-auto px-3 py-1 bg-green-500 text-white rounded-md accept-btn" data-username="${friend.username1}">Accept</button>
+								<button class="ml-2 px-3 py-1 bg-red-500 text-white rounded-md cancel-btn" data-username="${friend.username1}">&times</button>
 								</li>`;
 					}
 				}
@@ -231,11 +238,13 @@ async function matches(login: string) {
 	const data = await response.json();
 	if (data.success) {
 		let content = "";
+		let str = "";
 		for (const game of data.data) {
 			if (game.username1 === login)
-				content = content + `<li class="p-2 bg-purple-600 text-white rounded-md">Match vs ${(game.multi) ? game.username2 : "AI"} - ${(game.winner_id === game.user_id1) ? "WIN" : "LOSS"}</li>`;
+				str = `${login} vs ${(game.multi) ? game.username2 : "AI"} - ${(game.winner_id === game.user_id1) ? "WIN" : "LOSS"}`;
 			else
-				content = content + `<li class="p-2 bg-purple-600 text-white rounded-md">Match vs ${(game.multi) ? game.username1 : "AI"} - ${(game.winner_id === game.user_id2) ? "WIN" : "LOSS"}</li>`;
+				str = `${login} vs ${(game.multi) ? game.username1 : "AI"} - ${(game.winner_id === game.user_id2) ? "WIN" : "LOSS"}`;
+			content = content + `<li class="p-2 bg-purple-600 text-white rounded-md flex flex-row"><p>${str}</p><p class="ml-auto">${dateformat(game.date)}</p></li>`;
 		}
 		matchhistory.innerHTML = content || "<p>No matches yet</p>";
 	} else {

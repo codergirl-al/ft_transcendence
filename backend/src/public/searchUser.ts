@@ -14,27 +14,28 @@ function searchbar() {
 	if (!search || !btn || !userview || !status || !username || !avatar || !onlinestatus)
 		return ;
 	btn.addEventListener('click', async function () {
-		// check search
-		if (search.value.length < 3) {
+		const invalid = ['all', 'delete', 'logout'];
+		if (search.value.length < 3 || invalid.find(x => x === search.value)) {
 			status.innerText = "User not found";
 			return ;
 		}
 		const response = await fetch(`/api/user/${search.value}`, {method: 'GET'});
-		if (!response.ok) {
-			status.innerText = 'Something went wrong';
-			return ;
+		if (response.status == 404) {
+			console.error("User not found");
+			return;
+		} else if (!response.ok) {
+			console.error("Error in route - GET /api/game");
+			return;
 		}
 		const data = await response.json();
-		if (!data.success) {
-			status.innerText = 'User not found';
-			return ;
+		if (data.success) {
+			username.innerHTML = data.data.username;
+			onlinestatus.innerHTML = data.data.status;
+			avatar.src = `/uploads/${data.data.id}.png`;
+			await searchgamestats(data.data.username);
+			await searchmatches(data.data.username);
+			userview.classList.remove("hidden");
 		}
-		username.innerHTML = data.data.username;
-		onlinestatus.innerHTML = data.data.status;
-		avatar.src = `/uploads/${data.data.id}.png`;
-		await searchgamestats(data.data.username);
-		await searchmatches(data.data.username);
-		userview.classList.remove("hidden");
 	});
 }
 
@@ -54,11 +55,13 @@ async function searchmatches(login: string) {
 	const data = await response.json();
 	if (data.success) {
 		let content = "";
+		let str = "";
 		for (const game of data.data) {
 			if (game.username1 === login)
-				content = content + `<li class="p-2 bg-purple-600 text-white rounded-md">Match vs ${(game.multi) ? game.username2 : "AI"} - ${(game.winner_id === game.user_id1) ? "WIN" : "LOSS"}</li>`;
+				str = `${login} vs ${(game.multi) ? game.username2 : "AI"} - ${(game.winner_id === game.user_id1) ? "WIN" : "LOSS"}`;
 			else
-				content = content + `<li class="p-2 bg-purple-600 text-white rounded-md">Match vs ${(game.multi) ? game.username1 : "AI"} - ${(game.winner_id === game.user_id2) ? "WIN" : "LOSS"}</li>`;
+				str = `${login} vs ${(game.multi) ? game.username1 : "AI"} - ${(game.winner_id === game.user_id2) ? "WIN" : "LOSS"}`;
+			content = content + `<li class="p-2 bg-purple-600 text-white rounded-md flex flex-row"><p>${str}</p><p class="ml-auto">${dateformat(game.date)}</p></li>`;
 		}
 		matchhistory.innerHTML = content || "<p>No matches yet</p>";
 	}
@@ -93,3 +96,12 @@ async function searchgamestats(login: string) {
 		losses.innerText = '0';
 	}
 }
+
+function dateformat(date: string) {
+	const day = date.substring(8, 10);
+	const month = date.substring(5, 7)
+	const year = date.substring(0, 4);
+	return `${day}/${month}/${year}`;
+}
+// 0 1 2 3 4 5 6 7 8 9
+// 2 0 2 5 - 0 1 - 0 4

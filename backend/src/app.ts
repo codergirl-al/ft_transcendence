@@ -149,7 +149,8 @@ const address = process.env.FASTIFY_ADDRESS;
 
 try {
 	fastify.listen({ port: port, host: address }, (err, addr) => {
-		if (err) {
+		console.log("LISTEN: ", err, addr);
+		if (err || !addr) {
 			serverLogger.error(err);
 			process.exit(1);
 		}

@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { dbLogger, authLogger } from "../conf/logger";
+import { authLogger } from "../conf/logger";
 import { sendResponse } from "./root.controller";
 import { RequestParams, TokenData, UserData, UserRequestBody, UserStats } from "../types/types";
 import util from 'util';
@@ -28,7 +28,6 @@ export async function showUser(request: FastifyRequest, reply: FastifyReply) {
 	if (!user)
 		return sendResponse(reply, 404, undefined, "User not found");
 
-	dbLogger.info(`select users where username = ${id}`);
 	return sendResponse(reply, 200, user);
 }
 
@@ -46,7 +45,6 @@ export async function userStats(request: FastifyRequest, reply: FastifyReply) {
 	if (!stats)
 		return sendResponse(reply, 404, undefined, "User stats not found");
 
-	dbLogger.info(`select user_stats where username = ${id}`);
 	return sendResponse(reply, 200, stats);
 }
 
@@ -57,11 +55,9 @@ export async function myUser(request: FastifyRequest, reply: FastifyReply) {
 	const user = db
 		.prepare('SELECT * FROM users WHERE email = ?')
 		.get(email) as UserData | undefined;
-	dbLogger.info(`request user ${email}`);
 	if (!user)
 		return sendResponse(reply, 404, undefined, "User not found");
 
-	dbLogger.info(`select users where email = ${email}`);
 	return sendResponse(reply, 200, user);
 }
 
@@ -75,11 +71,10 @@ export async function allUsers(request: FastifyRequest, reply: FastifyReply) {
 		return sendResponse(reply, 404, undefined, "User not found");
 	let userlist: string[] = [];
 	user.forEach(u => {
-		if (u.username)
+		if (u.username && u.username != 'usernotfound')
 			userlist.push(u.username);
 	});
 
-	dbLogger.info("select users");
 	return sendResponse(reply, 200, userlist);
 }
 
@@ -106,8 +101,8 @@ export async function newUser(request: FastifyRequest, reply: FastifyReply) {
 	const insertstats = db.prepare("INSERT INTO user_stats (user_id) VALUES (?)");
 	insertstats.run(info.lastInsertRowid);
 
+	copyAvatar(info.lastInsertRowid);
 	authLogger.info(`Created new user ${username}`);
-	dbLogger.info(`insert into users username = ${username}`);
 	return sendResponse(reply, 200);
 }
 
@@ -147,7 +142,6 @@ export async function editUser(request: FastifyRequest, reply: FastifyReply) {
 		updateStatement.run(username, id);
 	}
 	authLogger.info(`Updated user data of ${email}`);
-	dbLogger.info(`update users where email = ${email}`);
 	return sendResponse(reply, 200);
 }
 
@@ -173,7 +167,6 @@ export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
 	const deleteStatement = db.prepare("DELETE FROM users WHERE username = ?");
 	deleteStatement.run(user.username);
 	authLogger.info(`User ${user.username} deleted`);
-	dbLogger.info(`delete users where username = ${user.username}`);
 
 	// logout on success
 	reply.clearCookie('auth_token');
@@ -222,4 +215,11 @@ export async function logout(request: FastifyRequest, reply: FastifyReply) {
 	reply.clearCookie('oauth2-redirect-state');
 	authLogger.info(`User ${user.email} logged out`);
 	return sendResponse(reply, 200);
+}
+
+function copyAvatar(id: number | bigint) {
+	const def_avatar = `/app/dist/public/uploads/default.png`;
+	const copy = `/app/dist/public/uploads/${id}.png`;
+
+	fs.copyFile(def_avatar, copy, (err) => { if (err) throw err; });
 }
