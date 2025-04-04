@@ -6,6 +6,7 @@ COPY modsecurity.conf /etc/nginx/templates/conf.d/modsecurity.conf
 
 COPY /crt/teamsafari_xyz.full.crt /etc/nginx/conf/server.crt
 COPY /crt/teamsafari.key /etc/nginx/conf/server.key
+
 EXPOSE 443 80
 
 CMD ["nginx", "-g", "daemon off;"]
