@@ -17,9 +17,9 @@ ready:
 > play a local tournament
 
 -- todo --
+> home button for search
+
 > style userpages search bar (with user list)
 > center restart game text
 > make user search bars fetch users
-> multiplayer game starts on end of game?
-> multiplayer game screen smaller than single
 > test tournament

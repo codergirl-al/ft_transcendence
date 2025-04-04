@@ -166,6 +166,7 @@ async function requestList(login: string) {
 								<span><img src='/uploads/${friend.user_id1}.png' class="w-10 h-10 rounded-full border-2 border-purple-200" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
 								<span class="text-white p-2">${friend.username1}</span>
 								<button class="ml-auto px-3 py-1 bg-green-500 text-white rounded-md accept-btn" data-username="${friend.username1}">Accept</button>
+								<button class="ml-2 px-3 py-1 bg-red-500 text-white rounded-md cancel-btn" data-username="${friend.username1}">&times</button>
 								</li>`;
 					}
 				}

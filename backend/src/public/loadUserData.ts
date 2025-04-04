@@ -1,3 +1,7 @@
+document.addEventListener("DOMContentLoaded", async () => {
+	loadUserData();
+});
+
 // Utility to show a specific view
 function showView(viewId: string): void {
 	document.querySelectorAll('.view').forEach((view) => view.classList.remove('active'));
@@ -43,4 +47,4 @@ async function loadUserData() {
 	}
 }
 
-loadUserData();
+// loadUserData();
