@@ -338,7 +338,7 @@
 			<button onclick="location.href='#account'" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">Back</button>
 			<button id="pause-btn" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">Pause</button>
 			<button id="restart-btn" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">Restart</button>
-			<script src="singleplayer.js"></script>
+			<script src="/singleplayer.js"></script>
 		</section>
 		<!-- MULTIPLAYER VIEW -->
 		<section id="multiplayer-view" class="view flex items-center justify-center min-h-screen pt-16">
@@ -376,7 +376,7 @@
 						class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700 text-white">Restart</button>
 				</div>
 			</div>
-			<script src="multiplayer.js"></script>
+			<script src="/multiplayer.js"></script>
 		</section>
 		<!-- Tournament Registration View -->
 		<section id="tournament-registration-view"
@@ -428,53 +428,7 @@
 			</p>
 		</footer>
 		<!-- Basic SPA Routing Script -->
-		<script>
-			function showView(viewId) {
-				document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
-				const view = document.getElementById(viewId);
-				if (view) view.classList.add('active');
-			}
-			function route() {
-				let hash = window.location.hash.slice(1);
-				const user = localStorage.getItem('username');
-				if (!user || !hash)
-					hash = 'index';
-				switch (hash) {
-					case 'account':
-						showView('account-view');
-						break;
-					case 'createProfile':
-						showView('createProfile-view');
-						break;
-					case 'editProfile':
-						showView('editProfile-view');
-						break;
-					case 'search':
-						showView('search-view');
-						break;
-					case 'singleplayer':
-						showView('singleplayer-view');
-						break;
-					case 'multiplayer':
-						showView('multiplayer-view');
-						break;
-					case 'tournament-start':
-						showView('tournament-start-view');
-						break;
-					case 'tournament':
-						showView('tournament-registration-view');
-						break;
-					case 'index':
-						showView('index-view');
-						break;
-					default:
-						showView('account-view');
-						break;
-				}
-			}
-			window.addEventListener('hashchange', route);
-			route();
-		</script>
-		<script src="tournamentctrl.js"></script>
+		<script src="/routing.js"></script>
+		<script src="/tournamentctrl.js"></script>
 	</body>
 </html>
