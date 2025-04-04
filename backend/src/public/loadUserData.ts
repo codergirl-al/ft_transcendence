@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
 	loadUserData();
-
 		const hamburgerBtn = document.getElementById("hamburgerBtn");
 		const mobileMenu = document.getElementById("mobileMenu");
 		if (!hamburgerBtn || !mobileMenu) {
