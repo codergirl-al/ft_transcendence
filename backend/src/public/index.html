@@ -42,28 +42,53 @@
 			<!-- ACCOUNT VIEW -->
 			<section id="account-view" class="view">
 				<div class="min-h-screen bg-purple-900 text-white flex flex-col">
-					<header class="p-4 bg-purple-500 flex justify-between items-center">
+					<header class="p-4 bg-purple-500 flex justify-between items-center relative">
+						<!-- User Info -->
 						<div class="flex items-center space-x-3">
-							<img id="userAvatar" alt="User Avatar"
-								class="w-10 h-10 rounded-full border-2 border-purple-200 shadow"
+							<img id="userAvatar" alt="User Avatar" class="w-10 h-10 rounded-full border-2 border-purple-200 shadow"
 								onerror="this.onerror=null; this.src='/uploads/default.png';">
 							<div>
 								<p id="usernameDisplay" class="font-semibold cursor-pointer"></p>
 								<p id="userEmail" class="text-sm text-purple-200"></p>
 							</div>
 						</div>
-						<script src="/loadUserData.js"></script>
-						<nav class="space-x-4">
-							<a href="#search"
-								class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Search</a>
-							<a href="#editProfile"
-								class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Edit
+					
+						<!-- Navigation for larger screens -->
+						<nav class="hidden md:flex space-x-4">
+							<a href="#search" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Search</a>
+							<a href="#editProfile" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Edit
 								Profile</a>
-							<a id="logoutLink"
+							<a id="logoutLink" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Logout</a>
+						</nav>
+					
+						<script src="/loadUserData.js"></script>
+						<script src="/logoutLink.js"></script>
+					
+						<!-- Hamburger Icon for mobile -->
+						<button id="hamburgerBtn" class="md:hidden focus:outline-none">
+							<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16" />
+							</svg>
+						</button>
+					
+						<!-- Mobile Menu -->
+						<nav id="mobileMenu"
+							class="absolute top-full left-0 right-0 bg-purple-500 flex flex-col space-y-2 p-4 hidden md:hidden">
+							<a href="#search" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Search</a>
+							<a href="#editProfile" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Edit
+								Profile</a>
+							<a id="logoutLinkMobile"
 								class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded transition-colors">Logout</a>
-							<script src="/logoutLink.js"></script>
 						</nav>
 					</header>
+					<script>
+						const hamburgerBtn = document.getElementById('hamburgerBtn');
+						const mobileMenu = document.getElementById('mobileMenu');
+					
+						hamburgerBtn.addEventListener('click', () => {
+							mobileMenu.classList.toggle('hidden');
+						});
+					</script>
 					<main class="flex-grow flex flex-col items-center justify-center text-center px-4">
 						<h1 class="text-6xl font-extrabold mb-8 flex items-center space-x-2">
 							<span>PONG</span>
@@ -97,93 +122,82 @@
 						<p class="text-sm text-purple-200">&copy; 2025 Team SAFARI, Inc. All rights reserved.</p>
 					</footer>
 					<!-- User Stats Modal -->
-					<div id="userStatsModal"
-						class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-						<div class="bg-purple-200 text-black w-3/4 p-6 rounded relative shadow-lg">
-							<button id="closeModalBtn"
-								class="absolute top-2 right-2 text-2xl font-bold text-black hover:text-gray-600">&times;</button>
-							<h2 class="text-xl font-bold mb-6 text-black tracking-wider text-center">
-								User Stats</h2>
-							<!-- User Profile and Game Stats -->
-							<div class="flex items-center space-x-6">
-								<!-- User Profile -->
-								<div class="relative flex-grow">
-									<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
-									<div class="relative flex items-center space-x-4 bg-purple-600 rounded-lg p-6 h-full">
-										<img id="myAvatar" src="/uploads/default.png" alt="User Avatar"
-											onerror="this.onerror=null; this.src='/uploads/default.png';"
-											class="w-20 h-20 rounded-full border-2 border-purple-200">
-										<div>
-											<h2 id="myUsername" class="text-xl font-semibold text-white"></h2>
-											<p id="myOnlinestatus" class="text-white"></p>
-										</div>
-										<div class="w-full"></div>
-										<!-- Game Stats -->
-										<div class="flex space-x-4 h-full ml-auto">
-											<div class="relative h-full">
-												<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
-													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">Games</p>
-													<p id="totalGames">0</p>
-												</div>
-											</div>
-											<div class="relative h-full">
-												<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
-													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">T-Wins</p>
-													<p id="tournamentwins">0</p>
-												</div>
-											</div>
-											<div class="relative h-full">
-												<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
-													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">Wins</p>
-													<p id="wins">0</p>
-												</div>
-											</div>
-											<div class="relative h-full">
-												<div class="relative bg-purple-600 text-white p-3 rounded text-center h-full flex flex-col justify-center">
-													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">Losses</p>
-													<p id="losses">0</p>
-												</div>
-											</div>
-										</div>
-									</div>
+					<section>
+			<div id="userStatsModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+				<div class="bg-purple-200 text-black w-full max-w-3xl p-6 rounded relative shadow-lg">
+					<button id="closeModalBtn"
+						class="absolute top-2 right-2 text-2xl font-bold text-black hover:text-gray-600">&times;</button>
+					<h2 class="text-xl font-bold mb-6 tracking-wider text-center">User Stats</h2>
+					<!-- User Profile and Game Stats -->
+					<div class="relative flex flex-col md:flex-row items-center md:space-x-6 rounded-lg space-y-6 md:space-y-0">
+						<!-- User Profile & Stats Container -->
+						<div class="relative flex flex-col md:flex-row bg-purple-600 rounded-lg p-6 w-full">
+							<!-- Avatar & Username -->
+							<div class="flex items-center space-x-4">
+								<img id="myAvatar" src="/uploads/default.png" alt="User Avatar"
+									onerror="this.onerror=null; this.src='/uploads/default.png';"
+									class="w-20 h-20 rounded-full border-2 border-purple-200" />
+								<div>
+									<h2 id="myUsername" class="text-xl font-semibold text-white">Username</h2>
+									<p id="myOnlinestatus" class="text-white">online</p>
 								</div>
 							</div>
-							<!-- Two-Column Layout -->
-							<div class="mt-6 grid grid-cols-2 gap-6">
-								<!-- Left Column -->
-								<div class="space-y-4">
-									<!-- Friends List -->
-									<div class="space-y-4">
-										<h3 class="text-lg font-semibold">Friends</h3>
-										<ul id="friendlist" class="mt-2 space-y-2"></ul>
-									</div>
-									<!-- Friend Requests -->
-									<div class="mt-6">
-										<h3 class="text-lg font-semibold">Friend Requests</h3>
-										<form>
-											<div class="flex space-x-2">
-												<input id="newFriendBar" type="text"
-													class="flex-grow px-3 py-1 border rounded-md">
-												<button id="newFriendBtn" type="button"
-													class="px-3 py-1 bg-purple-600 text-white rounded-md">Send</button>
-											</div>
-											<p id="statustext" class="mt-2">search for a user...</p>
-										</form>
-										<div id="requestlist" class="mt-2 space-y-2"></div>
-									</div>
+						
+							<!-- Stats on the right for md and up; stacked on smaller screens -->
+							<div class="mt-4 md:mt-0 md:ml-auto flex flex-wrap md:flex-nowrap items-center justify-end gap-4">
+								<div class="bg-purple-600 text-white p-1 rounded text-center flex flex-col justify-center">
+									<p class="font-bold mb-2">Games</p>
+									<p id="totalGames">2</p>
 								</div>
-								<!-- Match History -->
-								<div>
-									<h3 class="text-lg font-semibold">Match History</h3>
-									<ul id="matchhistory" class="mt-2 space-y-2"></ul>
+								<div class="bg-purple-600 text-white p-1 rounded text-center flex flex-col justify-center">
+									<p class="font-bold mb-2">T-Wins</p>
+									<p id="tournamentwins">0</p>
+								</div>
+								<div class="bg-purple-600 text-white p-1 rounded text-center flex flex-col justify-center">
+									<p class="font-bold mb-2">Wins</p>
+									<p id="wins">1</p>
+								</div>
+								<div class="bg-purple-600 text-white p-1 rounded text-center flex flex-col justify-center">
+									<p class="font-bold mb-2">Losses</p>
+									<p id="losses">1</p>
 								</div>
 							</div>
 						</div>
 					</div>
-					<script src="/account.js"></script>
-					<script src="/newuserdata.js"></script>
+					<!-- Two-Column Layout -->
+					<div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+						<!-- Left Column -->
+						<div class="space-y-4">
+							<!-- Friends List -->
+							<div class="space-y-4">
+								<h3 class="text-lg font-semibold">Friends</h3>
+								<ul id="friendlist" class="mt-2 space-y-2"></ul>
+							</div>
+							<!-- Friend Requests -->
+							<div class="mt-6">
+								<h3 class="text-lg font-semibold">Friend Requests</h3>
+								<form>
+									<div class="flex space-x-2">
+										<input id="newFriendBar" type="text" class="flex-grow px-3 py-1 border rounded-md">
+										<button id="newFriendBtn" type="button"
+											class="px-3 py-1 bg-purple-600 text-white rounded-md">Send</button>
+									</div>
+									<p id="statustext" class="mt-2">search for a user...</p>
+								</form>
+								<div id="requestlist" class="mt-2 space-y-2"></div>
+							</div>
+						</div>
+						<!-- Match History -->
+						<div>
+							<h3 class="text-lg font-semibold">Match History</h3>
+							<ul id="matchhistory" class="mt-2 space-y-2"></ul>
+						</div>
+					</div>
 				</div>
-			</section>
+			</div>
+			<script src="/account.js"></script>
+			<script src="/newuserdata.js"></script>
+		</section>
 			<!-- CREATE PROFILE VIEW -->
 			<section id="createProfile-view" class="view">
 				<div class="min-h-screen bg-purple-900 text-white flex items-center justify-center">

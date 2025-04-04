@@ -1,5 +1,15 @@
 document.addEventListener("DOMContentLoaded", async () => {
 	loadUserData();
+
+		const hamburgerBtn = document.getElementById("hamburgerBtn");
+		const mobileMenu = document.getElementById("mobileMenu");
+		if (!hamburgerBtn || !mobileMenu) {
+			console.error("Hamburger button or mobile menu not found");
+			return;
+		}
+		hamburgerBtn.addEventListener("click", () => {
+			mobileMenu.classList.toggle("hidden");
+		});
 });
 
 // Utility to show a specific view
