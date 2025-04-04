@@ -9,9 +9,6 @@ async function loadEditProfileData() {
 			const data = await response.json();
 			if (data.data) {
 				currentUsername = data.data.username; // Save the current username for the update endpoint.
-				const editUser = document.getElementById("editUsername") as HTMLInputElement | null;
-				if (editUser)
-					editUser.value = data.data.username;
 				const editImage = document.getElementById("editAvatar") as HTMLImageElement | null;
 				if (editImage)
 					editImage.src = `/uploads/${data.data.id}.png`;

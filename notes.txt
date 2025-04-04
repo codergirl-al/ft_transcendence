@@ -17,8 +17,7 @@ ready:
 > play a local tournament
 
 -- todo --
-> search page swap error messages
-> editProfile default username set to empty
+> searching user 'delete' deletes profile
 
 > style userpages search bar (with user list)
 > center restart game text

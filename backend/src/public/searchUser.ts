@@ -19,21 +19,22 @@ function searchbar() {
 			return ;
 		}
 		const response = await fetch(`/api/user/${search.value}`, {method: 'GET'});
-		if (!response.ok) {
-			status.innerText = 'Something went wrong';
-			return ;
+		if (response.status == 404) {
+			console.error("User not found");
+			return;
+		} else if (!response.ok) {
+			console.error("Error in route - GET /api/game");
+			return;
 		}
 		const data = await response.json();
-		if (!data.success) {
-			status.innerText = 'User not found';
-			return ;
+		if (data.success) {
+			username.innerHTML = data.data.username;
+			onlinestatus.innerHTML = data.data.status;
+			avatar.src = `/uploads/${data.data.id}.png`;
+			await searchgamestats(data.data.username);
+			await searchmatches(data.data.username);
+			userview.classList.remove("hidden");
 		}
-		username.innerHTML = data.data.username;
-		onlinestatus.innerHTML = data.data.status;
-		avatar.src = `/uploads/${data.data.id}.png`;
-		await searchgamestats(data.data.username);
-		await searchmatches(data.data.username);
-		userview.classList.remove("hidden");
 	});
 }
 
