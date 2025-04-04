@@ -140,7 +140,8 @@ services:
       - "80:80"
       - "443:443"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
 
   # For running vault
   vault:
@@ -207,3 +208,13 @@ services:
     depends_on:
       vault-setup:
         condition: service_healthy
+    healthcheck:
+      test: [
+        "CMD-SHELL",
+        "curl -f http://localhost:3000 || exit 1"
+      ]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 20s
+
