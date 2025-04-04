@@ -1,6 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { UserData, RequestParams, GameRequestBody, GameData, TokenData } from "../types/types";
-import { dbLogger } from "../conf/logger";
 import { sendResponse } from "./root.controller";
 
 // ----------------------------------------------------------------------------------------
@@ -9,7 +8,9 @@ import { sendResponse } from "./root.controller";
 export async function newGame(request: FastifyRequest, reply: FastifyReply) {
 	const { multi, user1, user2, winner } = request.body as GameRequestBody;
 	const { db } = request.server;
-	const insertStatement = db.prepare("INSERT INTO games (multi, user_id1, user_id2, winner_id) VALUES (?, ?, ?, ?)");
+	const gameStatement = db.prepare("INSERT INTO games (multi, user_id1, user_id2, winner_id) VALUES (?, ?, ?, ?)");
+	const winStatement = db.prepare("UPDATE user_stats SET game_wins = game_wins + 1, total_games = total_games + 1 WHERE user_id = ?");
+	const lossStatement = db.prepare("UPDATE user_stats SET losses = losses + 1, total_games = total_games + 1 WHERE user_id = ?");
 
 	const id1 = db.prepare("SELECT id FROM users WHERE username = ?").get(user1) as UserData | undefined;
 	if (!id1)
@@ -18,37 +19,19 @@ export async function newGame(request: FastifyRequest, reply: FastifyReply) {
 		const id2 = db.prepare("SELECT id FROM users WHERE username = ?").get(user2) as UserData | undefined;
 		if (!id2)
 			return sendResponse(reply, 404, undefined, "User not found");
-		const info = insertStatement.run('true', id1.id, id2.id, ( winner==1 ? id1.id : id2.id ));
-		dbLogger.info(`insert into games id = ${info.lastInsertRowid}`);
+		winStatement.run(( winner==1 ? id1.id : id2.id ));
+		lossStatement.run(( winner==1 ? id2.id : id1.id ));
+		gameStatement.run(1, id1.id, id2.id, ( winner==1 ? id1.id : id2.id ));
 	} else {
-		const info = insertStatement.run('false', id1.id, 1, ( winner==1 ? id1.id : 1 ));
-		dbLogger.info(`insert into games id = ${info.lastInsertRowid}`);
+		if (winner == 1) {
+			winStatement.run(id1.id);
+		} else {
+			lossStatement.run(id1.id);
+		}
+		gameStatement.run(0, id1.id, 1, ( winner==1 ? id1.id : 1 ));
 	}
 	return sendResponse(reply, 200);
 }
-
-// // POST /api/game/:id - edit game by id
-// export async function editGame(request: FastifyRequest, reply: FastifyReply) {
-// 	const { id } = request.params as RequestParams;
-// 	const { score1, score2, winner } = request.body as GameRequestBody;
-// 	const { db } = request.server;
-
-// 	const game = db.prepare("SELECT * FROM games WHERE id = ?").get(id) as GameData | undefined;
-// 	if (!game) {
-// 		dbLogger.info(`Game edit failed: ID ${id} not found`);
-// 		return sendResponse(reply, 400, undefined, "Game ID not found");
-// 	}
-// 	if (winner == "null") {
-// 		const update = db.prepare("UPDATE games SET score1 = ?, score2 = ? WHERE id = ?");
-// 		update.run(score1, score2, id);
-// 	} else {
-// 		const update = db.prepare("UPDATE games SET score1 = ?, score2 = ?, winner_id = ? WHERE id = ?");
-// 		update.run(score1, score2, winner, id);
-// 	}
-// 	dbLogger.info(`update games where id = ${id}`);
-// 	return sendResponse(reply, 200);
-
-// }
 
 // GET /api/game/:id/delete - delete a game by id
 export async function deleteGame(request: FastifyRequest, reply: FastifyReply) {
@@ -57,13 +40,22 @@ export async function deleteGame(request: FastifyRequest, reply: FastifyReply) {
 
 	const statement = db.prepare("DELETE FROM games WHERE id = ?");
 	statement.run(id);
-	dbLogger.info(`delete games where id = ${id}`);
 	return sendResponse(reply, 200);
 }
 
 // GET /api/game/:id - get data of game by id
 export async function showGame(request: FastifyRequest, reply: FastifyReply) {
-	const game = getGameData(request);
+	const { id } = request.params as RequestParams;
+	const { db } = request.server;
+	const game = db.prepare(`
+		SELECT games.*,
+			user1.username AS username1,
+			user2.username AS username2
+		FROM games
+		LEFT JOIN users AS user1 ON games.user_id1 = user1.id
+		LEFT JOIN users AS user2 ON games.user_id2 = user2.id
+		WHERE games.id = ?;
+	`).get(id) as GameData | undefined;
 	if (!game)
 		return sendResponse(reply, 404, undefined, "Game ID not found");
 	return sendResponse(reply, 200, game);
@@ -80,7 +72,6 @@ export async function showAllGames(request: FastifyRequest, reply: FastifyReply)
 		FROM games
 		LEFT JOIN users AS user1 ON games.user_id1 = user1.id
 		LEFT JOIN users AS user2 ON games.user_id2 = user2.id`).all() as GameData[];
-	dbLogger.info(`select all games`);
 	return sendResponse(reply, 200, game);
 }
 
@@ -101,7 +92,6 @@ export async function showMyGames(request: FastifyRequest, reply: FastifyReply) 
 		LEFT JOIN users AS user1 ON games.user_id1 = user1.id
 		LEFT JOIN users AS user2 ON games.user_id2 = user2.id
 		WHERE games.user_id1 = ? OR games.user_id2 = ?`).all(user.id, user.id) as GameData[];
-	dbLogger.info(`select all user games`);
 	return sendResponse(reply, 200, game);
 }
 
@@ -122,41 +112,6 @@ export async function showUserGames(request: FastifyRequest, reply: FastifyReply
 		LEFT JOIN users AS user1 ON games.user_id1 = user1.id
 		LEFT JOIN users AS user2 ON games.user_id2 = user2.id
 		WHERE games.user_id1 = ? OR games.user_id2 = ?`).all(user.id, user.id) as GameData[];
-	dbLogger.info(`select all user games ${id}`);
+	console.log(game);
 	return sendResponse(reply, 200, game);
-}
-
-// ----------------------------------------------------------------------------------------
-// test
-
-// // TEST		GET /test/newGame
-// export async function newGameForm(request: FastifyRequest, reply: FastifyReply) {
-// 	return reply.view("newGame.ejs", { title: "new Game" });
-// }
-
-// // TEST		GET /test/editGame/:id
-// export async function editGameForm(request: FastifyRequest, reply: FastifyReply) {
-// 	const game = getGameData(request);
-// 	if (!game)
-// 		return sendResponse(reply, 404, undefined, "Game ID not found");
-// 	return reply.view("editGame.ejs", { title: "edit Game", game: game });
-// }
-
-// ----------------------------------------------------------------------------------------
-// utils
-
-function getGameData(request: FastifyRequest) {
-	const { id } = request.params as RequestParams;
-	const { db } = request.server;
-	const game = db.prepare(`
-		SELECT games.*,
-			user1.username AS username1,
-			user2.username AS username2
-		FROM games
-		LEFT JOIN users AS user1 ON games.user_id1 = user1.id
-		LEFT JOIN users AS user2 ON games.user_id2 = user2.id
-		WHERE games.id = ?;
-	`).get(id) as GameData | undefined;
-	dbLogger.info(`Queried for Game: ID ${id}`);
-	return game;
 }

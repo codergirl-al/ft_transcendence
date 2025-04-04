@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", async () => {
 	newFriend();
 	const login = await getmyUser();
@@ -231,11 +232,13 @@ async function matches(login: string) {
 	const data = await response.json();
 	if (data.success) {
 		let content = "";
+		let str = "";
 		for (const game of data.data) {
 			if (game.username1 === login)
-				content = content + `<li class="p-2 bg-purple-600 text-white rounded-md">Match vs ${(game.multi) ? game.username2 : "AI"} - ${(game.winner_id === game.user_id1) ? "WIN" : "LOSS"}</li>`;
+				str = `${login} vs ${(game.multi) ? game.username2 : "AI"} - ${(game.winner_id === game.user_id1) ? "WIN" : "LOSS"}`;
 			else
-				content = content + `<li class="p-2 bg-purple-600 text-white rounded-md">Match vs ${(game.multi) ? game.username1 : "AI"} - ${(game.winner_id === game.user_id2) ? "WIN" : "LOSS"}</li>`;
+				str = `${login} vs ${(game.multi) ? game.username1 : "AI"} - ${(game.winner_id === game.user_id2) ? "WIN" : "LOSS"}`;
+			content = content + `<li class="p-2 bg-purple-600 text-white rounded-md flex flex-row"><p>${str}</p><p class="ml-auto">${dateformat(game.date)}</p></li>`;
 		}
 		matchhistory.innerHTML = content || "<p>No matches yet</p>";
 	} else {

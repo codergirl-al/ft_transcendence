@@ -9,14 +9,25 @@ ready:
 > access a profile without logging in
 > delete user
 > local play against a friend
-
-unimplemented:
 > show another users profile
 > send a friend request
 > accept a friend request
 > play and record a full game
 > interrupt a game, see if it logs
 > play a local tournament
-> ...
 
 -- todo --
+> pause singleplayer game by default
+> make user search bars fetch users
+> center restart game text
+> style userpages search bar (with user list)
+> match history width on search page
+> search page avatar error and style wrong
+> search page swap error messages
+> multiplayer game starts on end of game?
+> multiplayer game screen smaller than single
+> editProfile default username set to empty
+> avatar not uniform size
+> exclude usernotfound from 'all' user list
+
+> test tournament
