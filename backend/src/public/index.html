@@ -277,19 +277,22 @@
 	<!-- SEARCH USER PROFILES -->
 	<section id="search-view" class="view">
 		<div class="min-h-screen bg-purple-900 text-white flex items-center justify-center p-4">
-			<div class="max-w-2-lg w-3/4 space-y-8">
-				<div class="bg-purple-200 p-6 text-black rounded shadow">
-					<div class="relative flex flex-row items-center justify-center">
+			<div class="w-full max-w-4xl space-y-8">
+				<div class="bg-purple-200 p-6 text-black rounded shadow relative">
+					<div class="flex items-center justify-center relative">
 						<button onclick="location.href='#account'"
-							class="absolute left-0 left-0 px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">Back</button>
-						<h1 class="text-3xl font-bold mb-4 text-center">User Search</h1>
+							class="absolute left-0 px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+							Back
+						</button>
+						<h1 class="text-3xl sm:text-4xl font-bold mb-4 text-center">User Search</h1>
 					</div>
 					<div>
 						<div class="mt-6 mb-10 relative">
 							<p id="searchstatus"></p>
 							<div class="relative">
 								<input id="userSearchbar"
-									class="w-full p-2 border rounded text-black mx-auto sm:max-w-sm md:max-w-md">
+									class="w-full p-2 border rounded text-black mx-auto sm:max-w-sm md:max-w-md"
+									placeholder="Search users...">
 								<div id="search-results-users"
 									class="absolute top-full left-0 right-0 bg-white border mt-1 text-black z-50 w-full sm:max-w-sm md:max-w-md hidden">
 								</div>
@@ -299,7 +302,7 @@
 						<div id="userview" class="flex flex-col items-center justify-center space-y-6 hidden">
 							<div
 								class="relative flex flex-col w-full md:flex-row items-center md:space-x-6 rounded-lg space-y-6 md:space-y-0">
-								<div class="relative flex flex-col md:flex-row bg-purple-600 rounded-lg p-6 w-full">
+								<div class="flex flex-col md:flex-row bg-purple-600 rounded-lg p-6 w-full">
 									<div class="flex items-center space-x-4">
 										<img id="searchAvatar" src="/uploads/default.png" alt="User Avatar"
 											onerror="this.onerror=null; this.src='/uploads/default.png';"
@@ -337,7 +340,8 @@
 							</div>
 							<div class="w-full">
 								<h3 class="text-lg font-semibold">Match History</h3>
-								<ul id="searchMatchhistory" class="mt-2 space-y-2"></ul>
+								<ul id="searchMatchhistory" class="mt-2 space-y-2">
+								</ul>
 							</div>
 						</div>
 					</div>
@@ -440,7 +444,6 @@
 				</div>
 			</div>
 		</div>
-
 		<!-- Control Buttons -->
 		<div class="flex flex-col sm:flex-row justify-center gap-4 mt-6">
 			<button id="pause-btn-tournament" class="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700">
@@ -453,7 +456,6 @@
 				Back
 			</button>
 		</div>
-
 		<!-- Registered Players -->
 		<div class="mt-8 text-center">
 			<h2 class="text-xl font-semibold">Registered Players</h2>
@@ -470,4 +472,5 @@
 	<!-- Basic SPA Routing Script -->
 	<script src="/routing.js"></script>
 </body>
+
 </html>
