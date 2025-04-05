@@ -46,6 +46,7 @@ async function friendSearch() {
 }
 
 async function newFriend(username: string, statusblock: HTMLElement) {
+
 	try {
 		const response = await fetch('/api/friend', {
 			method: 'POST',
@@ -58,7 +59,11 @@ async function newFriend(username: string, statusblock: HTMLElement) {
 		const data = await response.json();
 		if (data.success) {
 			statusblock.innerHTML = 'friend request sent';
-			window.location.reload();
+			const friendlist = document.getElementById('friendlist');
+			if (friendlist) {
+				const newFriendElement = addLiElement(data.data, 1);
+				friendlist.appendChild(newFriendElement);
+			}
 		} else if (data.status === 401) {
 			statusblock.innerHTML = 'log in to make friends :)';
 		} else if (data.status === 404) {
@@ -115,7 +120,6 @@ async function getFriendlist(login: string) {
 		}
 		const data = await response.json();
 		if (data.success) {
-			let accepted = "";
 			for (const friend of data.data) {
 				let friendindex = (friend.username1 === login) ? 2 : 1;
 				if (friend.status === 'accepted') {
@@ -240,7 +244,7 @@ function addLiElementRequest(friend: FriendData, login: string) {
 	const img = document.createElement("img");
 	img.src = `/uploads/${friend.username1 === login ? friend.user_id2 : friend.user_id1}.png`;
 	img.className = "w-10 h-10 rounded-full border-2 border-purple-200";
-	img.onerror = () => (img.src = "/uploads/default.png"); // Fallback image
+	img.onerror = () => (img.src = "/uploads/default.png");
 
 	const nameSpan = document.createElement("span");
 	nameSpan.className = "text-white p-2";
