@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", async () => {
 	friendSearch();
 	const login = await getmyUser();
@@ -46,7 +45,7 @@ async function friendSearch() {
 }
 
 async function newFriend(username: string, statusblock: HTMLElement) {
-
+	let login = localStorage.getItem('username') || "";
 	try {
 		const response = await fetch('/api/friend', {
 			method: 'POST',
@@ -59,9 +58,18 @@ async function newFriend(username: string, statusblock: HTMLElement) {
 		const data = await response.json();
 		if (data.success) {
 			statusblock.innerHTML = 'friend request sent';
-			const friendlist = document.getElementById('friendlist');
+			const friendlist = document.getElementById('requestlistone');
 			if (friendlist) {
-				const newFriendElement = addLiElement(data.data, 1);
+				const friendData: FriendData = {
+					username1: login,
+					username2: username,
+					user_id1: data.data.user_id1,
+					user_id2: data.data.user_id2,
+					status1: '',
+					status2: '',
+					status: data.data.status
+				};
+				const newFriendElement = addLiElementRequest(friendData, login);
 				friendlist.appendChild(newFriendElement);
 			}
 		} else if (data.status === 401) {
@@ -211,8 +219,10 @@ async function requestList(login: string) {
 		}
 		const data = await response.json();
 		if (data.success) {
-			const pending = document.createElement("ul");
-			const sent = document.createElement("ul");
+			const sent = document.getElementById('requestlistone');
+			const pending = document.getElementById('requestlisttwo');
+			if (!sent || !pending)
+				return ;
 			for (const friend of data.data) {
 				if (friend.status === 'pending') {
 					const newelement = addLiElementRequest(friend, login);
@@ -222,12 +232,6 @@ async function requestList(login: string) {
 						pending.appendChild(newelement);
 					}
 				}
-			}
-			if (pending.children.length > 0) {
-				friendlist.appendChild(pending);
-			}
-			if (sent.children.length > 0) {
-				friendlist.appendChild(sent);
 			}
 		} else {
 			friendlist.innerHTML = 'You are not logged in';
