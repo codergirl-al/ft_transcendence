@@ -158,6 +158,7 @@ interface FriendData {
 	username2: string;
 	status1: string;
 	status2: string;
+	status: string;
 }
 
 function addLiElement(friend: FriendData, friendindex: Number) {
@@ -206,107 +207,122 @@ async function requestList(login: string) {
 		}
 		const data = await response.json();
 		if (data.success) {
-			let pending = "";
-			let sent = "";
+			const pending = document.createElement("ul");
+			const sent = document.createElement("ul");
 			for (const friend of data.data) {
 				if (friend.status === 'pending') {
+					const newelement = addLiElementRequest(friend, login);
 					if (friend.username1 === login) {
-						sent = sent + `<li class="flex justify-between items-center p-2 bg-purple-600 rounded-md">
-								<span><img src='/uploads/${friend.user_id2}.png' class="w-10 h-10 rounded-full border-2 border-purple-200" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
-								<span class="text-white p-2">${friend.username2}</span>
-								<button class="ml-auto px-3 py-1 bg-red-500 text-white rounded-md cancel-btn" data-username="${friend.username2}">Delete</button>
-								<span class="px-3 text-sm text-white">waiting...</span>
-								</li>`;
+						sent.appendChild(newelement);
 					} else {
-						pending = pending + `<li class="flex justify-between items-center p-2 bg-purple-600 rounded-md">
-								<span><img src='/uploads/${friend.user_id1}.png' class="w-10 h-10 rounded-full border-2 border-purple-200" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
-								<span class="text-white p-2">${friend.username1}</span>
-								<button class="ml-auto px-3 py-1 bg-green-500 text-white rounded-md accept-btn" data-username="${friend.username1}">Accept</button>
-								<button class="ml-2 px-3 py-1 bg-red-500 text-white rounded-md cancel-btn" data-username="${friend.username1}">&times</button>
-								</li>`;
+						pending.appendChild(newelement);
 					}
 				}
 			}
-			friendlist.innerHTML = pending + sent;
-
-			// Add event listeners for buttons
-			const acceptButtons = document.querySelectorAll('.accept-btn');
-			const cancelButtons = document.querySelectorAll('.cancel-btn');
-
-			acceptButtons.forEach(button => {
-				button.addEventListener('click', async (event) => {
-					const username = (event.target as HTMLElement).getAttribute('data-username');
-					if (!username) return;
-					try {
-						const response = await fetch('/api/friend', {
-							method: 'POST',
-							headers: { 'Content-Type': 'application/json' },
-							body: JSON.stringify({ username })
-						});
-						if (response.ok) {
-							window.location.reload();
-						} else {
-							console.error("Error in route - POST /api/friend");
-						}
-					} catch (error) {
-						console.error("Error accepting friend request:", error);
-					}
-				});
-			});
-
-			cancelButtons.forEach(button => {
-				button.addEventListener('click', async (event) => {
-					const username = (event.target as HTMLElement).getAttribute('data-username');
-					if (!username) return;
-					try {
-						const response = await fetch(`/api/friend/${username}/delete`, { method: 'GET' });
-						if (response.ok) {
-							window.location.reload();
-						} else {
-							console.error("Error in route - GET /api/friend/:id/delete");
-						}
-					} catch (error) {
-						console.error("Error canceling friend request:", error);
-					}
-				});
-			});
+			if (pending.children.length > 0) {
+				friendlist.appendChild(pending);
+			}
+			if (sent.children.length > 0) {
+				friendlist.appendChild(sent);
+			}
 		} else {
-			friendlist.innerHTML = 'You are not logged in -> go to /google-login';
+			friendlist.innerHTML = 'You are not logged in';
 		}
 	} catch (error) {
 		console.error("Error friends:", error);
 	}
 }
 
-function addLiElementRequest(friend: FriendData, friendindex: Number) {
-	// const li = document.createElement('li');
-	// li.classList.add('flex', 'justify-between', 'items-center', 'p-2', 'bg-purple-600', 'rounded-md');
+function addLiElementRequest(friend: FriendData, login: string) {
+	const li = document.createElement("li");
+	li.className = "flex justify-between items-center p-2 bg-purple-600 rounded-md";
 
-	// const imgSpan = document.createElement('span');
-	// const img = document.createElement('img');
-	// img.src = `/uploads/${(friendindex === 1) ? friend.user_id1 : friend.user_id2}.png`;
-	// img.classList.add('w-10', 'h-10', 'rounded-full', 'border-2', 'border-purple-200');
-	// img.setAttribute('onerror', "this.onerror=null; this.src='/uploads/default.png';");
-	// imgSpan.appendChild(img);
+	const img = document.createElement("img");
+	img.src = `/uploads/${friend.username1 === login ? friend.user_id2 : friend.user_id1}.png`;
+	img.className = "w-10 h-10 rounded-full border-2 border-purple-200";
+	img.onerror = () => (img.src = "/uploads/default.png"); // Fallback image
 
-	// const usernameSpan = document.createElement('span');
-	// usernameSpan.classList.add('text-white', 'p-2');
-	// usernameSpan.textContent = (friendindex === 1) ? friend.username1 : friend.username2;
+	const nameSpan = document.createElement("span");
+	nameSpan.className = "text-white p-2";
+	nameSpan.textContent = friend.username1 === login ? friend.username2 : friend.username1;
 
-	// const statusSpan = document.createElement('span');
-	// statusSpan.classList.add('px-3', 'ml-auto', 'text-sm', 'text-white');
-	// statusSpan.textContent = ((friendindex === 1) ? friend.status1 : friend.status2) || "offline";
+	li.appendChild(img);
+	li.appendChild(nameSpan);
 
-	// const cancelButton = document.createElement('button');
-	// cancelButton.classList.add('px-3', 'py-1', 'bg-red-500', 'text-white', 'rounded-md', 'cancel-btn');
-	// cancelButton.setAttribute('data-username', friend.username2);
-	// cancelButton.innerHTML = '&times';
+	if (friend.status === "pending") {
+		if (friend.username1 === login) {//sent
+			const waitingSpan = document.createElement("span");
+			waitingSpan.className = "px-3 text-sm text-white";
+			waitingSpan.textContent = "waiting...";
 
-	// li.appendChild(imgSpan);
-	// li.appendChild(usernameSpan);
-	// li.appendChild(statusSpan);
-	// li.appendChild(cancelButton);
-	// return li;
+			const deleteBtn = document.createElement("button");
+			deleteBtn.className = "ml-auto px-3 py-1 bg-red-500 text-white rounded-md cancel-btn";
+			deleteBtn.textContent = "Delete";
+			deleteBtn.dataset.username = friend.username2;
+			deleteBtn.addEventListener("click", async (event) => {
+				await handleDelete(event, li);
+			});
+
+			li.appendChild(deleteBtn);
+			li.appendChild(waitingSpan);
+		} else {//incoming
+			const acceptBtn = document.createElement("button");
+			acceptBtn.className = "ml-auto px-3 py-1 bg-green-500 text-white rounded-md accept-btn";
+			acceptBtn.textContent = "Accept";
+			acceptBtn.dataset.username = friend.username1;
+			acceptBtn.addEventListener("click", async (event) => {
+				await handleAccept(event, li);
+			});
+
+			const deleteBtn = document.createElement("button");
+			deleteBtn.className = "ml-2 px-3 py-1 bg-red-500 text-white rounded-md cancel-btn";
+			deleteBtn.textContent = "×";
+			deleteBtn.dataset.username = friend.username1;
+			deleteBtn.addEventListener("click", async (event) => {
+				await handleDelete(event, li);
+			});
+
+			li.appendChild(acceptBtn);
+			li.appendChild(deleteBtn);
+		}
+	}
+	return li;
+}
+
+async function handleAccept(event: MouseEvent, liElement: HTMLLIElement) {
+	const target = event.target as HTMLElement;
+	const username = target.dataset.username;
+	if (!username) return;
+	try {
+		const response = await fetch("/api/friend", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ username })
+		});
+		if (response.ok) {
+			liElement.remove();
+		} else {
+			console.error("Error in route - POST /api/friend");
+		}
+	} catch (error) {
+		console.error("Error accepting friend request:", error);
+	}
+}
+
+async function handleDelete(event: MouseEvent, liElement: HTMLLIElement) {
+	const target = event.target as HTMLElement;
+	const username = target.dataset.username;
+	if (!username) return;
+	try {
+		const response = await fetch(`/api/friend/${username}/delete`, { method: "GET" });
+		if (response.ok) {
+			liElement.remove();
+		} else {
+			console.error("Error in route - GET /api/friend/:id/delete");
+		}
+	} catch (error) {
+		console.error("Error canceling friend request:", error);
+	}
 }
 
 
@@ -328,16 +344,42 @@ async function matches(login: string) {
 		let content = "";
 		let str = "";
 		for (const game of data.data) {
-			if (game.username1 === login)
-				str = `${login} vs ${(game.multi) ? game.username2 : "AI"} - ${(game.winner_id === game.user_id1) ? "WIN" : "LOSS"}`;
-			else
-				str = `${login} vs ${(game.multi) ? game.username1 : "AI"} - ${(game.winner_id === game.user_id2) ? "WIN" : "LOSS"}`;
-			content = content + `<li class="p-2 bg-purple-600 text-white rounded-md flex flex-row"><p>${str}</p><p class="ml-auto">${dateformat(game.date)}</p></li>`;
+			const li = addLiElementMatch(game, login);
+			matchhistory.appendChild(li);
 		}
 		matchhistory.innerHTML = content || "<p>No matches yet</p>";
 	} else {
 		matchhistory.innerHTML = 'Log in to see your past games';
 	}
+}
+
+interface GameData {
+	multi: Number;
+	user_id1: Number;
+	user_id2: Number;
+	winner_id: Number;
+	username1: string;
+	username2: string;
+	date: string;
+}
+
+function addLiElementMatch(game: GameData, login: string) {
+	const li = document.createElement('li');
+	li.classList.add('p-2', 'bg-purple-600', 'text-white', 'rounded-md', 'flex', 'flex-row');
+	
+	const para1 = document.createElement('p');
+	if (game.username1 === login)
+		para1.innerText = `${login} vs ${(game.multi) ? game.username2 : "AI"} - ${(game.winner_id === game.user_id1) ? "WIN" : "LOSS"}`;
+	else
+		para1.innerText = `${login} vs ${(game.multi) ? game.username1 : "AI"} - ${(game.winner_id === game.user_id2) ? "WIN" : "LOSS"}`;
+
+	const para2 = document.createElement('p');
+	para2.classList.add('ml-auto');
+	para2.innerText = `${dateformat(game.date)}`;
+
+	li.appendChild(para1);
+	li.appendChild(para2);
+	return li;
 }
 
 async function gamestats(login: string) {
