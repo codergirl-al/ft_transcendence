@@ -6,7 +6,7 @@ import { newFriend, getFriend, myFriends, deleteFriend } from "../controllers/fr
 import { sendResponse } from "../controllers/root.controller";
 
 // --------------------------------------------------------------------------------------------------
-const usernameFormat = { type: "string", minLength: 3, maxLength: 20 }
+const usernameFormat = { type: "string", minLength: 3, maxLength: 30 }
 const winnerFormat = { type: "number", enum: [1, 2] }
 const playersFormat = { type: "number", enum: [4, 6, 8] }
 

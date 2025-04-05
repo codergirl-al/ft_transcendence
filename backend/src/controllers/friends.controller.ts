@@ -30,7 +30,9 @@ export async function newFriend(request: FastifyRequest, reply: FastifyReply) {
 
 	const insert = db.prepare("INSERT INTO friends (user_id1, user_id2, status) VALUES (?, ?, 'pending')");
 	const info = insert.run(db_user.id, friend.id);
-	return sendResponse(reply, 200, { id: info.lastInsertRowid });
+
+	const result = db.prepare("SELECT * FROM friends WHERE id = ?").get(info.lastInsertRowid);
+	return sendResponse(reply, 200, result);
 }
 
 // GET /api/friend

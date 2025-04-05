@@ -15,6 +15,7 @@ if (createProfile)
 		if (invalid.find(x => x === username)) {
 			if (status)
 				status.textContent = 'Error creating profile';
+			return; // Added missing return statement here
 		}
 		try {
 			const response = await fetch('/api/user', {
@@ -27,9 +28,16 @@ if (createProfile)
 				if (status)
 					status.textContent = data.message || 'Error creating profile';
 			} else {
+				// Store the username in localStorage
+				localStorage.setItem('username', username);
+				
+				// Change to account page first
 				window.location.hash = '#account';
-				// showView('account-view');
-				window.location.reload();
+				
+				// Then reload the page
+				setTimeout(() => {
+					window.location.reload();
+				}, 100);
 			}
 		} catch (error) {
 			if (status)
