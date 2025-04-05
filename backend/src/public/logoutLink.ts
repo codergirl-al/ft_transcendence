@@ -1,4 +1,6 @@
-const login = document.getElementById("logoutLink");
+const login =
+ document.getElementById("logoutLink") ||
+ document.getElementById("logoutLinkMobile");
 if (login)
   login.addEventListener("click", async (event) => {
   event.preventDefault();
