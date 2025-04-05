@@ -142,8 +142,6 @@ async function getFriendlist(login: string) {
 							const liElement = (event.target as HTMLElement).closest('li');
 							if (liElement)
 								liElement.remove();
-						} else {
-							console.error("Error in route - GET /api/friend/:id/delete");
 						}
 					} catch (error) {
 						// Intentionally swallowing the error to avoid console noise.
@@ -232,7 +230,7 @@ async function requestList(login: string) {
 			friendlist.innerHTML = 'You are not logged in';
 		}
 	} catch (error) {
-		console.error("Error friends:", error);
+		// Intentionally swallowing the error to avoid console noise.
 	}
 }
 
@@ -304,11 +302,9 @@ async function handleAccept(event: MouseEvent, liElement: HTMLLIElement) {
 		});
 		if (response.ok) {
 			liElement.remove();
-		} else {
-			console.error("Error in route - POST /api/friend");
 		}
 	} catch (error) {
-		console.error("Error accepting friend request:", error);
+		// Intentionally swallowing the error to avoid console noise.
 	}
 }
 
@@ -320,11 +316,9 @@ async function handleDelete(event: MouseEvent, liElement: HTMLLIElement) {
 		const response = await fetch(`/api/friend/${username}/delete`, { method: "GET" });
 		if (response.ok) {
 			liElement.remove();
-		} else {
-			console.error("Error in route - GET /api/friend/:id/delete");
 		}
 	} catch (error) {
-		console.error("Error canceling friend request:", error);
+		// Intentionally swallowing the error to avoid console noise.
 	}
 }
 
