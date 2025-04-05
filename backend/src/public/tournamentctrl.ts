@@ -1,442 +1,314 @@
-// interface Match {
-//  player1: string;
-//  player2: string;
-// }
-
-// class Tournament {
-//  private players: string[];
-//  private matches: Match[];
-//  private currentMatchIndex: number;
-//  public readonly paddleSpeed: number;
-
-//  constructor(players: string[]) {
-//   this.players = players;
-//   this.matches = [];
-//   this.currentMatchIndex = 0;
-//   this.paddleSpeed = 5;
-//   this.generateMatches();
-//  }
-
-//  private generateMatches(): void {
-//   this.matches = [];
-//   for (let i = 0; i < this.players.length; i++) {
-//    for (let j = i + 1; j < this.players.length; j++) {
-//     this.matches.push({ player1: this.players[i], player2: this.players[j] });
-//    }
-//   }
-//  }
-
-//  public getNextMatch(): Match | null {
-//   if (this.currentMatchIndex < this.matches.length) {
-//    return this.matches[this.currentMatchIndex++];
-//   }
-//   return null;
-//  }
-
-//  public resetTournament(): void {
-//   this.currentMatchIndex = 0;
-//   this.generateMatches();
-//  }
-
-//  public getMatchSchedule(): Match[] {
-//   return this.matches;
-//  }
-// }
-
-// async function startTournament(tournament: Tournament): Promise<void> {
-//  alert("Tournament is starting!");
-//  let match: Match | null;
-//  while ((match = tournament.getNextMatch()) !== null) {
-//   console.log(`Starting match: ${match.player1} vs ${match.player2}`);
-//   // Here you can initiate the multiplayer game view or match logic.
-//   // For demonstration, we simply wait 2 seconds before moving to the next match.
-//   await new Promise((resolve) => setTimeout(resolve, 2000));
-//  }
-
-//  console.log("Tournament complete!");
-// }
-
-// interface UsersResponse {
-//  data: string[];
-// }
-
-// let allUsersList: UsersResponse = { data: [] };
-// let selectedPlayers: string[] = [];
-
-// async function fetchAllUsers(): Promise<void> {
-//  try {
-//   const response = await fetch("/api/user/all");
-//   if (!response.ok) throw new Error("Network response was not ok");
-//   allUsersList = await response.json();
-//  } catch (error) {
-//   console.error("Error fetching users:", error);
-//  }
-// }
-// fetchAllUsers();
-
-// const userSearchInput = document.getElementById(
-//  "user-search"
-// ) as HTMLInputElement;
-
-// userSearchInput.addEventListener("input", () => {
-//  const query = userSearchInput.value.toLowerCase();
-//  if (query.length < 2) {
-//   searchResultsContainer!.style.display = "none";
-//   searchResultsContainer!.innerHTML = "";
-//   return;
-//  }
-//  const filteredUsers: string[] = allUsersList.data.filter((username) =>
-//   username.toLowerCase().includes(query)
-//  );
-//  console.log("these are the filtered users", filteredUsers);
-//  displaySearchResults(filteredUsers);
-// });
-
-// // Get the search container; using the same ID "user-search" for container if intended.
-// const userSearchDiv = document.getElementById("user-search") as HTMLElement;
-
-// // Get or create the search results container.
-// let searchResultsContainer = document.getElementById(
-//  "search-results"
-// ) as HTMLDivElement | null;
-// if (!searchResultsContainer) {
-//  searchResultsContainer = document.createElement("div");
-//  searchResultsContainer.id = "search-results";
-//  userSearchDiv.appendChild(searchResultsContainer);
-// }
-
-// // Display the search results.
-// function displaySearchResults(users: string[]): void {
-//  searchResultsContainer!.innerHTML = "";
-//  if (users.length === 0) {
-//   searchResultsContainer!.style.display = "none";
-//   return;
-//  }
-//  users.forEach((username) => {
-//   const div = document.createElement("div");
-//   div.textContent = username;
-//   div.className = "search-result-item";
-//   div.onclick = () => selectUser(username);
-//   searchResultsContainer!.appendChild(div);
-//  });
-//  searchResultsContainer!.style.display = "block";
-// }
-
-// // Add a user to the selected list.
-// function selectUser(username: string): void {
-//  if (selectedPlayers.includes(username)) return;
-//  if (selectedPlayers.length >= 6) {
-//   alert("You can only invite up to 6 players.");
-//   return;
-//  }
-//  selectedPlayers.push(username);
-//  updateSelectedUsers();
-//  searchResultsContainer!.innerHTML = "";
-//  searchResultsContainer!.style.display = "none";
-//  userSearchInput.value = "";
-// }
-
-// // Update the selected users UI list.
-// function updateSelectedUsers(): void {
-//  const list = document.getElementById("selected-users") as HTMLUListElement;
-//  list.innerHTML = "";
-//  selectedPlayers.forEach((player) => {
-//   const li = document.createElement("li");
-//   li.classList.add(
-//    "bg-purple-500",
-//    "bg-opacity-30",
-//    "text-red",
-//    "px-4",
-//    "py-2",
-//    "mx-1",
-//    "my-1",
-//    "rounded-lg",
-//    "font-semibold"
-//   );
-//   li.textContent = player;
-//   list.appendChild(li);
-//  });
-// }
-
-// // Registers the tournament by sending the selected players to the backend.
-// async function registerTournament(): Promise<void> {
-//  if (selectedPlayers.length < 4) {
-//   alert("Please select at least 4 players to start a tournament.");
-//   return;
-//  }
-//  try {
-//   const response = await fetch("/api/tournament", {
-//    method: "POST",
-//    headers: {
-//     "Content-Type": "application/json",
-//    },
-//    body: JSON.stringify({ players: selectedPlayers.length }),
-//   });
-//   console.log("meme: response", response);
-//   if (!response.ok) throw new Error("Failed to register tournament");
-//   const data = await response.json();
-//   (
-//    document.getElementById("tournament-registration-view") as HTMLElement
-//   ).style.display = "none";
-//   (
-//    document.getElementById("tournament-start-view") as HTMLElement
-//   ).style.display = "flex";
-//   const regList = document.getElementById(
-//    "registered-users"
-//   ) as HTMLUListElement;
-//   regList.innerHTML = "";
-//   selectedPlayers.forEach((player) => {
-//    const li = document.createElement("li");
-//    li.classList.add(
-//     "text-white",
-//     "px-3",
-//     "py-2",
-//     "mx-1",
-//     "my-1",
-//     "font-semibold"
-//    );
-//    li.textContent = player;
-//    regList.appendChild(li);
-//   });
-//   console.log("Tournament registered with ID:", data.id);
-//  } catch (error) {
-//   console.error("Error registering tournament:", error);
-//   alert("Error registering tournament");
-//  }
-// }
-
-// // Starts the tournament and processes the matches.
-// async function startTournamentFront(): Promise<void> {
-//  alert("Tournament is starting!");
-//  // Initialize a new Tournament instance with the selected players.
-//  const tournament = new Tournament(selectedPlayers);
-
-//  // Optionally, update the UI with the match schedule.
-//  const schedule = tournament.getMatchSchedule();
-//  const matchScheduleDiv = document.getElementById(
-//   "match-schedule"
-//  ) as HTMLElement | null;
-//  if (matchScheduleDiv) {
-//   matchScheduleDiv.innerHTML = `<p>Match Schedule:</p><ul>${schedule
-//    .map((match) => `<li>${match.player1} vs ${match.player2}</li>`)
-//    .join("")}</ul>`;
-//  }
-
-//  // Process the matches using the imported tournament logic.
-//  await startTournament(tournament);
-
-//  // After all matches are done, update the UI accordingly.
-//  alert("Tournament complete!");
-// }
-
-// // Add an event listener to the Start Tournament button.
-// const startTournamentBtn = document.getElementById(
-//  "start-tournament-btn"
-// ) as HTMLButtonElement | null;
-// if (startTournamentBtn) {
-//  console.log("werestarting1");
-//  startTournamentBtn.addEventListener("click", startTournamentFront);
-// }
-
-
-
-
-
-// tournaments.ts
-
-// ====================== Tournament Scheduling ======================
-interface Match {
-  player1: string;
-  player2: string;
+interface BracketMatch {
+ player1: string | null;
+ player2: string | null;
+ winner?: string;
 }
 
-class Tournament {
-  private players: string[];
-  private matches: Match[];
-  private currentMatchIndex: number;
-  public readonly paddleSpeed: number;
+class EliminationTournament {
+ rounds: BracketMatch[][];
+ currentRound: number;
+ currentMatch: number;
 
-  constructor(players: string[]) {
-    this.players = players;
-    this.matches = [];
-    this.currentMatchIndex = 0;
-    this.paddleSpeed = 5;
-    this.generateMatches();
-  }
+ constructor(players: string[]) {
+  this.rounds = [];
+  this.currentRound = 0;
+  this.currentMatch = 0;
+  this.generateBracket(players);
+ }
 
-  private generateMatches(): void {
-    this.matches = [];
-    for (let i = 0; i < this.players.length; i++) {
-      for (let j = i + 1; j < this.players.length; j++) {
-        this.matches.push({ player1: this.players[i], player2: this.players[j] });
-      }
-    }
+ generateBracket(players: string[]): void {
+  let shuffled = players.slice();
+  shuffled.sort(() => Math.random() - 0.5);
+  const n = shuffled.length;
+  let bracketSize = 1;
+  while (bracketSize < n) {
+   bracketSize *= 2;
   }
+  const byes = bracketSize - n;
 
-  public getNextMatch(): Match | null {
-    if (this.currentMatchIndex < this.matches.length) {
-      return this.matches[this.currentMatchIndex++];
-    }
-    return null;
+  let slots: (string | null)[] = new Array(bracketSize).fill(null);
+  for (let i = 0; i < n; i++) {
+   slots[byes + i] = shuffled[i];
   }
+  let round1: BracketMatch[] = [];
+  for (let i = 0; i < bracketSize / 2; i++) {
+   round1.push({
+    player1: slots[i],
+    player2: slots[bracketSize - 1 - i],
+   });
+  }
+  this.rounds.push(round1);
 
-  public resetTournament(): void {
-    this.currentMatchIndex = 0;
-    this.generateMatches();
+  let matches = round1.length;
+  while (matches > 1) {
+   this.rounds.push(
+    new Array(matches / 2)
+     .fill(null)
+     .map(() => ({ player1: null, player2: null }))
+   );
+   matches = matches / 2;
   }
+ }
 
-  public getMatchSchedule(): Match[] {
-    return this.matches;
+ getCurrentMatch(): BracketMatch | null {
+  if (this.currentRound >= this.rounds.length) return null;
+  if (this.currentMatch >= this.rounds[this.currentRound].length) return null;
+  return this.rounds[this.currentRound][this.currentMatch];
+ }
+
+ recordMatchResult(winner: string): void {
+  const match = this.getCurrentMatch();
+  if (!match) return;
+  match.winner = winner;
+  if (this.currentRound < this.rounds.length - 1) {
+   const nextIndex = Math.floor(this.currentMatch / 2);
+   if (this.currentMatch % 2 === 0) {
+    this.rounds[this.currentRound + 1][nextIndex].player1 = winner;
+   } else {
+    this.rounds[this.currentRound + 1][nextIndex].player2 = winner;
+   }
   }
+  this.currentMatch++;
+  if (this.currentMatch >= this.rounds[this.currentRound].length) {
+   this.currentRound++;
+   this.currentMatch = 0;
+  }
+ }
+
+ isComplete(): boolean {
+  return this.currentRound >= this.rounds.length;
+ }
+
+ getOverallWinner(): string | null {
+  if (this.isComplete() && this.rounds.length > 0) {
+   return this.rounds[this.rounds.length - 1][0].winner || null;
+  }
+  return null;
+ }
 }
 
-// ====================== Pong Game for a Single Tournament Match ======================
-/**
- * Runs a single Pong match between match.player1 and match.player2 on a dedicated canvas.
- * Returns a Promise that resolves with the winner's name.
- */
-async function runPongMatch(match: Match): Promise<string> {
-  // Get the tournament canvas.
+interface UsersResponse {
+ data: string[];
+}
+let allUsersList: UsersResponse = { data: [] };
+let selectedPlayers: string[] = [];
+let globalTournament: EliminationTournament | null = null;
+let globalTournamentID: number | null = null;
+let matchWins: { [player: string]: number } = {};
+
+async function fetchAllUsers(): Promise<void> {
+ try {
+  const response = await fetch("/api/user/all");
+  if (!response.ok) throw new Error("Network error");
+  allUsersList = await response.json();
+ } catch (error) {
+  console.error("Error fetching users:", error);
+ }
+}
+fetchAllUsers();
+
+function showToast(message: string, duration = 3000) {
+ const container = document.getElementById("toast-container");
+ if (!container) return;
+ const toast = document.createElement("div");
+ toast.className =
+  "bg-gray-800 text-white px-4 py-2 rounded shadow-md animate-bounce";
+ toast.textContent = message;
+ container.appendChild(toast);
+ setTimeout(() => {
+  container.removeChild(toast);
+ }, duration);
+}
+
+const userSearchInput = document.getElementById(
+ "user-search"
+) as HTMLInputElement;
+userSearchInput.addEventListener("input", () => {
+ const query = userSearchInput.value.toLowerCase();
+ const results = document.getElementById("search-results") as HTMLDivElement;
+ if (query.length < 2) {
+  results.style.display = "none";
+  results.innerHTML = "";
+  return;
+ }
+ const filtered = allUsersList.data.filter((u) =>
+  u.toLowerCase().includes(query)
+ );
+ results.innerHTML = "";
+ if (filtered.length === 0) {
+  results.style.display = "none";
+  return;
+ }
+ filtered.forEach((u) => {
+  const div = document.createElement("div");
+  div.textContent = u;
+  div.className = "p-2 cursor-pointer hover:bg-gray-300";
+  div.onclick = () => selectUser(u);
+  results.appendChild(div);
+ });
+ results.style.display = "block";
+});
+
+const searchResultsContainer = document.getElementById(
+ "search-results"
+) as HTMLDivElement;
+function selectUser(username: string): void {
+ if (selectedPlayers.includes(username)) return;
+ if (selectedPlayers.length >= 6) {
+  showToast("Maximum 6 players allowed.");
+  return;
+ }
+ selectedPlayers.push(username);
+ updateSelectedUsers();
+ searchResultsContainer.innerHTML = "";
+ searchResultsContainer.style.display = "none";
+ userSearchInput.value = "";
+}
+
+function updateSelectedUsers(): void {
+ const list = document.getElementById("selected-users") as HTMLUListElement;
+ list.innerHTML = "";
+ selectedPlayers.forEach((p) => {
+  const li = document.createElement("li");
+  li.textContent = p;
+  li.className = "bg-purple-500 px-3 py-1 rounded";
+  list.appendChild(li);
+ });
+}
+
+async function registerTournament(): Promise<void> {
+ if (selectedPlayers.length < 4) {
+  showToast("Select at least 4 players.");
+  return;
+ }
+ try {
+  const response = await fetch("/api/tournament", {
+   method: "POST",
+   headers: { "Content-Type": "application/json" },
+   body: JSON.stringify({ players: selectedPlayers.length }),
+  });
+  if (!response.ok) throw new Error("Registration failed");
+  const data = await response.json();
+  globalTournamentID = data.id;
+  showToast(`Tournament ID: ${data.id}`, 4000);
+
+  (
+   document.getElementById("tournament-registration-view") as HTMLElement
+  ).style.display = "none";
+  (
+   document.getElementById("tournament-start-view") as HTMLElement
+  ).style.display = "block";
+
+  const regList = document.getElementById(
+   "registered-users"
+  ) as HTMLUListElement;
+  regList.innerHTML = "";
+  selectedPlayers.forEach((p) => {
+   const li = document.createElement("li");
+   li.textContent = p;
+   li.className = "bg-purple-600 px-3 py-1 rounded";
+   regList.appendChild(li);
+  });
+
+  globalTournament = new EliminationTournament(selectedPlayers);
+  matchWins = {};
+  selectedPlayers.forEach((p) => (matchWins[p] = 0));
+  updateBracketUI();
+  updateCurrentMatchInfo("");
+  startPongMultiplayer(null);
+ } catch (error) {
+  console.error(error);
+  showToast("Error registering tournament.");
+ }
+}
+
+function updateBracketUI(): void {
+ const container = document.getElementById("match-schedule");
+ if (!container || !globalTournament) return;
+ let html = "";
+ globalTournament.rounds.forEach((round, r) => {
+  html += `<div class="mb-2"><h3 class="font-bold">Round ${
+   r + 1
+  }</h3><ul class="space-y-1">`;
+  round.forEach((m, i) => {
+   let display = "";
+   if (
+    r === globalTournament!.currentRound &&
+    i === globalTournament!.currentMatch
+   ) {
+    display = `<button class="px-2 py-1 bg-green-600 rounded hover:bg-green-700" onclick="startMatch()">Start Game</button>`;
+   } else if (m.winner) {
+    display = `<span class="text-gray-400">Winner: ${m.winner}</span>`;
+   } else {
+    display = `<span class="text-gray-500">Pending</span>`;
+   }
+   html += `<li class="flex justify-between items-center">
+                <span>${m.player1 || "Bye"} vs ${m.player2 || "Bye"}</span>
+                ${display}
+              </li>`;
+  });
+  html += `</ul></div>`;
+ });
+ container.innerHTML = html;
+}
+
+function updateCurrentMatchInfo(text: string) {
+ const info = document.getElementById("current-match-info");
+ if (info) info.textContent = text;
+}
+
+let pongInterval: number | undefined;
+let pongPaused = false;
+let currentMatchData: BracketMatch | null = null;
+function startPongMultiplayer(
+  match: BracketMatch | null,
+  onGameEnd?: (winner: string) => void
+) {
   const canvas = document.getElementById("pongTournament") as HTMLCanvasElement;
-  if (!canvas) throw new Error("Tournament canvas not found");
-  const ctx = canvas.getContext("2d")!;
-
-  // Game settings.
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+  if (!match) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return;
+  }
+  currentMatchData = match;
   const paddleWidth = 10;
-  const paddleHeight = 100;
+  const paddleHeight = 80;
+  const ballRadius = 8;
   const targetScore = 5;
-
-  // Create player objects.
-  const player1 = {
-    name: match.player1,
-    x: 10,
+  
+  let player1 = {
+    name: match.player1 || "Pending",
+    score: 0,
     y: canvas.height / 2 - paddleHeight / 2,
     dy: 0,
-    score: 0,
+    x: 0,
   };
-  const player2 = {
-    name: match.player2,
-    x: canvas.width - 20,
+  let player2 = {
+    name: match.player2 || "Pending",
+    score: 0,
     y: canvas.height / 2 - paddleHeight / 2,
     dy: 0,
-    score: 0,
+    x: canvas.width - paddleWidth,
   };
-
-  // Create the ball.
-  const ball = {
+  
+  let ball = {
     x: canvas.width / 2,
     y: canvas.height / 2,
-    radius: 10,
-    speed: 5,
-    dx: 5,
-    dy: 5,
+    dx: 4,
+    dy: 4,
+    radius: ballRadius,
+    speed: 4,
   };
 
-  let gameOver = false;
-  let loop: number;
-  let matchPaused = false;
+  if (pongInterval) clearInterval(pongInterval);
 
-  function draw() {
-    // Clear the canvas.
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    // Draw paddles.
-    ctx.fillStyle = "#FFF";
-    ctx.fillRect(player1.x, player1.y, paddleWidth, paddleHeight);
-    ctx.fillRect(player2.x, player2.y, paddleWidth, paddleHeight);
-    // Draw ball.
-    ctx.beginPath();
-    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-    ctx.fill();
-    // Draw scores.
-    ctx.font = "32px Arial";
-    ctx.fillText(player1.score.toString(), canvas.width / 4, 50);
-    ctx.fillText(player2.score.toString(), (3 * canvas.width) / 4, 50);
-    // Draw player names above paddles.
-    ctx.font = "20px Arial";
-    ctx.fillText(player1.name, player1.x, player1.y - 10);
-    ctx.fillText(player2.name, player2.x, player2.y - 10);
-  }
-
-  function update() {
-    if (gameOver) return;
-
-    // Update ball position.
-    ball.x += ball.dx;
-    ball.y += ball.dy;
-    // Bounce off top and bottom.
-    if (ball.y - ball.radius < 0) {
-      ball.y = ball.radius;
-      ball.dy = Math.abs(ball.dy) || 1;
-    } else if (ball.y + ball.radius > canvas.height) {
-      ball.y = canvas.height - ball.radius;
-      ball.dy = -Math.abs(ball.dy) || -1;
-    }
-
-    // Collision detection helper.
-    function checkCollision(p: { x: number; y: number }) {
-      return (
-        ball.x - ball.radius < p.x + paddleWidth &&
-        ball.x + ball.radius > p.x &&
-        ball.y + ball.radius > p.y &&
-        ball.y - ball.radius < p.y + paddleHeight
-      );
-    }
-
-    // Handle collisions with paddles.
-    if (checkCollision(player1)) {
-      let collidePoint = ball.y - (player1.y + paddleHeight / 2);
-      collidePoint = collidePoint / (paddleHeight / 2);
-      const angle = collidePoint * (Math.PI / 4);
-      ball.dx = ball.speed * Math.cos(angle);
-      ball.dy = ball.speed * Math.sin(angle);
-      ball.speed += 0.5;
-    }
-    if (checkCollision(player2)) {
-      let collidePoint = ball.y - (player2.y + paddleHeight / 2);
-      collidePoint = collidePoint / (paddleHeight / 2);
-      const angle = collidePoint * (Math.PI / 4);
-      ball.dx = -ball.speed * Math.cos(angle);
-      ball.dy = ball.speed * Math.sin(angle);
-      ball.speed += 0.5;
-    }
-
-    // Score updates.
-    if (ball.x - ball.radius < 0) {
-      player2.score++;
-      resetBall();
-    } else if (ball.x + ball.radius > canvas.width) {
-      player1.score++;
-      resetBall();
-    }
-
-    // Update paddle positions.
-    player1.y += player1.dy;
-    player2.y += player2.dy;
-    player1.y = Math.max(Math.min(player1.y, canvas.height - paddleHeight), 0);
-    player2.y = Math.max(Math.min(player2.y, canvas.height - paddleHeight), 0);
-
-    // Check for win.
-    if (player1.score >= targetScore || player2.score >= targetScore) {
-      gameOver = true;
-      clearInterval(loop);
-    }
-  }
-
-  function resetBall() {
-    ball.x = canvas.width / 2;
-    ball.y = canvas.height / 2;
-    ball.speed = 5;
-    ball.dx = (ball.dx > 0 ? 5 : -5);
-    ball.dy = (ball.dy > 0 ? 5 : -5);
-  }
-
-  // Keyboard controls.
   function keyDownHandler(e: KeyboardEvent) {
-    if (e.key === "w") player1.dy = -7;
-    if (e.key === "s") player1.dy = 7;
-    if (e.key === "ArrowUp") player2.dy = -7;
-    if (e.key === "ArrowDown") player2.dy = 7;
+    if (e.key === "w") player1.dy = -6;
+    if (e.key === "s") player1.dy = 6;
+    if (e.key === "ArrowUp") player2.dy = -6;
+    if (e.key === "ArrowDown") player2.dy = 6;
   }
   function keyUpHandler(e: KeyboardEvent) {
     if (e.key === "w" || e.key === "s") player1.dy = 0;
@@ -445,233 +317,215 @@ async function runPongMatch(match: Match): Promise<string> {
   document.addEventListener("keydown", keyDownHandler);
   document.addEventListener("keyup", keyUpHandler);
 
-  // Run the match loop.
-  return new Promise<string>((resolve) => {
-    loop = window.setInterval(() => {
-      if (!matchPaused) {
-        update();
-        draw();
-      }
-      if (gameOver) {
-        // After a short delay, display a match-over message and resolve the promise.
-        setTimeout(() => {
-          ctx.fillStyle = "#FFF";
-          ctx.font = "bold 48px Arial";
-          const winner = player1.score >= targetScore ? player1.name : player2.name;
-          ctx.fillText("Match Over", canvas.width / 2 - 120, canvas.height / 2 - 40);
-          ctx.fillText(`${winner} wins!`, canvas.width / 2 - 100, canvas.height / 2 + 10);
-          resolve(winner);
-        }, 1000);
-      }
-    }, 1000 / 60);
-  });
-}
 
-// ====================== Tournament Flow ======================
-let tournament: Tournament | null = null;
-let currentMatch: Match | null = null;
-let matchWins: { [player: string]: number } = {};
-
-// Called when the tournament view loads.
-function startTournamentView(): void {
-  // Switch views.
-  (document.getElementById("tournament-registration-view") as HTMLElement).style.display = "none";
-  (document.getElementById("tournament-game-view") as HTMLElement).style.display = "flex";
-  // Display the full match schedule.
-  if (tournament) {
-    const schedule = tournament.getMatchSchedule();
-    const matchScheduleDiv = document.getElementById("match-schedule") as HTMLElement | null;
-    if (matchScheduleDiv) {
-      matchScheduleDiv.innerHTML = `<p>Match Schedule:</p><ul>${schedule
-        .map((m, idx) => `<li>Match ${idx + 1}: ${m.player1} vs ${m.player2}</li>`)
-        .join("")}</ul>`;
+  async function tournamentSendMatchResult() {
+   const body = {
+    multi: true,
+    user1: localStorage.getItem("username"),
+    user2: localStorage.getItem("multiplayerPlayer2"),
+    winner: player1.score > player2.score ? 1 : 2,
+   };
+   try {
+    const response = await fetch("/api/game", {
+     method: "POST",
+     headers: { "Content-Type": "application/json" },
+     body: JSON.stringify(body),
+    });
+    if (!response.ok) {
+     console.error("Error sending game result", response.statusText);
+    } else {
+     console.log("Game result sent successfully");
     }
+   } catch (error) {
+    console.error("Error sending game result", error);
+   }
+  }
+
+  function resetBall() {
+    ball.x = canvas.width / 2;
+    ball.y = canvas.height / 2;
+    const angle = (Math.random() * Math.PI/2) - (Math.PI/4);
+    ball.dx = Math.random() < 0.5 ? ball.speed * Math.cos(angle) : -ball.speed * Math.cos(angle);
+    ball.dy = ball.speed * Math.sin(angle);
+  }
+
+  pongInterval = setInterval(() => {
+    if (pongPaused) return;
+    player1.y += player1.dy;
+    player2.y += player2.dy;
+    player1.y = Math.max(0, Math.min(canvas.height - paddleHeight, player1.y));
+    player2.y = Math.max(0, Math.min(canvas.height - paddleHeight, player2.y));
+    ball.x += ball.dx;
+    ball.y += ball.dy;
+    if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) {
+      ball.dy = -ball.dy;
+    }
+    if (
+      ball.x - ball.radius < player1.x + paddleWidth &&
+      ball.y > player1.y &&
+      ball.y < player1.y + paddleHeight
+    ) {
+      let collidePoint = ball.y - (player1.y + paddleHeight / 2);
+      collidePoint = collidePoint / (paddleHeight / 2);
+      const angleRad = collidePoint * (Math.PI / 4);
+      ball.dx = ball.speed * Math.cos(angleRad);
+      ball.dy = ball.speed * Math.sin(angleRad);
+    }
+    if (
+      ball.x + ball.radius > player2.x &&
+      ball.y > player2.y &&
+      ball.y < player2.y + paddleHeight
+    ) {
+      let collidePoint = ball.y - (player2.y + paddleHeight / 2);
+      collidePoint = collidePoint / (paddleHeight / 2);
+      const angleRad = collidePoint * (Math.PI / 4);
+      ball.dx = -ball.speed * Math.cos(angleRad);
+      ball.dy = ball.speed * Math.sin(angleRad);
+    }
+    if (ball.x - ball.radius < 0) {
+      player2.score++;
+      resetBall();
+    }
+    if (ball.x + ball.radius > canvas.width) {
+      player1.score++;
+      resetBall();
+    }
+    if (player1.score >= targetScore || player2.score >= targetScore) {
+     clearInterval(pongInterval);
+     const winner = player1.score >= targetScore ? player1.name : player2.name;
+     tournamentSendMatchResult();
+     onGameEnd && onGameEnd(winner);
+    }
+    render();
+  }, 16);
+
+  function render() {
+   ctx.clearRect(0, 0, canvas.width, canvas.height);
+   ctx.fillRect(player1.x, player1.y, paddleWidth, paddleHeight);
+   ctx.fillRect(player2.x, player2.y, paddleWidth, paddleHeight);
+   ctx.beginPath();
+   ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+   ctx.fill();
+   ctx.font = "20px sans-serif";
+   ctx.fillStyle = "white";
+   ctx.textAlign = "center";
+   const scoreText = `${player1.name} ${player1.score} : ${player2.score} ${player2.name}`;
+   ctx.fillText(scoreText, canvas.width / 2, 30);
   }
 }
-
-// Start the next match in the tournament.
-async function startNextMatch(): Promise<void> {
-  if (!tournament) {
-    alert("Tournament not initialized.");
-    return;
-  }
-  currentMatch = tournament.getNextMatch();
-  if (!currentMatch) {
-    // Tournament is over. Determine overall winner.
-    let overallWinner = "";
-    let maxWins = 0;
-    for (const player in matchWins) {
-      if (matchWins[player] > maxWins) {
-        overallWinner = player;
-        maxWins = matchWins[player];
-      }
-    }
-    alert(`Tournament complete! Overall winner: ${overallWinner}`);
-    // (Optionally, send tournament result to backend here.)
-    return;
-  }
-
-  // Update UI with current match info.
-  const matchInfo = document.getElementById("current-match-info") as HTMLElement;
-  if (matchInfo) {
-    matchInfo.innerHTML = `<p>Current Match: ${currentMatch.player1} vs ${currentMatch.player2}</p>`;
-  }
-
-  // Run the Pong match for the current match.
-  const winner = await runPongMatch(currentMatch);
-  // Record the win.
+function startMatch(): void {
+ if (!globalTournament) {
+  showToast("Tournament not initialized.");
+  return;
+ }
+ const currentMatch = globalTournament.getCurrentMatch();
+ if (!currentMatch) {
+  showToast("Tournament complete!");
+  finalizeTournament();
+  return;
+ }
+ updateCurrentMatchInfo(
+  `Current Match: ${currentMatch.player1} vs ${currentMatch.player2}`
+ );
+ startPongMultiplayer(currentMatch, (winner: string) => {
+  showToast(`Match result: ${winner} wins!`);
   matchWins[winner] = (matchWins[winner] || 0) + 1;
-  alert(`Match result: ${winner} wins this match.`);
-  // (Optionally, update the match schedule UI to mark this match as completed.)
+  globalTournament!.recordMatchResult(winner);
+  updateBracketUI();
+  updateCurrentMatchInfo("Match complete. Awaiting next match...");
+  if (globalTournament!.isComplete()) {
+   finalizeTournament();
+  }
+ });
 }
 
-// ====================== View Controls ======================
-
-// Tournament control buttons.
-const startMatchBtn = document.getElementById("start-match-btn") as HTMLButtonElement | null;
-if (startMatchBtn) {
-  startMatchBtn.addEventListener("click", startNextMatch);
+function togglePauseGame(): void {
+ pongPaused = !pongPaused;
+ showToast(pongPaused ? "Game Paused" : "Game Resumed", 2000);
 }
 
-const pauseTournamentBtn = document.getElementById("pause-btn-tournament") as HTMLButtonElement | null;
-if (pauseTournamentBtn) {
-  pauseTournamentBtn.addEventListener("click", () => {
-    tournamentPaused = !tournamentPaused;
-    pauseTournamentBtn.textContent = tournamentPaused ? "Resume" : "Pause";
+function restartCurrentMatch(): void {
+ if (!globalTournament) return;
+ const currentMatch = globalTournament.getCurrentMatch();
+ if (!currentMatch) return;
+ startPongMultiplayer(currentMatch, (winner: string) => {
+  showToast(`Match result: ${winner} wins!`);
+  matchWins[winner] = (matchWins[winner] || 0) + 1;
+  globalTournament!.recordMatchResult(winner);
+  updateBracketUI();
+  updateCurrentMatchInfo("Match complete. Awaiting next match...");
+  if (globalTournament!.isComplete()) {
+   finalizeTournament();
+  }
+ });
+}
+
+async function finalizeTournament() {
+ if (!globalTournament) return;
+ let overallWinner = "";
+ let maxWins = 0;
+ for (const player in matchWins) {
+  if (matchWins[player] > maxWins) {
+   maxWins = matchWins[player];
+   overallWinner = player;
+  }
+ }
+ updateCurrentMatchInfo(`Overall Winner: ${overallWinner}`);
+ showToast(`Tournament complete! Winner: ${overallWinner}`, 5000);
+ await endTournamentOnServer(overallWinner);
+}
+
+async function endTournamentOnServer(winnerName: string): Promise<void> {
+ if (!globalTournamentID) return;
+ try {
+  const response = await fetch(`/api/tournament/${globalTournamentID}`, {
+   method: "POST",
+   headers: { "Content-Type": "application/json" },
+   body: JSON.stringify({ winner_name: winnerName }),
   });
+  if (!response.ok) throw new Error("Failed to post final winner");
+  showToast(`Final winner "${winnerName}" recorded.`, 4000);
+ } catch (error) {
+  console.error(error);
+  showToast("Error finalizing tournament.");
+ }
 }
 
-const backTournamentBtn = document.getElementById("back-btn-tournament") as HTMLButtonElement | null;
-if (backTournamentBtn) {
-  backTournamentBtn.addEventListener("click", () => {
-    // Cancel tournament and return to registration view.
-    tournamentCancelled = true;
-    (document.getElementById("tournament-game-view") as HTMLElement).style.display = "none";
-    (document.getElementById("tournament-registration-view") as HTMLElement).style.display = "flex";
-    const matchScheduleDiv = document.getElementById("match-schedule") as HTMLElement | null;
-    if (matchScheduleDiv) matchScheduleDiv.innerHTML = "";
-  });
-}
-
-// ====================== Tournament Registration ======================
-
-
-let selectedPlayers: string[] = [];
-const allUsersList: PlayerResponse = fetchAllPlayers();
-
-const userSearchInput = document.getElementById("user-search") as HTMLInputElement;
-userSearchInput.addEventListener("input", () => {
-	const query = userSearchInput.value.toLowerCase();
-  if (query.length < 2) {
-    searchResultsContainer!.style.display = "none";
-    searchResultsContainer!.innerHTML = "";
-    return;
-  }
-  const filteredUsers: string[] = allUsersList.data.filter((username) =>
-    username.toLowerCase().includes(query)
-  );
-  displaySearchResults(filteredUsers, searchResultsContainer!);
-});
-
-const userSearchDiv = document.getElementById("user-search") as HTMLElement;
-let searchResultsContainer = document.getElementById("search-results") as HTMLDivElement | null;
-if (!searchResultsContainer) {
-  searchResultsContainer = document.createElement("div");
-  searchResultsContainer.id = "search-results";
-  userSearchDiv.appendChild(searchResultsContainer);
-}
-
-function displaySearchResults(users: string[], container: HTMLDivElement): void {
-	container.innerHTML = "";
-  if (users.length === 0) {
-    container.style.display = "none";
-    return;
-  }
-  users.forEach((username) => {
-    const div = document.createElement("div");
-    div.textContent = username;
-    div.className = "search-result-item";
-    div.onclick = () => selectUser(username);
-    container.appendChild(div);
-  });
-  container.style.display = "block";
-}
-
-function selectUser(username: string): void {
-  if (selectedPlayers.includes(username)) return;
-  if (selectedPlayers.length >= 6) {
-    alert("You can only invite up to 6 players.");
-    return;
-  }
-  selectedPlayers.push(username);
-  updateSelectedUsers();
-  searchResultsContainer!.innerHTML = "";
-  searchResultsContainer!.style.display = "none";
-  userSearchInput.value = "";
-}
-
-function updateSelectedUsers(): void {
-  const list = document.getElementById("selected-users") as HTMLUListElement;
-  list.innerHTML = "";
-  selectedPlayers.forEach((player) => {
-    const li = document.createElement("li");
-    li.classList.add(
-      "bg-purple-500",
-      "bg-opacity-30",
-      "text-red",
-      "px-4",
-      "py-2",
-      "mx-1",
-      "my-1",
-      "rounded-lg",
-      "font-semibold"
-    );
-    li.textContent = player;
-    list.appendChild(li);
-  });
-}
-
-// Registration: send tournament registration to backend.
-async function registerTournament(): Promise<void> {
-  if (selectedPlayers.length < 4) {
-    alert("Please select at least 4 players to start a tournament.");
-    return;
-  }
-  try {
-    const response = await fetch("/api/tournament", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ players: selectedPlayers.length, multi: true }),
-    });
-    if (!response.ok) throw new Error("Failed to register tournament");
-    const data = await response.json();
-    // Store tournament ID if needed.
-    // Switch view: hide registration, show tournament game view.
-    (document.getElementById("tournament-registration-view") as HTMLElement).style.display = "none";
-    (document.getElementById("tournament-game-view") as HTMLElement).style.display = "flex";
-    // Display invited players.
-    const regList = document.getElementById("registered-users") as HTMLUListElement;
-    regList.innerHTML = "";
-    selectedPlayers.forEach((player) => {
-      const li = document.createElement("li");
-      li.classList.add("text-white", "px-3", "py-2", "mx-1", "my-1", "font-semibold");
-      li.textContent = player;
-      regList.appendChild(li);
-    });
-    // Initialize the tournament object.
-    tournament = new Tournament(selectedPlayers);
-    // Reset match wins.
-    matchWins = {};
-    // Load tournament game view.
-    startTournamentView();
-  } catch (error) {
-    console.error("Error registering tournament:", error);
-    alert("Error registering tournament");
-  }
-}
-
-// ====================== Button Event Listeners ======================
-const registerTournamentBtn = document.getElementById("registerTournamentBtn") as HTMLButtonElement | null;
+const registerTournamentBtn = document.getElementById(
+ "registerTournamentBtn"
+) as HTMLButtonElement | null;
 if (registerTournamentBtn) {
-  registerTournamentBtn.addEventListener("click", registerTournament);
+ registerTournamentBtn.addEventListener("click", registerTournament);
 }
+
+const pauseBtn = document.getElementById(
+ "pause-btn-tournament"
+) as HTMLButtonElement | null;
+if (pauseBtn) {
+ pauseBtn.addEventListener("click", togglePauseGame);
+}
+
+const restartBtn = document.getElementById(
+ "restart-btn-tournament"
+) as HTMLButtonElement | null;
+if (restartBtn) {
+ restartBtn.addEventListener("click", restartCurrentMatch);
+}
+
+const backBtn = document.getElementById(
+ "back-btn-tournament"
+) as HTMLButtonElement | null;
+if (backBtn) {
+ backBtn.addEventListener("click", () => {
+  if (pongInterval) clearInterval(pongInterval);
+  (
+   document.getElementById("tournament-start-view") as HTMLElement
+  ).style.display = "none";
+  (
+   document.getElementById("tournament-registration-view") as HTMLElement
+  ).style.display = "block";
+  showToast("Returned to registration view.");
+ });
+}
+
+(window as any).startMatch = startMatch;

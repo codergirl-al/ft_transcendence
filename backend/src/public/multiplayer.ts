@@ -52,7 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
  let paused = false;
  let resultSentMulti = false;
 
- // --- NEW: Function to reset all game state ---
  function initGameState(): void {
   player1.score = 0;
   player2.score = 0;
@@ -67,7 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
   resultSentMulti = false;
  }
 
- // --- NEW: Function to start the game loop ---
  function startGame(): void {
   initGameState();
   clearInterval(loop);
@@ -114,7 +112,6 @@ document.addEventListener("DOMContentLoaded", () => {
   ball.x += ball.dx;
   ball.y += ball.dy;
 
-  // Clamp the ball vertically if it goes off-screen.
   if (ball.y - ball.radius < 0) {
    ball.y = ball.radius;
    ball.dy = ball.dy >= 0 ? ball.dy : Math.abs(ball.dy) || 1;
@@ -254,7 +251,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
  if (restartBtnMulti) {
   restartBtnMulti.addEventListener("click", () => {
-   // Reset game state without reloading the page.
    startGame();
    if (paused) {
     paused = false;
@@ -297,7 +293,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
  }
 
- // NEW: Back button cancels (exits) the game rather than pausing it.
  const backBtnMulti = document.getElementById(
   "back-btn-multi"
  ) as HTMLButtonElement | null;
@@ -305,7 +300,6 @@ document.addEventListener("DOMContentLoaded", () => {
   backBtnMulti.addEventListener("click", () => {
    clearInterval(loop);
    paused = false;
-   // Optionally reset game state for a fresh start next time.
    initGameState();
    const gameContainer = document.getElementById("multiplayerGameContainer");
    const formContainer = document.getElementById("multiplayerFormContainer");
@@ -314,19 +308,17 @@ document.addEventListener("DOMContentLoaded", () => {
   });
  }
 
- // NEW: Set up the green "start" button for starting the game loop.
  const startGameBtn = document.getElementById(
   "start-game-btn"
  ) as HTMLButtonElement | null;
  if (startGameBtn) {
-  startGameBtn.style.display = "none"; // hide it initially
+  startGameBtn.style.display = "none";
   startGameBtn.addEventListener("click", () => {
    startGame();
-   startGameBtn.style.display = "none"; // hide after starting game
+   startGameBtn.style.display = "none";
   });
  }
 
- // --- MULTIPLAYER FETCHING USER NAMES ---
  interface PlayerResponse {
   data: string[];
  }
@@ -449,8 +441,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ) as HTMLElement | null;
     if (formContainer) formContainer.style.display = "none";
     if (gameContainer) gameContainer.style.display = "block";
-
-    // NEW: Instead of starting the game immediately, show the green "start" button.
     if (startGameBtn) {
      startGameBtn.style.display = "block";
     } else {
