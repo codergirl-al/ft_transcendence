@@ -60,14 +60,13 @@ export interface UserRequestBody {
 // layout of games table
 export interface GameData {
 	id: Number;
+	multi: Number;
 	user_id1: Number;
 	user_id2: Number;
-	score1: Number;
-	score2: Number;
 	winner_id: Number;
 	date: string;
-	user1_name: string;
-	user2_name: string;
+	username1: string;
+	username2: string;
 }
 
 // request body during game creation

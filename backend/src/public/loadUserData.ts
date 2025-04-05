@@ -1,11 +1,16 @@
-// Utility to show a specific view
-function showView(viewId: string): void {
-	document.querySelectorAll('.view').forEach((view) => view.classList.remove('active'));
-	const target = document.getElementById(viewId);
-	if (target) {
-	target.classList.add('active');
-	}
-}
+document.addEventListener("DOMContentLoaded", async () => {
+	loadUserData();
+		const hamburgerBtn = document.getElementById("hamburgerBtn");
+		const mobileMenu = document.getElementById("mobileMenu");
+		if (!hamburgerBtn || !mobileMenu) {
+			console.error("Hamburger button or mobile menu not found");
+			return;
+		}
+		hamburgerBtn.addEventListener("click", () => {
+			mobileMenu.classList.toggle("hidden");
+		});
+});
+
 async function loadUserData() {
 	try {
 		const response = await fetch("/api/user", { method: 'GET' });
@@ -19,9 +24,7 @@ async function loadUserData() {
 				showView('index-view');
 			}
 		}
-		console.log(response);
 		const data = await response.json();
-		console.log(data);
 		if (!data.data) {
 			showView('index-view');
 			return;
@@ -45,4 +48,4 @@ async function loadUserData() {
 	}
 }
 
-loadUserData();
+// loadUserData();

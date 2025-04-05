@@ -9,14 +9,14 @@ ready:
 > access a profile without logging in
 > delete user
 > local play against a friend
-
-unimplemented:
 > show another users profile
 > send a friend request
 > accept a friend request
 > play and record a full game
 > interrupt a game, see if it logs
 > play a local tournament
-> ...
 
 -- todo --
+> center search results div
+> when login fix account not showing (localstorage)
+> test tournament

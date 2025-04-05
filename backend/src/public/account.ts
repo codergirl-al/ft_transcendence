@@ -18,5 +18,4 @@ document.addEventListener("DOMContentLoaded", () => {
 			userStatsModal.classList.add("hidden");
 		});
 	}
-
 });

@@ -16,6 +16,9 @@ function searchUser() {
 		const username = usersearch.value.trim();
 		if (!username)
 			throw Error("No username given");
+		const invalid = ['all', 'delete', 'logout'];
+		if (invalid.find(x => x === username))
+			throw Error("invalid username");
 		try {
 			const response = await fetch(`/api/user/${username}`, {method: 'GET'});
 			if (!response.ok) {
@@ -24,7 +27,7 @@ function searchUser() {
 			const data = await response.json();
 			if (data.success) {
 				const status = data.data.status || "";
-				userdisplay.innerHTML = `<img src="/uploads/${data.data.id}.png" class="w-10 h-10 rounded-full border-2 border-purple-600 shadow" onerror="this.onerror=null; this.src='/uploads/default.png';">
+				userdisplay.innerHTML = `<img src="/uploads/${data.data.id}.png" class="w-10 h-10 rounded-full border-2 border-purple-200 shadow" onerror="this.onerror=null; this.src='/uploads/default.png';">
 										<p>${data.data.username}</p>
 										<p>${status}</p>`;
 			} else {
@@ -83,9 +86,9 @@ async function getFriends(login: string) {
 			let content = "<p>Friends</p>";
 			for (const friend of data.data) {
 				if (friend.username1 === login)
-					content = content + `<div><img src='/uploads/${friend.user_id2}.png' class="w-10 h-10 rounded-full border-2 border-purple-600 shadow" onerror="this.onerror=null; this.src='/uploads/default.png';"><p>${friend.username2}</p><p>${friend.status2 || "offline"}</p></div>`;
+					content = content + `<div><img src='/uploads/${friend.user_id2}.png' class="w-10 h-10 rounded-full border-2 border-purple-200 shadow" onerror="this.onerror=null; this.src='/uploads/default.png';"><p>${friend.username2}</p><p>${friend.status2 || "offline"}</p></div>`;
 				else
-					content = content + `<div><img src='/uploads/${friend.user_id1}.png' class="w-10 h-10 rounded-full border-2 border-purple-600 shadow" onerror="this.onerror=null; this.src='/uploads/default.png';"><p>${friend.username1}</p><p>${friend.status1 || "offline"}</p></div>`;
+					content = content + `<div><img src='/uploads/${friend.user_id1}.png' class="w-10 h-10 rounded-full border-2 border-purple-200 shadow" onerror="this.onerror=null; this.src='/uploads/default.png';"><p>${friend.username1}</p><p>${friend.status1 || "offline"}</p></div>`;
 			}
 			friendlist.innerHTML = content;
 			content = "";
