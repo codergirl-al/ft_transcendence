@@ -382,6 +382,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
  function selectPlayer2(username: string): void {
   if (selectedPlrs.includes(username)) return;
+  if (username === localStorage.getItem('username')) return;
   selectedPlrs.push(username);
   updateSelectedUser();
 
@@ -452,19 +453,19 @@ document.addEventListener("DOMContentLoaded", () => {
   });
  }
 
- function registerMulti(): void {
-  const player1El = document.getElementById(
-   "player1"
-  ) as HTMLInputElement | null;
-  const player2El = document.getElementById(
-   "player2"
-  ) as HTMLInputElement | null;
-  const p1 = player1El?.value.trim();
-  const p2 = player2El?.value.trim();
+//  function registerMulti(): void {
+//   const player1El = document.getElementById(
+//    "player1"
+//   ) as HTMLInputElement | null;
+//   const player2El = document.getElementById(
+//    "player2"
+//   ) as HTMLInputElement | null;
+//   const p1 = player1El?.value.trim();
+//   const p2 = player2El?.value.trim();
 
-  if (!p1 || !p2) {
-   alert("Please enter both names.");
-   return;
-  }
- }
+//   if (!p1 || !p2) {
+//    alert("Please enter both names.");
+//    return;
+//   }
+//  }
 });

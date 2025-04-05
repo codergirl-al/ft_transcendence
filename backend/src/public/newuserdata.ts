@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function friendSearch() {
-	// const newFriendBtn = document.getElementById('newFriendBtn');
 	const statustext = document.getElementById('statustext');
 	const search = document.getElementById('newFriendBar') as HTMLInputElement | null;
 	const searchresults = document.getElementById("friendsearch-results") as HTMLDivElement | null;
@@ -26,7 +25,7 @@ async function friendSearch() {
 			searchresults.innerHTML = "";
 			return;
 		}
-		const filteredUsers: string[] = allusers.data.filter((username) =>
+		const filteredUsers: string[] = allusers.data.filter((username: string) =>
 			username.toLowerCase().includes(query)
 		);
 		// same as displaySearchNames(filteredUsers, searchresults) ->
@@ -44,22 +43,6 @@ async function friendSearch() {
 		});
 		searchresults.style.display = "block";
 	});
-
-	// if (!newFriendBtn)
-	// 	return ;
-	// newFriendBtn.addEventListener('click', async () => {
-	// 	const username = search.value.trim();
-	// 	if (!username) {
-	// 		statustext.innerHTML = "No username entered";
-	// 		return;
-	// 	}
-	// 	const invalid = ['all', 'delete', 'logout'];
-	// 	if (invalid.find(x => x === username)) {
-	// 		statustext.textContent = 'User not found';
-	// 		return ;
-	// 	}
-	// 	await newFriend(username, statustext);
-	// });
 }
 
 async function newFriend(username: string, statusblock: HTMLElement) {

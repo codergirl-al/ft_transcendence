@@ -11,14 +11,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 		});
 });
 
-// Utility to show a specific view
-function showView(viewId: string): void {
-	document.querySelectorAll('.view').forEach((view) => view.classList.remove('active'));
-	const target = document.getElementById(viewId);
-	if (target) {
-	target.classList.add('active');
-	}
-}
 async function loadUserData() {
 	try {
 		const response = await fetch("/api/user", { method: 'GET' });

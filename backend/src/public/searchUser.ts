@@ -9,9 +9,8 @@ async function searchbar() {
 	const onlinestatus = document.getElementById('searchOnlinestatus');
 	// searchbar
 	const search = document.getElementById('userSearchbar') as HTMLInputElement;
-	const searchresults = document.getElementById("search-results") as HTMLDivElement | null;
+	const searchresults = document.getElementById("search-results-users") as HTMLDivElement | null;
 	const status = document.getElementById('searchstatus');
-	// const btn = document.getElementById('userSearchBtn') as HTMLButtonElement;
 	const allusers = await fetchAllPlayers();
 
 	if (!search || !userview || !status || !username || !avatar || !onlinestatus || !searchresults) {
@@ -25,20 +24,11 @@ async function searchbar() {
 			searchresults.innerHTML = "";
 			return;
 		}
-		const filteredUsers: string[] = allusers.data.filter((username) =>
+		const filteredUsers: string[] = allusers.data.filter((username: string) =>
 			username.toLowerCase().includes(query)
 		);
 		displaySearchNames(filteredUsers, searchresults);
 	});
-
-	// btn.addEventListener('click', async function () {
-	// 	const invalid = ['all', 'delete', 'logout'];
-	// 	if (search.value.length < 3 || invalid.find(x => x === search.value)) {
-	// 		status.innerText = "User not found";
-	// 		return ;
-	// 	}
-	// 	await displayUser(search.value);
-	// });
 }
 
 function displaySearchNames(users: string[], container: HTMLDivElement): void {
@@ -51,10 +41,15 @@ function displaySearchNames(users: string[], container: HTMLDivElement): void {
 		const div = document.createElement("div");
 		div.textContent = username;
 		div.className = "search-result-item";
-		div.onclick = () => displayUser(username);
+		div.onclick = () => displayWrapper(container, username);
 		container.appendChild(div);
 	});
 	container.style.display = "block";
+}
+
+function displayWrapper(div:HTMLDivElement, username:string) {
+	displayUser(username);
+	div.style.display = "none";
 }
 
 async function displayUser(user: string) {
@@ -151,3 +146,15 @@ function dateformat(date: string) {
 }
 // 0 1 2 3 4 5 6 7 8 9
 // 2 0 2 5 - 0 1 - 0 4
+
+async function fetchAllPlayers() {
+	let allPlayersList = { data: [] };
+	try {
+		const response = await fetch("/api/user/all");
+		if (!response.ok) throw new Error("Network response was not ok");
+		allPlayersList = await response.json();
+	} catch (error) {
+		console.error("Error fetching users:", error);
+	}
+	return allPlayersList;
+}

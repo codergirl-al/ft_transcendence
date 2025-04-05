@@ -228,7 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
  async function sendGameResult() {
   const body = {
    multi: false,
-   user1: "player", // hardcoded for singleplayer mode
+   user1: localStorage.getItem("username"),
    user2: "blank",
    winner: player.score > ai.score ? 1 : 2,
   };
