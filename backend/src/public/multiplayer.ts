@@ -1,6 +1,9 @@
 const player1Elem = document.getElementById("player1") as HTMLElement | null;
 if (player1Elem) {
- player1Elem.innerHTML = localStorage.getItem("username") || "";
+ player1Elem.innerHTML =
+  localStorage.getItem("username") ||
+  localStorage.getItem("multiplayerPlayer2") ||
+  "Player1";
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -47,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
  let gameOver = false;
  let loop: number;
  let paused = false;
- let resultSentMulti = false; // ensure we send the multiplayer result only once
+ let resultSentMulti = false;
 
  // --- NEW: Function to reset all game state ---
  function initGameState(): void {
@@ -197,7 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
    }
    ctx.fillStyle = "#FFF";
    ctx.font = "bold 48px Arial";
-   const winner = player1.score > player2.score ? "Player1" : "Player2";
+   const winner = player1.score > player2.score ? localStorage.getItem("username") : localStorage.getItem("multiplayerPlayer2");
    const message = winner + " WON THE GAME";
    const msgWidth = ctx.measureText(message).width;
    ctx.fillText("Game Over", canvas.width / 2 - 120, canvas.height / 2 - 40);
@@ -227,9 +230,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (e.key === "w" || e.key === "s") player1.dy = 0;
   if (e.key === "ArrowUp" || e.key === "ArrowDown") player2.dy = 0;
  });
-
- // Remove the auto-start of the game loop.
- // loop = window.setInterval(gameLoop, 1000 / 60);
 
  const pauseBtnMulti = document.getElementById(
   "pause-btn-multi"
@@ -331,21 +331,19 @@ document.addEventListener("DOMContentLoaded", () => {
   data: string[];
  }
 
-let selectedPlrs: string[] = [];
+ let allPlayersList: PlayerResponse = { data: [] };
+ let selectedPlrs: string[] = [];
 
-async function fetchAllPlayers(): Promise<PlayerResponse> {
-	let playerlist: PlayerResponse = { data: [] };
+ async function fetchAllPlayers(): Promise<void> {
   try {
-    const response = await fetch("/api/user/all");
-    if (!response.ok) throw new Error("Network response was not ok");
-    playerlist = await response.json();
+   const response = await fetch("/api/user/all");
+   if (!response.ok) throw new Error("Network response was not ok");
+   allPlayersList = await response.json();
   } catch (error) {
    console.error("Error fetching users:", error);
   }
-  return playerlist;
-}
-
-const allPlayersList = fetchAllPlayers();
+ }
+ fetchAllPlayers();
 
  const playerSearchInput = document.getElementById(
   "player2"
