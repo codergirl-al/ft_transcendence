@@ -130,7 +130,6 @@
 							<div class="relative flex flex-col md:flex-row items-center md:space-x-6 rounded-lg space-y-6 md:space-y-0">
 								<!-- User Profile -->
 								<div class="relative flex flex-col md:flex-row bg-purple-600 rounded-lg p-6 w-full">
-									<!-- Avatar & Username -->
 									<div class="flex items-center space-x-4">
 										<img id="myAvatar" src="/uploads/default.png" alt="User Avatar"
 											onerror="this.onerror=null; this.src='/uploads/default.png';"
@@ -140,29 +139,23 @@
 											<p id="myOnlinestatus" class="text-white">online</p>
 										</div>
 									</div>
-		
 									<!-- Stats on the right for md and up; stacked on smaller screens -->
-									<div
-										class="mt-4 md:mt-0 md:ml-auto flex flex-wrap md:flex-nowrap items-center justify-end gap-4">
-										<div
-											class="bg-purple-600 text-white p-1 rounded text-center flex flex-col justify-center">
+									<div class="mt-4 md:mt-0 md:ml-auto flex flex-wrap md:flex-nowrap items-center justify-end gap-4">
+										<div class="bg-purple-600 text-white p-1 rounded text-center flex flex-col justify-center">
 											<p class="font-bold mb-2">Games</p>
-											<p id="totalGames">2</p>
+											<p id="totalGames">0</p>
 										</div>
-										<div
-											class="bg-purple-600 text-white p-1 rounded text-center flex flex-col justify-center">
+										<div class="bg-purple-600 text-white p-1 rounded text-center flex flex-col justify-center">
 											<p class="font-bold mb-2">T-Wins</p>
 											<p id="tournamentwins">0</p>
 										</div>
-										<div
-											class="bg-purple-600 text-white p-1 rounded text-center flex flex-col justify-center">
+										<div class="bg-purple-600 text-white p-1 rounded text-center flex flex-col justify-center">
 											<p class="font-bold mb-2">Wins</p>
-											<p id="wins">1</p>
+											<p id="wins">0</p>
 										</div>
-										<div
-											class="bg-purple-600 text-white p-1 rounded text-center flex flex-col justify-center">
+										<div class="bg-purple-600 text-white p-1 rounded text-center flex flex-col justify-center">
 											<p class="font-bold mb-2">Losses</p>
-											<p id="losses">1</p>
+											<p id="losses">0</p>
 										</div>
 									</div>
 								</div>
@@ -287,49 +280,42 @@
 						<div>
 							<div class="mt-6 mb-10 relative">
 								<p id="searchstatus"></p>
-								<input id="userSearchbar" class="w-full p-2 border rounded text-black mx-auto sm:max-w-sm md:max-w-md">
-								<div id="search-results" class="absolute top-full left-0 right-0 bg-white border mt-1 text-black hidden z-[1000] w-full mx-auto sm:max-w-sm md:max-w-md"></div>
-								<!-- <button type="button" id="userSearchBtn">Search</button> -->
+								<div class="relative">
+									<input id="userSearchbar" class="w-full p-2 border rounded text-black mx-auto sm:max-w-sm md:max-w-md">
+									<div id="search-results-users" class="absolute top-full left-0 right-0 bg-white border mt-1 text-black z-50 w-full sm:max-w-sm md:max-w-md hidden"></div>
+								</div>
 							</div>
 							<!-- User Profile and Stats -->
 							<div id="userview" class="flex flex-col items-center justify-center space-y-6 hidden">
-								<div class="relative flex flex-col md:flex-row items-center md:space-x-6 rounded-lg space-y-6 md:space-y-0">
-									<div class="absolute top-2 left-2 w-full h-full bg-green-500 rounded"></div>
+								<div class="relative flex flex-col w-full md:flex-row items-center md:space-x-6 rounded-lg space-y-6 md:space-y-0">
 									<div class="relative flex flex-col md:flex-row bg-purple-600 rounded-lg p-6 w-full">
-										<img id="searchAvatar" src="/uploads/default.png" alt="User Avatar"
-											onerror="this.onerror=null; this.src='/uploads/default.png';"
-											class="w-20 h-20 rounded-full border-2 border-purple-200">
-										<div>
-											<h2 id="searchUsername" class="text-xl font-semibold text-white"></h2>
-											<p id="searchOnlinestatus" class="text-white"></p>
+										<div class="flex items-center space-x-4">
+											<img id="searchAvatar" src="/uploads/default.png" alt="User Avatar"
+												onerror="this.onerror=null; this.src='/uploads/default.png';"
+												class="w-20 h-20 rounded-full border-2 border-purple-200">
+											<div>
+												<h2 id="searchUsername" class="text-xl font-semibold text-white"></h2>
+												<p id="searchOnlinestatus" class="text-white"></p>
+											</div>
 										</div>
-										<div class="w-full"></div>
 										<!-- Game Stats -->
 										<div class="mt-4 md:mt-0 md:ml-auto flex flex-wrap md:flex-nowrap items-center justify-end gap-4">
-												<div
-													class="bg-purple-600 text-white p-1 rounded text-center h-full flex flex-col justify-center">
-													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">
-														Games</p>
-													<p id="searchGames">0</p>
-												</div>
-												<div
-													class="bg-purple-600 text-white p-1 rounded text-center h-full flex flex-col justify-center">
-													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">
-														T-Wins</p>
-													<p id="searchtwins">0</p>
-												</div>
-												<div
-													class="bg-purple-600 text-white p-1 rounded text-center h-full flex flex-col justify-center">
-													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">Wins
-													</p>
-													<p id="searchwins">0</p>
-												</div>
-												<div
-													class="bg-purple-600 text-white p-1 rounded text-center h-full flex flex-col justify-center">
-													<p class="font-bold h-6 flex items-center justify-center mb-2 w-20">
-														Losses</p>
-													<p id="searchlosses">0</p>
-												</div>
+											<div class="bg-purple-600 text-white p-1 rounded text-center flex flex-col justify-center">
+												<p class="font-bold mb-2">Games</p>
+												<p id="searchGames">0</p>
+											</div>
+											<div class="bg-purple-600 text-white p-1 rounded text-center flex flex-col justify-center">
+												<p class="font-bold mb-2">T-Wins</p>
+												<p id="searchtwins">0</p>
+											</div>
+											<div class="bg-purple-600 text-white p-1 rounded text-center flex flex-col justify-center">
+												<p class="font-bold mb-2">Wins</p>
+												<p id="searchwins">0</p>
+											</div>
+											<div class="bg-purple-600 text-white p-1 rounded text-center flex flex-col justify-center">
+												<p class="font-bold mb-2">Losses</p>
+												<p id="searchlosses">0</p>
+											</div>
 										</div>
 									</div>
 								</div>
