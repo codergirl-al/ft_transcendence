@@ -63,10 +63,10 @@ async function displayUser(user: string) {
 
 	const response = await fetch(`/api/user/${user}`, {method: 'GET'});
 	if (response.status == 404) {
-		console.error("User not found");
+		// console.error("User not found");
 		return;
 	} else if (!response.ok) {
-		console.error("Error in route - GET /api/game");
+		// console.error("Error in route - GET /api/game");
 		return;
 	}
 	const data = await response.json();
@@ -87,10 +87,8 @@ async function searchmatches(login: string) {
 		return;
 	const response = await fetch(`/api/game/user/${login}`, { method: 'GET' });
 	if (response.status == 404) {
-		console.error("User not found");
 		return;
 	} else if (!response.ok) {
-		console.error("Error in route - GET /api/game");
 		return;
 	}
 	const data = await response.json();
@@ -118,10 +116,8 @@ async function searchgamestats(login: string) {
 		return;
 	const response = await fetch(`/api/user/${login}/stats`, { method: 'GET' });
 	if (response.status == 404) {
-		console.error("User not found");
 		return;
 	} else if (!response.ok) {
-		console.error("Error in route - GET /api/user/:id/stats");
 		return;
 	}
 	const data = await response.json();
@@ -154,7 +150,7 @@ async function fetchAllPlayers() {
 		if (!response.ok) throw new Error("Network response was not ok");
 		allPlayersList = await response.json();
 	} catch (error) {
-		console.error("Error fetching users:", error);
+		// Intentionally swallowing the error to avoid console noise.
 	}
 	return allPlayersList;
 }

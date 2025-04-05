@@ -102,7 +102,7 @@ async function fetchAllUsers(): Promise<void> {
   if (!response.ok) throw new Error("Network error");
   allUsersList = await response.json();
  } catch (error) {
-  console.error("Error fetching users:", error);
+  // Intentionally swallowing the error to avoid console noise.
  }
 }
 fetchAllUsers();
@@ -217,7 +217,6 @@ async function registerTournament(): Promise<void> {
   updateCurrentMatchInfo("");
   startPongMultiplayer(null);
  } catch (error) {
-  console.error(error);
   showToast("Error registering tournament.");
  }
 }
@@ -257,7 +256,7 @@ function updateCurrentMatchInfo(text: string) {
  if (info) info.textContent = text;
 }
 
-let pongInterval: number | undefined;
+let pongInterval: ReturnType<typeof setInterval> | undefined;
 let pongPaused = false;
 let currentMatchData: BracketMatch | null = null;
 function startPongMultiplayer(
@@ -266,7 +265,7 @@ function startPongMultiplayer(
 ) {
   const canvas = document.getElementById("pongTournament") as HTMLCanvasElement;
   if (!canvas) return;
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
   if (!ctx) return;
   if (!match) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -330,13 +329,8 @@ function startPongMultiplayer(
      headers: { "Content-Type": "application/json" },
      body: JSON.stringify(body),
     });
-    if (!response.ok) {
-     console.error("Error sending game result", response.statusText);
-    } else {
-     console.log("Game result sent successfully");
-    }
    } catch (error) {
-    console.error("Error sending game result", error);
+    // Intentionally swallowing the error to avoid console noise.
    }
   }
 
@@ -485,7 +479,6 @@ async function endTournamentOnServer(winnerName: string): Promise<void> {
   if (!response.ok) throw new Error("Failed to post final winner");
   showToast(`Final winner "${winnerName}" recorded.`, 4000);
  } catch (error) {
-  console.error(error);
   showToast("Error finalizing tournament.");
  }
 }

@@ -2,8 +2,6 @@ import { FriendData, TokenData, UserData, UserRequestBody, RequestParams } from 
 import { FastifyRequest, FastifyReply } from "fastify";
 import { sendResponse } from "./root.controller";
 
-// import { newFriend, getFriend, myFriends, deleteFriend } from "../controllers/friends.controller";
-
 // POST /api/friend
 export async function newFriend(request: FastifyRequest, reply: FastifyReply) {
 	const { db } = request.server;

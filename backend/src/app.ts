@@ -40,7 +40,6 @@ function validateEnvVariables() {
 	const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
 
 	if (missingEnvVars.length > 0) {
-		console.error(`Missing required environment variables: ${missingEnvVars.join(", ")}`);
 		process.exit(1);
 	}
 }
@@ -149,7 +148,6 @@ const address = process.env.FASTIFY_ADDRESS;
 
 try {
 	fastify.listen({ port: port, host: address }, (err, addr) => {
-		console.log("LISTEN: ", err, addr);
 		if (err || !addr) {
 			serverLogger.error(err);
 			process.exit(1);

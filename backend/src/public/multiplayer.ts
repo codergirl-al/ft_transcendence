@@ -283,13 +283,8 @@ document.addEventListener("DOMContentLoaded", () => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
    });
-   if (!response.ok) {
-    console.error("Error sending game result", response.statusText);
-   } else {
-    console.log("Game result sent successfully");
-   }
   } catch (error) {
-   console.error("Error sending game result", error);
+    // Intentionally swallowing the error to avoid console noise.
   }
  }
 
@@ -299,7 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
  if (backBtnMulti) {
   backBtnMulti.addEventListener("click", () => {
    clearInterval(loop);
-   paused = false;
+   paused = true;
    initGameState();
    const gameContainer = document.getElementById("multiplayerGameContainer");
    const formContainer = document.getElementById("multiplayerFormContainer");
@@ -332,7 +327,7 @@ document.addEventListener("DOMContentLoaded", () => {
    if (!response.ok) throw new Error("Network response was not ok");
    allPlayersList = await response.json();
   } catch (error) {
-   console.error("Error fetching users:", error);
+   // Intentionally swallowing the error to avoid console noise.
   }
  }
  fetchAllPlayers();

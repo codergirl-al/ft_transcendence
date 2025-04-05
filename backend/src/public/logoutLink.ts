@@ -9,10 +9,8 @@ if (login)
 	  localStorage.removeItem('username');
 	  window.location.hash = "#index";
 	  window.location.reload();
-	} else {
-	  console.error("Logout failed");
 	}
   } catch (error) {
-	console.error("Error logging out:", error);
+	// Intentionally swallowing the error to avoid console noise.
   }
 });

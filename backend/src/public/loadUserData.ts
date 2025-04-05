@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 		const hamburgerBtn = document.getElementById("hamburgerBtn");
 		const mobileMenu = document.getElementById("mobileMenu");
 		if (!hamburgerBtn || !mobileMenu) {
-			console.error("Hamburger button or mobile menu not found");
 			return;
 		}
 		hamburgerBtn.addEventListener("click", () => {
@@ -43,7 +42,6 @@ async function loadUserData() {
 		if (image)
 		image.src = `/uploads/${data.data.id}.png`;
 	} catch (error) {
-		console.error('Error fetching user data:', error);
 		// showView('createProfile-view');
 	}
 }

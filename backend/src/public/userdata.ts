@@ -21,9 +21,6 @@ function searchUser() {
 			throw Error("invalid username");
 		try {
 			const response = await fetch(`/api/user/${username}`, {method: 'GET'});
-			if (!response.ok) {
-				console.error("Error in route - GET /api/user/:id");
-			}
 			const data = await response.json();
 			if (data.success) {
 				const status = data.data.status || "";
@@ -34,7 +31,7 @@ function searchUser() {
 				userdisplay.innerHTML = `<p>User not found</p>`;
 			}
 		} catch (error) {
-			console.error(error);
+			// Intentionally swallowing the error to avoid console noise.
 		}
 	});
 }
@@ -63,7 +60,7 @@ async function myUser() {
 			username.innerHTML = 'You are not logged in -> go to /google-login';
 		}
 	} catch (error) {
-		console.error("Error myUser:", error);
+		// Intentionally swallowing the error to avoid console noise.
 	}
 	return login;
 }
@@ -78,7 +75,6 @@ async function getFriends(login: string) {
 			friendlist.innerHTML = 'You are not logged in -> go to /google-login';
 			return ;
 		} else if (!response.ok) {
-			console.error("Error in route - GET /api/friend");
 			return ;
 		}
 		const data = await response.json();
@@ -96,6 +92,6 @@ async function getFriends(login: string) {
 			friendlist.innerHTML = 'You are not logged in -> go to /google-login';
 		}
 	} catch (error) {
-		console.error("Error friends:", error);
+		// Intentionally swallowing the error to avoid console noise.
 	}
 }

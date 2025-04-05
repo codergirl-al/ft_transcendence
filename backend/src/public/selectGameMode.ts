@@ -14,7 +14,5 @@ document.addEventListener('DOMContentLoaded', () => {
 	  closeModalBtn.addEventListener('click', () => {
 		newGameModal.classList.add('hidden');
 	  });
-	} else {
-	  console.error("One or more modal elements not found in the DOM.");
 	}
 });

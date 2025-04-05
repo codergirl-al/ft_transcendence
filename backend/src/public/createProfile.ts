@@ -32,7 +32,6 @@ if (createProfile)
 				window.location.reload();
 			}
 		} catch (error) {
-			console.error('Error creating profile:', error);
 			if (status)
 				status.textContent = 'Network error';
 		}

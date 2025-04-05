@@ -14,7 +14,7 @@ export async function fetchAllPlayers(): Promise<void> {
   if (!response.ok) throw new Error("Network response was not ok");
   allPlayersList = await response.json();
  } catch (error) {
-  console.error("Error fetching users:", error);
+  // Intentionally swallowing the error to avoid console noise.
  }
 }
 

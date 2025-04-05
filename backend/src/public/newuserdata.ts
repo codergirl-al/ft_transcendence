@@ -52,9 +52,6 @@ async function newFriend(username: string, statusblock: HTMLElement) {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ username })
 		});
-		if (!response.ok) {
-			console.error("Error in route - POST /api/friend");
-		}
 		const data = await response.json();
 		if (data.success) {
 			statusblock.innerHTML = 'friend request sent';
@@ -67,7 +64,7 @@ async function newFriend(username: string, statusblock: HTMLElement) {
 			statusblock.innerHTML = `couldn't send request`;
 		}
 	} catch (error) {
-		console.error(error);
+		// Intentionally swallowing the error to avoid console noise.	
 	}
 }
 
@@ -95,7 +92,7 @@ async function getmyUser() {
 			username.innerHTML = 'You are not logged in -> go to /google-login';
 		}
 	} catch (error) {
-		console.error("Error myUser:", error);
+		// Intentionally swallowing the error to avoid console noise.
 	}
 	return login;
 }
@@ -110,7 +107,6 @@ async function getFriendlist(login: string) {
 			friendlist.innerHTML = 'You are not logged in -> go to /google-login';
 			return;
 		} else if (!response.ok) {
-			console.error("Error in route - GET /api/friend");
 			return;
 		}
 		const data = await response.json();
@@ -137,11 +133,9 @@ async function getFriendlist(login: string) {
 						const response = await fetch(`/api/friend/${username}/delete`, { method: 'GET' });
 						if (response.ok) {
 							window.location.reload();
-						} else {
-							console.error("Error in route - GET /api/friend/:id/delete");
 						}
 					} catch (error) {
-						console.error("Error canceling friend request:", error);
+						// Intentionally swallowing the error to avoid console noise.
 					}
 				});
 			});
@@ -149,7 +143,7 @@ async function getFriendlist(login: string) {
 			friendlist.innerHTML = 'You are not logged in -> go to /google-login';
 		}
 	} catch (error) {
-		console.error("Error friends:", error);
+		// Intentionally swallowing the error to avoid console noise.
 	}
 }
 
@@ -163,7 +157,6 @@ async function requestList(login: string) {
 			friendlist.innerHTML = 'You are not logged in -> go to /google-login';
 			return;
 		} else if (!response.ok) {
-			console.error("Error in route - GET /api/friend");
 			return;
 		}
 		const data = await response.json();
@@ -207,11 +200,9 @@ async function requestList(login: string) {
 						});
 						if (response.ok) {
 							window.location.reload();
-						} else {
-							console.error("Error in route - POST /api/friend");
 						}
 					} catch (error) {
-						console.error("Error accepting friend request:", error);
+						// Intentionally swallowing the error to avoid console noise.
 					}
 				});
 			});
@@ -225,10 +216,12 @@ async function requestList(login: string) {
 						if (response.ok) {
 							window.location.reload();
 						} else {
-							console.error("Error in route - GET /api/friend/:id/delete");
+							// Intentionally swallowing the error to avoid console noise.
+							// console.error("Error in route - GET /api/friend/:id/delete");
 						}
 					} catch (error) {
-						console.error("Error canceling friend request:", error);
+						// Intentionally swallowing the error to avoid console noise.
+						// console.error("Error canceling friend request:", error);
 					}
 				});
 			});
@@ -236,7 +229,8 @@ async function requestList(login: string) {
 			friendlist.innerHTML = 'You are not logged in -> go to /google-login';
 		}
 	} catch (error) {
-		console.error("Error friends:", error);
+		// Intentionally swallowing the error to avoid console noise.
+		// console.error("Error friends:", error);
 	}
 }
 
@@ -250,7 +244,7 @@ async function matches(login: string) {
 		matchhistory.innerHTML = 'Log in to see your past games';
 		return;
 	} else if (!response.ok) {
-		console.error("Error in route - GET /api/game");
+		// console.error("Error in route - GET /api/game");
 		return;
 	}
 	const data = await response.json();
@@ -280,10 +274,8 @@ async function gamestats(login: string) {
 		return;
 	const response = await fetch(`/api/user/${login}/stats`, { method: 'GET' });
 	if (response.status == 404) {
-		console.error("User not found");
 		return;
 	} else if (!response.ok) {
-		console.error("Error in route - GET /api/game");
 		return;
 	}
 	const data = await response.json();

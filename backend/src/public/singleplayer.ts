@@ -224,13 +224,8 @@ document.addEventListener("DOMContentLoaded", () => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
    });
-   if (!response.ok) {
-    console.error("Error sending game result", response.statusText);
-   } else {
-    console.log("Game result sent successfully");
-   }
   } catch (error) {
-   console.error("Error sending game result", error);
+   // Intentionally swallowing the error to avoid console noise.
   }
  }
 
