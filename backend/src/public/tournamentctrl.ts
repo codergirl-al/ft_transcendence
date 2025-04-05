@@ -189,8 +189,8 @@ async function registerTournament(): Promise<void> {
   });
   if (!response.ok) throw new Error("Registration failed");
   const data = await response.json();
-  globalTournamentID = data.id;
-  showToast(`Tournament ID: ${data.id}`, 4000);
+  globalTournamentID = data.data.id;
+  showToast(`Tournament ID: ${data.data.id}`, 4000);
 
   (
    document.getElementById("tournament-registration-view") as HTMLElement
@@ -243,7 +243,7 @@ function updateBracketUI(): void {
     display = `<span class="text-gray-500">Pending</span>`;
    }
    html += `<li class="flex justify-between items-center">
-                <span>${m.player1 || "Bye"} vs ${m.player2 || "Bye"}</span>
+                <span>${m.player1 || "Pending"} vs ${m.player2 || "Pending"}</span>
                 ${display}
               </li>`;
   });
