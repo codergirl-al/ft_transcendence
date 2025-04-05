@@ -63,7 +63,6 @@ document.addEventListener("DOMContentLoaded", () => {
   ctx.fillText(text, x, y);
  }
 
- // Resets ball position, speed, and reverses its horizontal direction.
  function resetBall() {
   ball.x = canvas.width / 2;
   ball.y = canvas.height / 2;
@@ -71,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
   ball.speed = 5;
  }
 
- // Updates AI paddle movement.
  function updateAI() {
   const center = ai.y + paddleHeight / 2;
   ai.dy =
@@ -80,7 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
   ai.y = Math.max(Math.min(ai.y, canvas.height - paddleHeight), 0);
  }
 
- // Checks for collision between the ball and a paddle.
  function checkCollision(p: Paddle): boolean {
   return (
    ball.x - ball.radius < p.x + paddleWidth &&
@@ -104,7 +101,6 @@ document.addEventListener("DOMContentLoaded", () => {
    ball.dy = -ball.dy;
   }
 
-  // Collision with player's paddle.
   if (checkCollision(player)) {
    let collidePoint = ball.y - (player.y + paddleHeight / 2);
    collidePoint = collidePoint / (paddleHeight / 2);
@@ -114,7 +110,6 @@ document.addEventListener("DOMContentLoaded", () => {
    ball.speed += 0.5;
   }
 
-  // Collision with AI's paddle.
   if (checkCollision(ai)) {
    let collidePoint = ball.y - (ai.y + paddleHeight / 2);
    collidePoint = collidePoint / (paddleHeight / 2);
@@ -132,7 +127,6 @@ document.addEventListener("DOMContentLoaded", () => {
    resetBall();
   }
 
-  // Update player's position.
   player.y += player.dy;
   player.y = Math.max(Math.min(player.y, canvas.height - paddleHeight), 0);
 
@@ -141,7 +135,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (player.score >= 5 || ai.score >= 5) {
    gameOver = true;
    clearInterval(loop);
-   // Send game result only once.
    if (!resultSent) {
     sendGameResult();
     resultSent = true;
@@ -160,7 +153,6 @@ document.addEventListener("DOMContentLoaded", () => {
  }
 
  function rendersinglepl() {
-  // This renders the same as render() and adds game over messages.
   drawRect(0, 0, canvas.width, canvas.height, "#000");
   drawText(player.score.toString(), canvas.width / 4, 50);
   drawText(ai.score.toString(), (3 * canvas.width) / 4, 50);
@@ -190,7 +182,6 @@ document.addEventListener("DOMContentLoaded", () => {
   rendersinglepl();
  }
 
- // Initialize game state for a fresh start.
  function initGame() {
   player.score = 0;
   ai.score = 0;
@@ -205,14 +196,12 @@ document.addEventListener("DOMContentLoaded", () => {
   resultSent = false;
  }
 
- // Starts the singleplayer game when the button is clicked.
  function startSinglePlayerGame() {
   initGame();
   if (loop) clearInterval(loop);
   loop = window.setInterval(gameLoop, 1000 / 60);
  }
 
- // Key listeners for paddle movement.
  document.addEventListener("keydown", (e) => {
   if (e.key === "w") player.dy = -7;
   if (e.key === "s") player.dy = 7;
@@ -222,9 +211,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (e.key === "w" || e.key === "s") player.dy = 0;
  });
 
- // Remove auto-start: do NOT call gameLoop here.
-
- // Updated sendGameResult (removed localStorage usage).
  async function sendGameResult() {
   const body = {
    multi: false,
@@ -248,7 +234,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
  }
 
- // Event listeners for Pause/Resume and Restart buttons.
  const pauseBtn = document.getElementById(
   "pause-btn"
  ) as HTMLButtonElement | null;
@@ -277,7 +262,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
  }
 
- // Pause the game when the document is hidden.
  document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
    clearInterval(loop);
@@ -289,7 +273,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
  });
 
- // Listen for the Start button click.
  const startBtn = document.getElementById(
   "start-btn"
  ) as HTMLButtonElement | null;

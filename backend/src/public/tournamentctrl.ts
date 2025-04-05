@@ -317,12 +317,11 @@ function startPongMultiplayer(
   document.addEventListener("keydown", keyDownHandler);
   document.addEventListener("keyup", keyUpHandler);
 
-
   async function tournamentSendMatchResult() {
    const body = {
     multi: true,
-    user1: localStorage.getItem("username"),
-    user2: localStorage.getItem("multiplayerPlayer2"),
+    user1: player1.name,
+    user2: player2.name,
     winner: player1.score > player2.score ? 1 : 2,
    };
    try {
