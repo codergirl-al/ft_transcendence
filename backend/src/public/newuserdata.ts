@@ -119,15 +119,10 @@ async function getFriendlist(login: string) {
 			for (const friend of data.data) {
 				let friendindex = (friend.username1 === login) ? 2 : 1;
 				if (friend.status === 'accepted') {
-					accepted = accepted + `<li class="flex justify-between items-center p-2 bg-purple-600 rounded-md">
-								<span><img src='/uploads/${(friendindex === 1) ? friend.user_id1 : friend.user_id2}.png' class="w-10 h-10 rounded-full border-2 border-purple-200" onerror="this.onerror=null; this.src='/uploads/default.png';"></span>
-								<span class="text-white p-2">${(friendindex === 1) ? friend.username1 : friend.username2}</span>
-								<span class="px-3 ml-auto text-sm text-white">${((friendindex === 1) ? friend.status1 : friend.status2) || "offline"}</span>
-								<button class="px-3 py-1 bg-red-500 text-white rounded-md cancel-btn" data-username="${friend.username2}">&times</button>
-								</li>`;
+					const li = addLiElement(friend, friendindex);
+					friendlist.appendChild(li);
 				}
 			}
-			friendlist.innerHTML = accepted;
 			const cancelButtons = document.querySelectorAll('.cancel-btn');
 			cancelButtons.forEach(button => {
 				button.addEventListener('click', async (event) => {
@@ -136,7 +131,9 @@ async function getFriendlist(login: string) {
 					try {
 						const response = await fetch(`/api/friend/${username}/delete`, { method: 'GET' });
 						if (response.ok) {
-							window.location.reload();
+							const liElement = (event.target as HTMLElement).closest('li');
+							if (liElement)
+								liElement.remove();
 						} else {
 							console.error("Error in route - GET /api/friend/:id/delete");
 						}
@@ -151,6 +148,47 @@ async function getFriendlist(login: string) {
 	} catch (error) {
 		console.error("Error friends:", error);
 	}
+}
+
+
+interface FriendData {
+	user_id1: Number;
+	user_id2: Number;
+	username1: string;
+	username2: string;
+	status1: string;
+	status2: string;
+}
+
+function addLiElement(friend: FriendData, friendindex: Number) {
+	const li = document.createElement('li');
+	li.classList.add('flex', 'justify-between', 'items-center', 'p-2', 'bg-purple-600', 'rounded-md');
+
+	const imgSpan = document.createElement('span');
+	const img = document.createElement('img');
+	img.src = `/uploads/${(friendindex === 1) ? friend.user_id1 : friend.user_id2}.png`;
+	img.classList.add('w-10', 'h-10', 'rounded-full', 'border-2', 'border-purple-200');
+	img.setAttribute('onerror', "this.onerror=null; this.src='/uploads/default.png';");
+	imgSpan.appendChild(img);
+
+	const usernameSpan = document.createElement('span');
+	usernameSpan.classList.add('text-white', 'p-2');
+	usernameSpan.textContent = (friendindex === 1) ? friend.username1 : friend.username2;
+
+	const statusSpan = document.createElement('span');
+	statusSpan.classList.add('px-3', 'ml-auto', 'text-sm', 'text-white');
+	statusSpan.textContent = ((friendindex === 1) ? friend.status1 : friend.status2) || "offline";
+
+	const cancelButton = document.createElement('button');
+	cancelButton.classList.add('px-3', 'py-1', 'bg-red-500', 'text-white', 'rounded-md', 'cancel-btn');
+	cancelButton.setAttribute('data-username', friend.username2);
+	cancelButton.innerHTML = '&times';
+
+	li.appendChild(imgSpan);
+	li.appendChild(usernameSpan);
+	li.appendChild(statusSpan);
+	li.appendChild(cancelButton);
+	return li;
 }
 
 async function requestList(login: string) {
@@ -239,6 +277,38 @@ async function requestList(login: string) {
 		console.error("Error friends:", error);
 	}
 }
+
+function addLiElementRequest(friend: FriendData, friendindex: Number) {
+	// const li = document.createElement('li');
+	// li.classList.add('flex', 'justify-between', 'items-center', 'p-2', 'bg-purple-600', 'rounded-md');
+
+	// const imgSpan = document.createElement('span');
+	// const img = document.createElement('img');
+	// img.src = `/uploads/${(friendindex === 1) ? friend.user_id1 : friend.user_id2}.png`;
+	// img.classList.add('w-10', 'h-10', 'rounded-full', 'border-2', 'border-purple-200');
+	// img.setAttribute('onerror', "this.onerror=null; this.src='/uploads/default.png';");
+	// imgSpan.appendChild(img);
+
+	// const usernameSpan = document.createElement('span');
+	// usernameSpan.classList.add('text-white', 'p-2');
+	// usernameSpan.textContent = (friendindex === 1) ? friend.username1 : friend.username2;
+
+	// const statusSpan = document.createElement('span');
+	// statusSpan.classList.add('px-3', 'ml-auto', 'text-sm', 'text-white');
+	// statusSpan.textContent = ((friendindex === 1) ? friend.status1 : friend.status2) || "offline";
+
+	// const cancelButton = document.createElement('button');
+	// cancelButton.classList.add('px-3', 'py-1', 'bg-red-500', 'text-white', 'rounded-md', 'cancel-btn');
+	// cancelButton.setAttribute('data-username', friend.username2);
+	// cancelButton.innerHTML = '&times';
+
+	// li.appendChild(imgSpan);
+	// li.appendChild(usernameSpan);
+	// li.appendChild(statusSpan);
+	// li.appendChild(cancelButton);
+	// return li;
+}
+
 
 async function matches(login: string) {
 	const matchhistory = document.getElementById('matchhistory');
