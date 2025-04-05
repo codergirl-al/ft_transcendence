@@ -96,13 +96,13 @@ document.addEventListener("DOMContentLoaded", () => {
   ball.x += ball.dx;
   ball.y += ball.dy;
 
- if (ball.y - ball.radius < 0) {
-  ball.y = ball.radius;
-  ball.dy = -ball.dy;
- } else if (ball.y + ball.radius > canvas.height) {
-  ball.y = canvas.height - ball.radius;
-  ball.dy = -ball.dy;
- }
+  if (ball.y - ball.radius < 0) {
+   ball.y = ball.radius;
+   ball.dy = -ball.dy;
+  } else if (ball.y + ball.radius > canvas.height) {
+   ball.y = canvas.height - ball.radius;
+   ball.dy = -ball.dy;
+  }
 
   // Collision with player's paddle.
   if (checkCollision(player)) {
@@ -160,6 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
  }
 
  function rendersinglepl() {
+  // This renders the same as render() and adds game over messages.
   drawRect(0, 0, canvas.width, canvas.height, "#000");
   drawText(player.score.toString(), canvas.width / 4, 50);
   drawText(ai.score.toString(), (3 * canvas.width) / 4, 50);
@@ -180,11 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
     canvas.height / 2 + 10
    );
    ctx.font = "24px Arial";
-   ctx.fillText(
-    "Use the buttons below to restart or pause",
-    canvas.width / 2 - 150,
-    canvas.height / 2 + 50
-   );
   }
  }
 
@@ -194,6 +190,29 @@ document.addEventListener("DOMContentLoaded", () => {
   rendersinglepl();
  }
 
+ // Initialize game state for a fresh start.
+ function initGame() {
+  player.score = 0;
+  ai.score = 0;
+  player.y = canvas.height / 2 - 50;
+  ai.y = canvas.height / 2 - 50;
+  ball.x = canvas.width / 2;
+  ball.y = canvas.height / 2;
+  ball.speed = 5;
+  ball.dx = 5;
+  ball.dy = 5;
+  gameOver = false;
+  resultSent = false;
+ }
+
+ // Starts the singleplayer game when the button is clicked.
+ function startSinglePlayerGame() {
+  initGame();
+  if (loop) clearInterval(loop);
+  loop = window.setInterval(gameLoop, 1000 / 60);
+ }
+
+ // Key listeners for paddle movement.
  document.addEventListener("keydown", (e) => {
   if (e.key === "w") player.dy = -7;
   if (e.key === "s") player.dy = 7;
@@ -203,13 +222,13 @@ document.addEventListener("DOMContentLoaded", () => {
   if (e.key === "w" || e.key === "s") player.dy = 0;
  });
 
- loop = window.setInterval(gameLoop, 1000 / 60);
+ // Remove auto-start: do NOT call gameLoop here.
 
+ // Updated sendGameResult (removed localStorage usage).
  async function sendGameResult() {
-  const username = localStorage.getItem("username");
   const body = {
    multi: false,
-   user1: username,
+   user1: "player", // hardcoded for singleplayer mode
    user2: "blank",
    winner: player.score > ai.score ? 1 : 2,
   };
@@ -229,7 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
  }
 
- // Add event listeners for the Pause/Resume and Restart buttons.
+ // Event listeners for Pause/Resume and Restart buttons.
  const pauseBtn = document.getElementById(
   "pause-btn"
  ) as HTMLButtonElement | null;
@@ -253,27 +272,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
  if (restartBtn) {
   restartBtn.addEventListener("click", () => {
-   // Reset game state without reloading the page.
-   player.score = 0;
-   ai.score = 0;
-   player.y = canvas.height / 2 - 50;
-   ai.y = canvas.height / 2 - 50;
-   ball.x = canvas.width / 2;
-   ball.y = canvas.height / 2;
-   ball.speed = 5;
-   ball.dx = 5;
-   ball.dy = 5;
-   gameOver = false;
-   resultSent = false;
-   if (paused) {
-    paused = false;
-    if (pauseBtn) pauseBtn.textContent = "Pause";
-   }
    clearInterval(loop);
-   loop = window.setInterval(gameLoop, 1000 / 60);
+   startSinglePlayerGame();
   });
  }
 
+ // Pause the game when the document is hidden.
  document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
    clearInterval(loop);
@@ -284,4 +288,14 @@ document.addEventListener("DOMContentLoaded", () => {
    }
   }
  });
+
+ // Listen for the Start button click.
+ const startBtn = document.getElementById(
+  "start-btn"
+ ) as HTMLButtonElement | null;
+ if (startBtn) {
+  startBtn.addEventListener("click", () => {
+   startSinglePlayerGame();
+  });
+ }
 });
