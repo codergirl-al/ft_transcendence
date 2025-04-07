@@ -1,1 +1,11 @@
-.env
+.env*
+backend/src/transcend.db
+backend/node_modules
+backend/package-lock.json
+dist
+logs
+certs
+vault/root-token.txt
+vault/unseal-key.txt
+token/
+nginx/crt

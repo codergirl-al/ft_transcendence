@@ -1,0 +1,220 @@
+# Defining Volumes for the services that require to retain data
+volumes:
+  certs:
+    driver: local
+  es-data:
+    driver: local
+  kibana-data:
+    driver: local
+  logstash-data:
+    driver: local
+  metricbeat-data:
+    driver: local
+  filebeat-data:
+    driver: local
+  vault-data:
+    driver: local
+
+# Defining a default internal docker network for all services
+networks:
+  default:
+    name: transcendence
+
+services:
+  # For setting up elasticsearch
+  setup:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    environment:
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - KIBANA_PASSWORD=${KIBANA_PASSWORD}
+    volumes:
+      - certs:/usr/share/elasticsearch/config/certs
+      - ./elk/setup/elasticsearch-setup.sh:/usr/share/elasticsearch/setup-elasticsearch.sh
+    user: "0"
+    command: sh setup-elasticsearch.sh
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f config/certs/elasticsearch/elasticsearch.crt ]"]
+      interval: 1s
+      timeout: 5s
+      retries: 120
+
+  # For running elasticsearch
+  elasticsearch:
+    depends_on:
+      setup:
+        condition: service_healthy
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    labels:
+      co.elastic.logs/module: elasticsearch
+    volumes:
+      - certs:/usr/share/elasticsearch/config/certs
+      - es-data:/usr/share/elasticsearch/data
+    ports:
+      - ${ES_PORT}:9200
+    environment:
+      - node.name=elasticsearch
+      - cluster.name=${CLUSTER_NAME}
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=certs/elasticsearch/elasticsearch.key
+      - xpack.security.http.ssl.certificate=certs/elasticsearch/elasticsearch.crt
+      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.key=certs/elasticsearch/elasticsearch.key
+      - xpack.security.transport.ssl.certificate=certs/elasticsearch/elasticsearch.crt
+      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.license.self_generated.type=${LICENSE}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+  # For running kibana
+  kibana:
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+    labels:
+      co.elastic.logs/module: kibana
+    volumes:
+      - certs:/usr/share/kibana/config/certs
+      - kibana-data:/usr/share/kibana/data
+    ports:
+      - ${KIBANA_PORT}:5601
+    environment:
+      - SERVERNAME=kibana
+      - ELASTICSEARCH_HOSTS=https://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
+      - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
+      - XPACK_SECURITY_ENCRYPTIONKEY=${ENCRYPTION_KEY}
+      - XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY=${ENCRYPTION_KEY}
+      - XPACK_REPORTING_ENCRYPTIONKEY=${ENCRYPTION_KEY}
+    mem_limit: ${KB_MEM_LIMIT}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+  # For running logstash
+  logstash:
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+    image: docker.elastic.co/logstash/logstash:${STACK_VERSION}
+    labels:
+      co.elastic.logs/module: logstash
+    user: root
+    volumes:
+      - certs:/usr/share/logstash/certs
+      - logstash-data:/usr/share/logstash/data
+      - "./logs/:/usr/share/logstash/ingest_data/"
+      - "./elk/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro"
+    environment:
+      - xpack.monitoring.enabled=false
+      - ELASTIC_USER=elastic
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - ELASTIC_HOSTS=https://elasticsearch:9200
+
+  # For running nginx
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  # For running vault
+  vault:
+    build: ./vault
+    volumes:
+      - vault-data:/vault/file
+    ports:
+      - "8200:8200"
+    cap_add:
+      - IPC_LOCK
+    healthcheck:
+      test: >
+        sh -c "
+          echo 'Starting Health Check!' > /proc/1/fd/1;
+          if [ $$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8200/v1/sys/health || echo '000') = 501 ]; then
+            echo 'OK: Vault is not initialized' > /proc/1/fd/1;
+            exit 0;
+          elif [ $$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8200/v1/sys/health || echo '000') = 503 ]; then
+            echo 'OK: Vault is sealed' > /proc/1/fd/1;
+            exit 0;
+          elif [ $$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8200/v1/sys/health || echo '000') = 200 ]; then
+            echo 'OK: Vault is sealed' > /proc/1/fd/1;
+            exit 0;
+          else
+            echo 'KO: Vault is unhealthy' > /proc/1/fd/1;
+            exit 1;
+          fi
+        "
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  # For setting up vault
+  vault-setup:
+    image: curlimages/curl:latest
+    user: "0"
+    container_name: vault-setup
+    volumes:
+      - ./vault/vault-init.sh:/home/curl_user/vault-init-unseal.sh
+      - ./vault/:/home/curl_user/tokens
+      - ./token:/home/curl_user/token
+      - .env.backend:/home/curl_user/.env.backend
+    command: >
+      sh -c "apk add jq; /home/curl_user/vault-init-unseal.sh; touch /home/curl_user/ready; sleep 100"
+    healthcheck:
+      test: ["CMD", "sh", "-c", "test -f /home/curl_user/ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    depends_on:
+      vault:
+        condition: service_healthy
+
+  # For running backend
+  backend:
+    build: ./backend/
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./logs:/logs
+      - ./backend:/app
+      - ./token/backend-token.txt:/backend-token.txt
+    working_dir: /app
+    depends_on:
+      vault-setup:
+        condition: service_healthy
+    healthcheck:
+      test: [
+        "CMD-SHELL",
+        "curl -f http://localhost:3000 || exit 1"
+      ]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 20s
+
